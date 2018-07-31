@@ -1,83 +1,140 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+using MonoGame.Extended;
+using MonoGame.Extended.Entities;
+using MonoGame.Extended.Tiled;
+using MonoGame.Extended.Tiled.Renderers;
+using System.Linq;
 
 namespace AnimusEngine.Desktop
 {
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
     public class Game1 : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        GraphicsDeviceManager _graphics;
+        SpriteBatch _spriteBatch;
+        TiledMap _map;
+        TiledMapRenderer _renderer;
+        Map map = new Map();
+        public List<GameObject> _objects = new List<GameObject>();
+
 
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            Resolution.Init(ref _graphics);
+            Resolution.SetVirtualResolution(400, 240);
+            Resolution.SetResolution(1280, 720, false);
         }
 
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            Camera.Initialize();
             base.Initialize();
         }
 
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            LevelLoader("Level_00_00");
             // TODO: use this.Content to load your game content here
+
         }
 
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// game-specific content.
-        /// </summary>
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
         }
 
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+ 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
             // TODO: Add your update logic here
-
+            //Input.Update();
+            UpdateCamera();
+            UpdateObjects();
             base.Update(gameTime);
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            Resolution.BeginDraw();
+            _spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Camera.GetTransformMatrix());
+            _renderer.Draw(Camera.GetTransformMatrix());
+            DrawObjects();
+            _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        public void LevelLoader(string levelName)
+        {
+            _map = Content.Load<TiledMap>(levelName);
+            _renderer = new TiledMapRenderer(GraphicsDevice, _map);
+
+            foreach (var tileLayer in _map.TileLayers)
+            {
+                for (var x = 0; x < tileLayer.Width; x++)
+                {
+                    for (var y = 0; y < tileLayer.Height; y++)
+                    {
+                        var tile = tileLayer.GetTile((ushort)x, (ushort)y);
+
+                        if (tile.GlobalIdentifier == 1)
+                        {
+                            var tileWidth = _map.TileWidth;
+                            var tileHeight = _map.TileHeight;
+                            map.walls.Add(new Wall(new Rectangle(x, y, tileWidth, tileHeight)));
+                        }
+                    }
+                }
+            }
+            _objects.Add(new Player(new Vector2(200, 200)));
+
+            LoadObjects();
+        }
+
+        public void LoadObjects()
+        {
+            for (int i=0; i<_objects.Count; i++)
+            {
+                _objects[i].Initialize();
+                _objects[i].Load(Content);
+            }
+        }
+
+        public void UpdateObjects()
+        {
+            for (int i = 0; i < _objects.Count; i++)
+            {
+                _objects[i].Update(_objects);
+            }
+            
+        }
+
+        public void DrawObjects()
+        {
+            for (int i = 0; i < _objects.Count; i++)
+            {
+                _objects[i].Draw(_spriteBatch);
+            }
+        }
+
+        public void UpdateCamera()
+        {
+            Camera.Update(new Vector2(200, 200));
         }
     }
 }
