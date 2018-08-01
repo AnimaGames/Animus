@@ -48,6 +48,8 @@
     <Compile Include="GameObjects\Player.cs" />
     <Compile Include="Utilities\Input.cs" />
     <Compile Include="GameObjects\Wall.cs" />
+    <Compile Include="GameObjects\Entity.cs" />
+    <Compile Include="GameObjects\Enemy.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -148,6 +150,10 @@
     <None Include="..\..\..\Downloads\Michael Hicks Toolbox\Art\pixel.png">
       <Link>Content\pixel.png</Link>
     </None>
+    <None Include="..\..\..\Documents\Aseprite\Playerwalkk.png">
+      <Link>Content\Playerwalkk.png</Link>
+    </None>
+    <None Include="Content\enemy.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Utilities\" />

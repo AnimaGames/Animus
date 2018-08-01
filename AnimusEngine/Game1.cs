@@ -7,7 +7,6 @@ using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
-using System.Linq;
 
 namespace AnimusEngine.Desktop
 {
@@ -28,7 +27,7 @@ namespace AnimusEngine.Desktop
 
             Resolution.Init(ref _graphics);
             Resolution.SetVirtualResolution(400, 240);
-            Resolution.SetResolution(1280, 720, false);
+            Resolution.SetResolution(854, 480, false);
         }
 
         protected override void Initialize()
@@ -73,6 +72,7 @@ namespace AnimusEngine.Desktop
             Resolution.BeginDraw();
             _spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Camera.GetTransformMatrix());
             _renderer.Draw(Camera.GetTransformMatrix());
+            map.DrawWalls(_spriteBatch);
             DrawObjects();
             _spriteBatch.End();
 
@@ -81,6 +81,7 @@ namespace AnimusEngine.Desktop
 
         public void LevelLoader(string levelName)
         {
+            map.Load(Content);
             _map = Content.Load<TiledMap>(levelName);
             _renderer = new TiledMapRenderer(GraphicsDevice, _map);
 
@@ -92,17 +93,18 @@ namespace AnimusEngine.Desktop
                     {
                         var tile = tileLayer.GetTile((ushort)x, (ushort)y);
 
-                        if (tile.GlobalIdentifier == 1)
+                        if (tile.GlobalIdentifier == 16)
                         {
                             var tileWidth = _map.TileWidth;
                             var tileHeight = _map.TileHeight;
-                            map.walls.Add(new Wall(new Rectangle(x, y, tileWidth, tileHeight)));
+                            map.walls.Add(new Wall(new Rectangle(x*tileWidth, y*tileHeight, tileWidth, tileHeight)));
                         }
                     }
                 }
             }
-            _objects.Add(new Player(new Vector2(200, 200)));
 
+            _objects.Add(new Player(new Vector2(200, 100)));
+            _objects.Add(new Enemy(new Vector2(300, 100)));
             LoadObjects();
         }
 
@@ -119,7 +121,7 @@ namespace AnimusEngine.Desktop
         {
             for (int i = 0; i < _objects.Count; i++)
             {
-                _objects[i].Update(_objects);
+                _objects[i].Update(_objects, map);
             }
             
         }
@@ -134,7 +136,7 @@ namespace AnimusEngine.Desktop
 
         public void UpdateCamera()
         {
-            Camera.Update(new Vector2(200, 200));
+            Camera.Update(_objects[0].position);
         }
     }
 }
