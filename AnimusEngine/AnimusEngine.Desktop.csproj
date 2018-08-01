@@ -1,4 +1,4 @@
-﻿<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -15,6 +15,7 @@
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\$(MonoGamePlatform)\$(Platform)\$(Configuration)\</OutputPath>
     <DefineConstants>DEBUG;TRACE;LINUX</DefineConstants>
@@ -90,9 +91,6 @@
     <Reference Include="MonoGame.Extended.SceneGraphs">
       <HintPath>..\..\..\Documents\Visual Studio\MonoGame.Extended-develop\Source\MonoGame.Extended.SceneGraphs\bin\Debug\netstandard2.0\MonoGame.Extended.SceneGraphs.dll</HintPath>
     </Reference>
-    <Reference Include="Nez">
-      <HintPath>..\..\..\Documents\Visual Studio\Nez-master\Nez.Portable\bin\Debug\Nez.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />
@@ -154,6 +152,7 @@
       <Link>Content\Playerwalkk.png</Link>
     </None>
     <None Include="Content\enemy.png" />
+    <None Include="Content\tinyCaro.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Utilities\" />

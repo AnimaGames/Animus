@@ -36,7 +36,7 @@ namespace AnimusEngine
         protected int boundingBoxWidth, boundingBoxHeight;
         protected Vector2 boundingBoxOffset;
         Texture2D boundingBoxTexture;
-        const bool drawBoundingBoxes = true;   //change for visible bounding boxes
+        const bool drawBoundingBoxes = false;   //change for visible bounding boxes
 
         protected Vector2 direction = new Vector2(1, 0);
 
@@ -76,7 +76,7 @@ namespace AnimusEngine
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            if (boundingBoxTexture != null && active == true)
+            if (boundingBoxTexture != null && drawBoundingBoxes == true)
             {
                 spriteBatch.Draw(boundingBoxTexture, new Vector2(BoundingBox.X, BoundingBox.Y), BoundingBox, new Color(255, 0, 0, 128), rotation, Vector2.Zero, scale, SpriteEffects.None, layerDepth);
             }
@@ -84,7 +84,6 @@ namespace AnimusEngine
             {
                 spriteBatch.Draw(objectSprite, drawPosition, 0f);
             }
-
         }
 
         private void CalculateCenter()

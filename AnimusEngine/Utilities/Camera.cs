@@ -21,7 +21,9 @@ namespace AnimusEngine
         static private float zoom;
         static private Rectangle screenRect;
 
-        static public bool updateYAxis = false; //Should the camera move along on the y axis?
+        static public int cameraBoundsMinX, cameraBoundsMaxX, cameraBoundsMaxY, cameraBoundsMinY;
+
+        static public bool updateYAxis = true; //Should the camera move along on the y axis?
         static public bool updateXAxis = true; //Should the camera move along on the x axis?
 
         public static void Initialize()
@@ -60,10 +62,32 @@ namespace AnimusEngine
         {
             //Make the camera center on and follow the position:
             if (updateXAxis == true)
+            {
                 position.X += ((follow.X - position.X)); //Camera will follow the position passed in
+                // clamp camera values in a dumb way
+                if (position.X <= cameraBoundsMinX)
+                {
+                    position.X = cameraBoundsMinX;
+                }
+                if (position.X >= cameraBoundsMaxX)
+                {
+                    position.X = cameraBoundsMaxX;
+                }
+            }
 
             if (updateYAxis == true)
+            {
                 position.Y += ((follow.Y - position.Y)); //Camera will follow the position passed in
+                // clamp camera values in a dumb way
+                if (position.Y <= cameraBoundsMinY)
+                {
+                    position.Y = cameraBoundsMinY;
+                }
+                if (position.Y >= cameraBoundsMaxY)
+                {
+                    position.Y = cameraBoundsMaxY;
+                }
+            }
         }
 
         /// <summary>

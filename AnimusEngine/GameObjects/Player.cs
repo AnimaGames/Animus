@@ -30,13 +30,14 @@ namespace AnimusEngine
         {
             // initiliaze sprite
             spriteWidth = spriteHeight = 32;
-            objectTexture = content.Load<Texture2D>("playerwalkk");
+            objectTexture = content.Load<Texture2D>("player");
             objectAtlas = TextureAtlas.Create("objectAtlas", objectTexture, spriteWidth, spriteHeight);
 
             //create animations from sprite sheet
             animationFactory = new SpriteSheetAnimationFactory(objectAtlas);
             animationFactory.Add("idle", new SpriteSheetAnimationData(new[] { 0 }));
             animationFactory.Add("walk", new SpriteSheetAnimationData(new[] { 1, 2, 3, 4 }, frameDuration: 0.1f, isLooping: true));
+            animationFactory.Add("jump", new SpriteSheetAnimationData(new[] { 4 }));
 
             objectAnimated = new AnimatedSprite(animationFactory, "idle");
             objectSprite = objectAnimated;
@@ -86,10 +87,13 @@ namespace AnimusEngine
             {
                 if (keyboardState.WasKeyJustUp(Keys.Space)) {
                     Jump(map);
-                    objectAnimated.Play("jump");
                 }
                 if (keyboardState.WasKeyJustDown(Keys.Space)) {
                     JumpCancel(map);
+                }
+                if (isJumping) 
+                {
+                    objectAnimated.Play("jump");
                 }
             }
         }

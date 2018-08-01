@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
 using MonoGame.Extended;
-using MonoGame.Extended.Entities;
 using System.Collections.Generic;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Animations;
@@ -199,7 +198,10 @@ namespace AnimusEngine
 
             if (wallCollision != Rectangle.Empty)
             {
-                if (applyGravity && (futureBoundingBox.Bottom >= wallCollision.Top - maxSpeed/2) && (futureBoundingBox.Bottom <= wallCollision.Top + velocity.Y))
+                if (applyGravity && 
+                    (futureBoundingBox.Bottom >= wallCollision.Top - maxSpeed) && 
+                    (futureBoundingBox.Bottom <= wallCollision.Top + 8) &&
+                    velocity.Y > 0)
                 {
                     LandResponse(wallCollision);
                     return true;

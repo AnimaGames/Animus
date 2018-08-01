@@ -7,6 +7,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
+using System;
 
 namespace AnimusEngine.Desktop
 {
@@ -16,6 +17,7 @@ namespace AnimusEngine.Desktop
         SpriteBatch _spriteBatch;
         TiledMap _map;
         TiledMapRenderer _renderer;
+
         Map map = new Map();
         public List<GameObject> _objects = new List<GameObject>();
 
@@ -27,12 +29,11 @@ namespace AnimusEngine.Desktop
 
             Resolution.Init(ref _graphics);
             Resolution.SetVirtualResolution(400, 240);
-            Resolution.SetResolution(854, 480, false);
+            Resolution.SetResolution(800, 480, false);
         }
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
             Camera.Initialize();
             base.Initialize();
         }
@@ -42,8 +43,6 @@ namespace AnimusEngine.Desktop
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             LevelLoader("Level_00_00");
-            // TODO: use this.Content to load your game content here
-
         }
 
         protected override void UnloadContent()
@@ -51,14 +50,11 @@ namespace AnimusEngine.Desktop
             // TODO: Unload any non ContentManager content here
         }
 
- 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
-            //Input.Update();
             UpdateCamera();
             UpdateObjects(gameTime);
             base.Update(gameTime);
@@ -68,17 +64,21 @@ namespace AnimusEngine.Desktop
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
             Resolution.BeginDraw();
             _spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Camera.GetTransformMatrix());
+
             _renderer.Draw(Camera.GetTransformMatrix());
             map.DrawWalls(_spriteBatch);
             DrawObjects();
-            _spriteBatch.End();
 
+            _spriteBatch.End();
             base.Draw(gameTime);
         }
-
+        /// <summary>
+        /// Things to load in each room/level:
+        /// room name, object list, camerabounds
+        /// possibly screen direction / type of transition
+        /// </summary>
         public void LevelLoader(string levelName)
         {
             map.Load(Content);
@@ -103,8 +103,13 @@ namespace AnimusEngine.Desktop
                 }
             }
 
+            Camera.cameraBoundsMaxX = 312;
+            Camera.cameraBoundsMinX = 200;
+            Camera.cameraBoundsMaxY = 120;
+            Camera.cameraBoundsMinY = 120;
+
             _objects.Add(new Player(new Vector2(200, 100)));
-            _objects.Add(new Enemy(new Vector2(300, 100)));
+
             LoadObjects();
         }
 
@@ -123,7 +128,6 @@ namespace AnimusEngine.Desktop
             {
                 _objects[i].Update(_objects, map, gameTime);
             }
-            
         }
 
         public void DrawObjects()
@@ -136,7 +140,20 @@ namespace AnimusEngine.Desktop
 
         public void UpdateCamera()
         {
-            Camera.Update(_objects[0].position);
+            if (_objects.Count == 0) { return; }
+            Camera.Update(_objects[_objects.Count-1].position);
+        }
+
+        public static float Clamp(float value, float min, float max)
+        {
+            // First we check to see if we're greater than the max
+            value = (value > max) ? max : value;
+
+            // Then we check to see if we're less than the min.
+            value = (value < min) ? min : value;
+
+            // There's no check to see if min > max.
+            return value;
         }
     }
 }
