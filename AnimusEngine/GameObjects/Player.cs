@@ -30,26 +30,30 @@ namespace AnimusEngine
         {
             // initiliaze sprite
             spriteWidth = spriteHeight = 32;
-            objectTexture = content.Load<Texture2D>("player");
+            objectTexture = content.Load<Texture2D>("playerwalkk");
             objectAtlas = TextureAtlas.Create("objectAtlas", objectTexture, spriteWidth, spriteHeight);
 
             //create animations from sprite sheet
             animationFactory = new SpriteSheetAnimationFactory(objectAtlas);
             animationFactory.Add("idle", new SpriteSheetAnimationData(new[] { 0 }));
-            animationFactory.Add("walk", new SpriteSheetAnimationData(new[] { 1, 2, 3, 4 }, isLooping: true));
+            animationFactory.Add("walk", new SpriteSheetAnimationData(new[] { 1, 2, 3, 4 }, frameDuration: 0.1f, isLooping: true));
 
             objectAnimated = new AnimatedSprite(animationFactory, "idle");
+            objectSprite = objectAnimated;
 
             base.Load(content);
             boundingBoxWidth = 14;
             boundingBoxHeight = 24;
-            boundingBoxOffset = new Vector2(9, 6);
+            boundingBoxOffset = new Vector2(9, 7);
         }
 
-        public override void Update(List<GameObject> _objects, Map map)
+        public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
         {
+            drawPosition = new Vector2(position.X + (spriteWidth/2), position.Y + (spriteHeight/2));
             CheckInput(map);
-            base.Update(_objects, map);
+            objectAnimated.Update(gameTime);
+            if (velocity.X == 0) { objectAnimated.Play("idle"); }
+            base.Update(_objects, map, gameTime);
         }
 
         private void CheckInput(Map map)
@@ -58,10 +62,14 @@ namespace AnimusEngine
 
             if (keyboardState.IsKeyDown(Keys.Left)) {
                 MoveLeft();
+                objectAnimated.Play("walk");
+                objectAnimated.Effect = SpriteEffects.FlipHorizontally;
             }
 
             if (keyboardState.IsKeyDown(Keys.Right)) {
                 MoveRight();
+                objectAnimated.Play("walk");
+                objectAnimated.Effect = SpriteEffects.None;
             }
 
             if (!applyGravity)
@@ -78,6 +86,7 @@ namespace AnimusEngine
             {
                 if (keyboardState.WasKeyJustUp(Keys.Space)) {
                     Jump(map);
+                    objectAnimated.Play("jump");
                 }
                 if (keyboardState.WasKeyJustDown(Keys.Space)) {
                     JumpCancel(map);

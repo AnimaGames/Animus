@@ -41,10 +41,10 @@ namespace AnimusEngine
             base.Initialize();
         }
 
-        public override void Update(List<GameObject> _objects, Map map)
+        public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
         {
             UpdateMovement(_objects, map);
-            base.Update(_objects, map);
+            base.Update(_objects, map, gameTime);
         }
 
         private void UpdateMovement(List<GameObject> _objects, Map map)

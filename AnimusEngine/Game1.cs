@@ -60,7 +60,7 @@ namespace AnimusEngine.Desktop
             // TODO: Add your update logic here
             //Input.Update();
             UpdateCamera();
-            UpdateObjects();
+            UpdateObjects(gameTime);
             base.Update(gameTime);
         }
 
@@ -117,11 +117,11 @@ namespace AnimusEngine.Desktop
             }
         }
 
-        public void UpdateObjects()
+        public void UpdateObjects(GameTime gameTime)
         {
             for (int i = 0; i < _objects.Count; i++)
             {
-                _objects[i].Update(_objects, map);
+                _objects[i].Update(_objects, map, gameTime);
             }
             
         }

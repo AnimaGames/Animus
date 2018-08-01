@@ -20,14 +20,17 @@ namespace AnimusEngine
         public TextureAtlas objectAtlas;
         public SpriteSheetAnimationFactory animationFactory;
         public AnimatedSprite objectAnimated;
+        public Sprite objectSprite;
 
+        public int spriteHeight, spriteWidth;
         public Vector2 position;
+        public Vector2 drawPosition;
+
         public Color drawColor = Color.White;
         public float scale = 1f, rotation = 0f;
         public float layerDepth = 0.5f;
         public bool active = true;
         public Vector2 center;
-        public int spriteHeight, spriteWidth;
 
         public bool solid = true;
         protected int boundingBoxWidth, boundingBoxHeight;
@@ -63,7 +66,7 @@ namespace AnimusEngine
             }
         }
 
-        public virtual void Update(List<GameObject> _objects, Map map)
+        public virtual void Update(List<GameObject> _objects, Map map, GameTime gameTime)
         { }
 
         public virtual bool CheckCollision(Rectangle init)
@@ -77,9 +80,9 @@ namespace AnimusEngine
             {
                 spriteBatch.Draw(boundingBoxTexture, new Vector2(BoundingBox.X, BoundingBox.Y), BoundingBox, new Color(255, 0, 0, 128), rotation, Vector2.Zero, scale, SpriteEffects.None, layerDepth);
             }
-            if (objectTexture != null && active == true)
+            if (objectSprite != null && active == true)
             {
-                spriteBatch.Draw(objectTexture, position, null, drawColor, rotation, Vector2.Zero, scale, SpriteEffects.None, layerDepth);
+                spriteBatch.Draw(objectSprite, drawPosition, 0f);
             }
 
         }

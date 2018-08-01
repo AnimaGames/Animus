@@ -39,9 +39,9 @@ namespace AnimusEngine
             boundingBoxOffset = new Vector2(9, 6);
         }
 
-        public override void Update(List<GameObject> _objects, Map map)
+        public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
         {
-            base.Update(_objects, map);
+            base.Update(_objects, map, gameTime);
         }
 
     }
