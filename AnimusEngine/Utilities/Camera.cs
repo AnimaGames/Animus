@@ -16,7 +16,7 @@ namespace AnimusEngine
     static class Camera
     {
         static private Matrix transformMatrix; //A transformation matrix containing info on our position, how much we are rotated and zoomed etc.
-        static private Vector2 position;
+        static public Vector2 position;
         static public float rotation;
         static private float zoom;
         static private Rectangle screenRect;

@@ -17,19 +17,28 @@ namespace AnimusEngine.Desktop
         SpriteBatch _spriteBatch;
         TiledMap _map;
         TiledMapRenderer _renderer;
-
+        public uint counter = 0;
         Map map = new Map();
         public List<GameObject> _objects = new List<GameObject>();
+
+        //cleanup lists
+        public List<GameObject> _killObjects = new List<GameObject>();
+        public List<Vector2> _cameraBoundsMin = new List<Vector2>();
+        public List<Vector2> _cameraBoundsMax = new List<Vector2>();
+        public List<Door> _killDoors = new List<Door>();
+        public List<Wall> _killWalls = new List<Wall>();
 
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-
             Resolution.Init(ref _graphics);
             Resolution.SetVirtualResolution(400, 240);
             Resolution.SetResolution(800, 480, false);
+
+            IsFixedTimeStep = true;
+            TargetElapsedTime = TimeSpan.FromSeconds(1f / 60f);
         }
 
         protected override void Initialize()
@@ -47,17 +56,19 @@ namespace AnimusEngine.Desktop
 
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            LevelCleaner();
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
+            
             UpdateCamera();
             UpdateObjects(gameTime);
             base.Update(gameTime);
+            counter++;
+            Console.WriteLine(counter);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -65,7 +76,8 @@ namespace AnimusEngine.Desktop
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             Resolution.BeginDraw();
-            _spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Camera.GetTransformMatrix());
+            _spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, 
+                                 SamplerState.PointClamp, null, null, null, Camera.GetTransformMatrix());
 
             _renderer.Draw(Camera.GetTransformMatrix());
             map.DrawWalls(_spriteBatch);
@@ -82,7 +94,7 @@ namespace AnimusEngine.Desktop
         public void LevelLoader(string levelName)
         {
             map.Load(Content);
-            _map = Content.Load<TiledMap>(levelName);
+             _map = Content.Load<TiledMap>(levelName);
             _renderer = new TiledMapRenderer(GraphicsDevice, _map);
 
             foreach (var tileLayer in _map.TileLayers)
@@ -99,18 +111,58 @@ namespace AnimusEngine.Desktop
                             var tileHeight = _map.TileHeight;
                             map.walls.Add(new Wall(new Rectangle(x*tileWidth, y*tileHeight, tileWidth, tileHeight)));
                         }
+                        if (tile.GlobalIdentifier == 15)
+                        {
+                            var tileWidth = _map.TileWidth;
+                            var tileHeight = _map.TileHeight;
+                            map.doors.Add(new Door(new Rectangle(x*tileWidth, y * tileHeight, tileWidth, tileHeight)));
+                        }
                     }
                 }
             }
-
-            Camera.cameraBoundsMaxX = 312;
+            // WHYYYYYY
+            foreach (var objectLayer in _map.ObjectLayers)
+            {
+                var objectList = objectLayer.Properties.TryGetValue("name", out string name);
+                Console.WriteLine("name is: " + objectList);
+            }
+            Camera.cameraBoundsMaxX = 400;
             Camera.cameraBoundsMinX = 200;
             Camera.cameraBoundsMaxY = 120;
             Camera.cameraBoundsMinY = 120;
 
-            _objects.Add(new Player(new Vector2(200, 100)));
+            _objects.Add(new Player(new Vector2(300, 100)));
 
             LoadObjects();
+        }
+
+        public void LevelCleaner()
+        {
+            foreach (var objects in _objects)
+            {
+                _killObjects.Add(objects);
+            }
+            foreach (var doors in map.doors)
+            {
+                _killDoors.Add(doors);
+            }
+            foreach (var walls in map.walls)
+            {
+                _killWalls.Add(walls);
+            }
+            //detroy old objects --- there must be a smarter way to do this....
+            foreach (GameObject o in _killObjects)
+            {
+                _objects.Remove(o);
+            }
+            foreach (Door d in _killDoors)
+            {
+                map.doors.Remove(d);
+            }
+            foreach (Wall w in _killWalls)
+            {
+                map.walls.Remove(w);
+            }
         }
 
         public void LoadObjects()
@@ -141,7 +193,7 @@ namespace AnimusEngine.Desktop
         public void UpdateCamera()
         {
             if (_objects.Count == 0) { return; }
-            Camera.Update(_objects[_objects.Count-1].position);
+            Camera.Update(_objects[0].position + new Vector2(16,0));
         }
 
         public static float Clamp(float value, float min, float max)

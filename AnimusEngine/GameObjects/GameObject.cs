@@ -36,7 +36,7 @@ namespace AnimusEngine
         protected int boundingBoxWidth, boundingBoxHeight;
         protected Vector2 boundingBoxOffset;
         Texture2D boundingBoxTexture;
-        const bool drawBoundingBoxes = false;   //change for visible bounding boxes
+        const bool drawBoundingBoxes = true;   //change for visible bounding boxes
 
         protected Vector2 direction = new Vector2(1, 0);
 
@@ -44,7 +44,10 @@ namespace AnimusEngine
         {
             get
             {
-                return new Rectangle((int)(position.X + boundingBoxOffset.X), (int)(position.Y + boundingBoxOffset.Y), boundingBoxWidth, boundingBoxHeight);
+                return new Rectangle((int)(position.X + boundingBoxOffset.X), 
+                                     (int)(position.Y + boundingBoxOffset.Y), 
+                                     boundingBoxWidth, 
+                                     boundingBoxHeight);
             }
         }
 
@@ -61,8 +64,8 @@ namespace AnimusEngine
             CalculateCenter();
             if (objectTexture != null)
             {
-                boundingBoxHeight = objectTexture.Height;
-                boundingBoxWidth = objectTexture.Width;
+                boundingBoxHeight = spriteHeight;
+                boundingBoxWidth = spriteWidth;
             }
         }
 
@@ -78,7 +81,15 @@ namespace AnimusEngine
         {
             if (boundingBoxTexture != null && drawBoundingBoxes == true)
             {
-                spriteBatch.Draw(boundingBoxTexture, new Vector2(BoundingBox.X, BoundingBox.Y), BoundingBox, new Color(255, 0, 0, 128), rotation, Vector2.Zero, scale, SpriteEffects.None, layerDepth);
+                spriteBatch.Draw(boundingBoxTexture, 
+                                 new Vector2(BoundingBox.X, BoundingBox.Y), 
+                                 BoundingBox, 
+                                 new Color(255, 0, 0, 128), 
+                                 rotation, 
+                                 Vector2.Zero, 
+                                 scale, 
+                                 SpriteEffects.None, 
+                                 layerDepth);
             }
             if (objectSprite != null && active == true)
             {
@@ -88,10 +99,12 @@ namespace AnimusEngine
 
         private void CalculateCenter()
         {
-            if (objectTexture == null) { return; }
+            if (spriteWidth == 0) { return; }
 
-            center.X = objectTexture.Width / 2;
-            center.Y = objectTexture.Height / 2;
+            center.X = spriteWidth / 2;
+            center.Y = spriteHeight / 2;
+            Console.WriteLine("spritewidth: " + spriteWidth);
+            Console.WriteLine("spriteheight: " + spriteHeight);
         }
     }
 }

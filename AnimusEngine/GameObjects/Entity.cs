@@ -30,8 +30,7 @@ namespace AnimusEngine
         public static bool applyGravity = true;
 
         public Entity()
-        {
-        }
+        { }
 
         public override void Initialize()
         {

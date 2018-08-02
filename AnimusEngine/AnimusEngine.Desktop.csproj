@@ -153,6 +153,8 @@
     </None>
     <None Include="Content\enemy.png" />
     <None Include="Content\tinyCaro.png" />
+    <None Include="Content\Level_00_01.tmx" />
+    <None Include="Content\ForestTiles.tsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Utilities\" />

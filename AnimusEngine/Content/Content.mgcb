@@ -27,10 +27,20 @@
 /processorParam:TextureFormat=Color
 /build:enemy.png
 
+#begin ForestTiles.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:ForestTiles.tsx
+
 #begin Level_00_00.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
 /build:Level_00_00.tmx
+
+#begin Level_00_01.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:Level_00_01.tmx
 
 #begin pixel.png
 /importer:TextureImporter
