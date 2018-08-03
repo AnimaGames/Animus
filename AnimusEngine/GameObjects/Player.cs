@@ -52,9 +52,12 @@ namespace AnimusEngine
         public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
         {
             drawPosition = new Vector2(position.X + (spriteWidth/2), position.Y + (spriteHeight/2));
-            CheckInput(map);
-            objectAnimated.Update(gameTime);
-            if (velocity.X == 0) { objectAnimated.Play("idle"); }
+
+            if (!Door.doorEnter)
+            {
+                CheckInput(map);
+                objectAnimated.Update(gameTime);
+            }
             base.Update(_objects, map, gameTime);
         }
 
@@ -72,6 +75,10 @@ namespace AnimusEngine
                 MoveRight();
                 objectAnimated.Play("walk");
                 objectAnimated.Effect = SpriteEffects.None;
+            } 
+            if (!keyboardState.IsKeyDown(Keys.Right) && (!keyboardState.IsKeyDown(Keys.Left)))
+            {
+                objectAnimated.Play("idle");
             }
 
             if (!applyGravity)
@@ -79,7 +86,6 @@ namespace AnimusEngine
                 if (keyboardState.IsKeyDown(Keys.Up)) {
                     MoveUp();
                 }
-
                 if (keyboardState.IsKeyDown(Keys.Down)) {
                     MoveDown();
                 }

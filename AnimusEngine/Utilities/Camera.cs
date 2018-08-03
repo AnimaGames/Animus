@@ -63,35 +63,33 @@ namespace AnimusEngine
 
         private static void UpdateMovement(Vector2 follow)
         {
-            if (!Door.doorEnter)
-            {
-                //Make the camera center on and follow the position:
-                if (updateXAxis == true)
-                {
-                    position.X += ((follow.X - position.X)); //Camera will follow the position passed in
-                                                             // clamp camera values in a dumb way
-                    if (position.X <= cameraMin.X)
-                    {
-                        position.X = cameraMin.X;
-                    }
-                    if (position.X >= cameraMax.X)
-                    {
-                        position.X = cameraMax.X;
-                    }
-                }
 
-                if (updateYAxis == true)
+            //Make the camera center on and follow the position:
+            if (updateXAxis == true)
+            {
+                position.X += ((follow.X - position.X)); //Camera will follow the position passed in
+                                                         // clamp camera values in a dumb way
+                if (position.X <= cameraMin.X)
                 {
-                    position.Y += ((follow.Y - position.Y)); //Camera will follow the position passed in
-                                                             // clamp camera values in a dumb way
-                    if (position.Y <= cameraMin.Y)
-                    {
-                        position.Y = cameraMin.Y;
-                    }
-                    if (position.Y >= cameraMax.Y)
-                    {
-                        position.Y = cameraMax.Y;
-                    }
+                    position.X = cameraMin.X;
+                }
+                if (position.X >= cameraMax.X)
+                {
+                    position.X = cameraMax.X;
+                }
+            }
+
+            if (updateYAxis == true)
+            {
+                position.Y += ((follow.Y - position.Y)); //Camera will follow the position passed in
+                                                         // clamp camera values in a dumb way
+                if (position.Y <= cameraMin.Y)
+                {
+                    position.Y = cameraMin.Y;
+                }
+                if (position.Y >= cameraMax.Y)
+                {
+                    position.Y = cameraMax.Y;
                 }
             }
         }

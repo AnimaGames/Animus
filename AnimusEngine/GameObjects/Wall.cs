@@ -100,7 +100,7 @@ namespace AnimusEngine
                     {
                         Game1.screenDir = "left";
                     }
-                    Game1.roomNumber = doors[i].nextRoomNumber;
+                    Game1.roomPlaceHolder = doors[i].nextRoomNumber;
                     return doors[i].door;
                 }
             }

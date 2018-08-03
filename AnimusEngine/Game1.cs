@@ -26,14 +26,17 @@ namespace AnimusEngine
 
         //level items
         static public string levelNumber;
-        static public string roomNumber;
+        static public string roomPlaceHolder;
+        public string roomNumber;
         static public string screenDir;
+        public int screenTimer;
 
         //cleanup items
         public List<GameObject> _killObjects = new List<GameObject>();
         public List<Door> _killDoors = new List<Door>();
         public List<Wall> _killWalls = new List<Wall>();
 
+        public int frameCounter;
 
         public Game1()
         {
@@ -51,6 +54,7 @@ namespace AnimusEngine
         {
             roomNumber = "1";
             levelNumber = "0";
+            screenTimer = 50;
             Camera.Initialize();
             Camera.cameraOffset = new Vector2(Resolution.VirtualWidth / 2, Resolution.VirtualHeight / 2);
             base.Initialize();
@@ -63,30 +67,18 @@ namespace AnimusEngine
             LevelLoader("Level_" + levelNumber);
         }
 
-        protected override void UnloadContent()
-        {
-            LevelCleaner();
-        }
-
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || 
-                Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
             if (Door.doorEnter) {
-                ScreenTransition(screenDir, 
-                                 roomNumber, 
-                                 Resolution.VirtualWidth* 10);
                 UnloadContent();
-                LoadContent();
-                Door.doorEnter = false;
+                ScreenTransition(screenDir);
             }
 
             UpdateCamera();
             UpdateObjects(gameTime);
             base.Update(gameTime);
-            Console.WriteLine(_objects.Count);
+            if (frameCounter > 60) { frameCounter = 0; }
+            frameCounter++;
         }
 
         protected override void Draw(GameTime gameTime)
@@ -153,6 +145,8 @@ namespace AnimusEngine
                     if (_objectLayer.Objects[i].Name == "playerStart")
                     {
                         _objects.Add(new Player(_objectLayer.Objects[i].Position));
+                        _objects[0].Initialize();
+                        _objects[0].Load(Content);
                     }
                 }
                 //create doors
@@ -181,13 +175,11 @@ namespace AnimusEngine
                 {
                     //_objects.Add(new Enemy(_objectLayer.Objects[i].Position, _objectLayer.Objects[i].Name));
                 }
-
             }
-
             LoadObjects();
         }
 
-        public void LevelCleaner()
+        protected override void UnloadContent()
         {
             for (int i = 1; i < _objects.Count; i++)
             {
@@ -216,9 +208,14 @@ namespace AnimusEngine
             }
         }
 
+        public void RemovePlayer()
+        {
+            _objects.Remove(_objects[0]);
+        }
+
         public void LoadObjects()
         {
-            for (int i=0; i<_objects.Count; i++)
+            for (int i=1; i<_objects.Count; i++)
             {
                 _objects[i].Initialize();
                 _objects[i].Load(Content);
@@ -245,39 +242,37 @@ namespace AnimusEngine
         {
             if (_objects.Count == 0) { return; }
 
-            if (!Door.doorEnter) {
-                Camera.Update(_objects[0].position + new Vector2(16, 0));
-            }
+
+            Camera.Update(_objects[0].position + new Vector2(16, 0));
+
         }
 
-        public void ScreenTransition(string direction, string roomNumber, int timer)
+        public void ScreenTransition(string direction)
         {
-            Camera.cameraMax = Camera.cameraNoBoundsMax;
-            Camera.cameraMin = Camera.cameraNoBoundsMin;
-
+            
             if (direction == "right")
             {
-                _objects[0].position.X += 20;
-                Entity.applyGravity = true;
-                while (timer > 0)
-                {
-                    Camera.position.X++;
-                    Camera.LookAt(Camera.position);
-                    timer--;
-                }
+                Camera.cameraMin.X = Camera.position.X;
+                _objects[0].position.X += 0.5f;
+                Camera.cameraMin.X += 8;
+                Camera.cameraMax.X += 8;
             }
             if (direction == "left")
             {
-                _objects[0].position.X -= 20;
-                Entity.applyGravity = true;
-                while (timer > 0)
-                {
-                    Camera.position.X--;
-                    Camera.LookAt(Camera.position);
-                    timer--;
-                }
+                Camera.cameraMax.X = Camera.position.X;
+                _objects[0].position.X -= 0.5f;
+                Camera.cameraMin.X -= 8;
+                Camera.cameraMax.X -= 8;
             }
+            screenTimer--;
 
+            if (screenTimer < 0 ){
+                roomNumber = roomPlaceHolder;
+                Door.doorEnter = false;
+                screenTimer = 50;
+                LevelLoader("Level_" + levelNumber);
+                Entity.applyGravity = true;
+            }
         }
     }
 }
