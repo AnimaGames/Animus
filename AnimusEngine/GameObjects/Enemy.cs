@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
-using MonoGame.Extended.Input;
 using System.Collections.Generic;
 using MonoGame.Extended.Animations.SpriteSheets;
 using MonoGame.Extended.TextureAtlases;
@@ -13,12 +12,15 @@ namespace AnimusEngine
 {
     public class Enemy : Entity
     {
+        public string enemyName;
+
         public Enemy()
         { }
 
-        public Enemy(Vector2 initPosition)
+        public Enemy(Vector2 initPosition, string enemyNameInput)
         {
             position = initPosition;
+            enemyName = enemyNameInput;
             solid = false;
         }
 
@@ -31,7 +33,7 @@ namespace AnimusEngine
         {
             // initiliaze sprite
             spriteWidth = spriteHeight = 32;
-            objectTexture = content.Load<Texture2D>("tinyCaro");
+            objectTexture = content.Load<Texture2D>(enemyName);
             objectAtlas = TextureAtlas.Create("objectAtlas", objectTexture, spriteWidth, spriteHeight);
 
             //create animations from sprite sheet
@@ -41,10 +43,11 @@ namespace AnimusEngine
 
             objectAnimated = new AnimatedSprite(animationFactory, "idle");
             objectSprite = objectAnimated;
+            objectSprite.Depth = 0.2F;
 
             base.Load(content);
             boundingBoxWidth = 14;
-            boundingBoxHeight = 24;
+            boundingBoxHeight = 21;
             boundingBoxOffset = new Vector2(9, 6);
         }
 

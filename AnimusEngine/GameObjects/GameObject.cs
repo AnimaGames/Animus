@@ -36,7 +36,7 @@ namespace AnimusEngine
         protected int boundingBoxWidth, boundingBoxHeight;
         protected Vector2 boundingBoxOffset;
         Texture2D boundingBoxTexture;
-        const bool drawBoundingBoxes = true;   //change for visible bounding boxes
+        const bool drawBoundingBoxes = false;   //change for visible bounding boxes
 
         protected Vector2 direction = new Vector2(1, 0);
 
@@ -103,8 +103,6 @@ namespace AnimusEngine
 
             center.X = spriteWidth / 2;
             center.Y = spriteHeight / 2;
-            Console.WriteLine("spritewidth: " + spriteWidth);
-            Console.WriteLine("spriteheight: " + spriteHeight);
         }
     }
 }

@@ -9,22 +9,28 @@ using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
 using System;
 
-namespace AnimusEngine.Desktop
+namespace AnimusEngine
 {
     public class Game1 : Game
     {
+        //
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
+
+        //map items
+        Map map = new Map();
         TiledMap _map;
         TiledMapRenderer _renderer;
-        public uint counter = 0;
-        Map map = new Map();
+        public TiledMapObjectLayer _objectLayer { get; private set; } = null;
         public List<GameObject> _objects = new List<GameObject>();
 
-        //cleanup lists
+        //level items
+        static public string levelNumber;
+        static public string roomNumber;
+        static public string screenDir;
+
+        //cleanup items
         public List<GameObject> _killObjects = new List<GameObject>();
-        public List<Vector2> _cameraBoundsMin = new List<Vector2>();
-        public List<Vector2> _cameraBoundsMax = new List<Vector2>();
         public List<Door> _killDoors = new List<Door>();
         public List<Wall> _killWalls = new List<Wall>();
 
@@ -43,7 +49,10 @@ namespace AnimusEngine.Desktop
 
         protected override void Initialize()
         {
+            roomNumber = "1";
+            levelNumber = "0";
             Camera.Initialize();
+            Camera.cameraOffset = new Vector2(Resolution.VirtualWidth / 2, Resolution.VirtualHeight / 2);
             base.Initialize();
         }
 
@@ -51,7 +60,7 @@ namespace AnimusEngine.Desktop
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            LevelLoader("Level_00_00");
+            LevelLoader("Level_" + levelNumber);
         }
 
         protected override void UnloadContent()
@@ -61,14 +70,23 @@ namespace AnimusEngine.Desktop
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || 
+                Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            
+
+            if (Door.doorEnter) {
+                ScreenTransition(screenDir, 
+                                 roomNumber, 
+                                 Resolution.VirtualWidth* 10);
+                UnloadContent();
+                LoadContent();
+                Door.doorEnter = false;
+            }
+
             UpdateCamera();
             UpdateObjects(gameTime);
             base.Update(gameTime);
-            counter++;
-            Console.WriteLine(counter);
+            Console.WriteLine(_objects.Count);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -86,16 +104,13 @@ namespace AnimusEngine.Desktop
             _spriteBatch.End();
             base.Draw(gameTime);
         }
-        /// <summary>
-        /// Things to load in each room/level:
-        /// room name, object list, camerabounds
-        /// possibly screen direction / type of transition
-        /// </summary>
+
         public void LevelLoader(string levelName)
         {
             map.Load(Content);
-             _map = Content.Load<TiledMap>(levelName);
+            _map = Content.Load<TiledMap>(levelName);
             _renderer = new TiledMapRenderer(GraphicsDevice, _map);
+
 
             foreach (var tileLayer in _map.TileLayers)
             {
@@ -111,36 +126,72 @@ namespace AnimusEngine.Desktop
                             var tileHeight = _map.TileHeight;
                             map.walls.Add(new Wall(new Rectangle(x*tileWidth, y*tileHeight, tileWidth, tileHeight)));
                         }
-                        if (tile.GlobalIdentifier == 15)
-                        {
-                            var tileWidth = _map.TileWidth;
-                            var tileHeight = _map.TileHeight;
-                            map.doors.Add(new Door(new Rectangle(x*tileWidth, y * tileHeight, tileWidth, tileHeight)));
-                        }
                     }
                 }
             }
-            // WHYYYYYY
-            foreach (var objectLayer in _map.ObjectLayers)
-            {
-                var objectList = objectLayer.Properties.TryGetValue("name", out string name);
-                Console.WriteLine("name is: " + objectList);
-            }
-            Camera.cameraBoundsMaxX = 400;
-            Camera.cameraBoundsMinX = 200;
-            Camera.cameraBoundsMaxY = 120;
-            Camera.cameraBoundsMinY = 120;
 
-            _objects.Add(new Player(new Vector2(300, 100)));
+            //parsing in objects from object layer
+            _objectLayer = _map.GetLayer<TiledMapObjectLayer>("Room"+ roomNumber);
+
+            for (int i = 0; i < _objectLayer.Objects.Length; i++)
+            {
+                if (_objectLayer.Objects[i].Type == "camera")
+                {
+                    //set camera max and min per room
+                    if (_objectLayer.Objects[i].Name == "cMin" + roomNumber)
+                    {
+                        Camera.cameraMin = _objectLayer.Objects[i].Position + Camera.cameraOffset;
+                    }
+                    if (_objectLayer.Objects[i].Name == "cMax" + roomNumber)
+                    {
+                        Camera.cameraMax = _objectLayer.Objects[i].Position - Camera.cameraOffset;
+                    }
+                }
+                if (_objectLayer.Objects[i].Type == "player" && _objects.Count == 0)
+                {
+                    //create player if none exists
+                    if (_objectLayer.Objects[i].Name == "playerStart")
+                    {
+                        _objects.Add(new Player(_objectLayer.Objects[i].Position));
+                    }
+                }
+                //create doors
+                if (_objectLayer.Objects[i].Type == "door")
+                {
+                    map.doors.Add(new Door(new Rectangle((int)_objectLayer.Objects[i].Position.X,
+                                                         (int)_objectLayer.Objects[i].Position.Y,
+                                                         (int)_objectLayer.Objects[i].Size.Width,
+                                                         (int)_objectLayer.Objects[i].Size.Height),
+                                           _objectLayer.Objects[i].Name));
+                }
+
+                //create enemies
+                if (_objectLayer.Objects[i].Type == "enemy")
+                {
+                    _objects.Add(new Enemy(_objectLayer.Objects[i].Position, _objectLayer.Objects[i].Name));
+                }
+
+                //create npcs
+                if (_objectLayer.Objects[i].Type == "npc")
+                {
+                    //_objects.Add(new Enemy(_objectLayer.Objects[i].Position, _objectLayer.Objects[i].Name));
+                }
+                //create map objects
+                if (_objectLayer.Objects[i].Type == "object")
+                {
+                    //_objects.Add(new Enemy(_objectLayer.Objects[i].Position, _objectLayer.Objects[i].Name));
+                }
+
+            }
 
             LoadObjects();
         }
 
         public void LevelCleaner()
         {
-            foreach (var objects in _objects)
+            for (int i = 1; i < _objects.Count; i++)
             {
-                _killObjects.Add(objects);
+                _killObjects.Add(_objects[i]);
             }
             foreach (var doors in map.doors)
             {
@@ -193,19 +244,40 @@ namespace AnimusEngine.Desktop
         public void UpdateCamera()
         {
             if (_objects.Count == 0) { return; }
-            Camera.Update(_objects[0].position + new Vector2(16,0));
+
+            if (!Door.doorEnter) {
+                Camera.Update(_objects[0].position + new Vector2(16, 0));
+            }
         }
 
-        public static float Clamp(float value, float min, float max)
+        public void ScreenTransition(string direction, string roomNumber, int timer)
         {
-            // First we check to see if we're greater than the max
-            value = (value > max) ? max : value;
+            Camera.cameraMax = Camera.cameraNoBoundsMax;
+            Camera.cameraMin = Camera.cameraNoBoundsMin;
 
-            // Then we check to see if we're less than the min.
-            value = (value < min) ? min : value;
+            if (direction == "right")
+            {
+                _objects[0].position.X += 20;
+                Entity.applyGravity = true;
+                while (timer > 0)
+                {
+                    Camera.position.X++;
+                    Camera.LookAt(Camera.position);
+                    timer--;
+                }
+            }
+            if (direction == "left")
+            {
+                _objects[0].position.X -= 20;
+                Entity.applyGravity = true;
+                while (timer > 0)
+                {
+                    Camera.position.X--;
+                    Camera.LookAt(Camera.position);
+                    timer--;
+                }
+            }
 
-            // There's no check to see if min > max.
-            return value;
         }
     }
 }

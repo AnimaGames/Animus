@@ -29,14 +29,16 @@ namespace AnimusEngine
         public Rectangle door;
         public bool solid;
         public bool active = true;
+        public string nextRoomNumber;
         static public bool doorEnter;
 
         public Door()
         { }
 
-        public Door(Rectangle initPosition)
+        public Door(Rectangle initPosition, string inputRoomNumber)
         {
             door = initPosition;
+            nextRoomNumber = inputRoomNumber;
         }
     }
 
@@ -44,6 +46,7 @@ namespace AnimusEngine
     {
         public List<Wall> walls = new List<Wall>();
         public List<Door> doors = new List<Door>();
+        public List<Door> rooms = new List<Door>();
 
         Texture2D wallTexture;
         Texture2D doorTexture;
@@ -88,6 +91,16 @@ namespace AnimusEngine
                 if (doors[i] != null && doors[i].door.Intersects(init))
                 {
                     Door.doorEnter = true;
+                    Entity.applyGravity = false;
+                    if (init.Left < doors[i].door.Left)
+                    {
+                        Game1.screenDir = "right";
+                    }
+                    else if (init.Left > doors[i].door.Left)
+                    {
+                        Game1.screenDir = "left";
+                    }
+                    Game1.roomNumber = doors[i].nextRoomNumber;
                     return doors[i].door;
                 }
             }

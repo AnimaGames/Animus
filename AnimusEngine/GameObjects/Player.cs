@@ -41,6 +41,7 @@ namespace AnimusEngine
 
             objectAnimated = new AnimatedSprite(animationFactory, "idle");
             objectSprite = objectAnimated;
+            objectSprite.Depth = 0.1f;
 
             base.Load(content);
             boundingBoxWidth = 14;

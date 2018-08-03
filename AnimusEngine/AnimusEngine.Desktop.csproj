@@ -51,6 +51,7 @@
     <Compile Include="GameObjects\Wall.cs" />
     <Compile Include="GameObjects\Entity.cs" />
     <Compile Include="GameObjects\Enemy.cs" />
+    <Compile Include="Utilities\ScreenManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -64,15 +65,6 @@
     <Reference Include="MonoGame.Extended.Animations">
       <HintPath>..\..\..\Documents\Visual Studio\MonoGame.Extended-develop\Source\MonoGame.Extended.Animations\bin\Debug\netstandard2.0\MonoGame.Extended.Animations.dll</HintPath>
     </Reference>
-    <Reference Include="MonoGame.Extended.Collisions">
-      <HintPath>..\..\..\Documents\Visual Studio\MonoGame.Extended-develop\Source\MonoGame.Extended.Collisions\bin\Debug\netstandard2.0\MonoGame.Extended.Collisions.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoGame.Extended.Content.Pipeline">
-      <HintPath>..\..\..\Documents\Visual Studio\MonoGame.Extended-develop\Source\MonoGame.Extended.Content.Pipeline\bin\netstandard2.0\MonoGame.Extended.Content.Pipeline.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoGame.Extended.Graphics">
-      <HintPath>..\..\..\Documents\Visual Studio\MonoGame.Extended-develop\Source\MonoGame.Extended.Content.Pipeline\bin\netstandard2.0\MonoGame.Extended.Graphics.dll</HintPath>
-    </Reference>
     <Reference Include="MonoGame.Extended.Tiled">
       <HintPath>..\..\..\Documents\Visual Studio\MonoGame.Extended-develop\Source\MonoGame.Extended.Content.Pipeline\bin\netstandard2.0\MonoGame.Extended.Tiled.dll</HintPath>
     </Reference>
@@ -85,11 +77,11 @@
     <Reference Include="MonoGame.Extended.Gui">
       <HintPath>..\..\..\Documents\Visual Studio\MonoGame.Extended-develop\Source\MonoGame.Extended.Gui\bin\Debug\netstandard2.0\MonoGame.Extended.Gui.dll</HintPath>
     </Reference>
-    <Reference Include="MonoGame.Extended.Input">
-      <HintPath>..\..\..\Documents\Visual Studio\MonoGame.Extended-develop\Source\MonoGame.Extended.Gui\bin\Debug\netstandard2.0\MonoGame.Extended.Input.dll</HintPath>
-    </Reference>
     <Reference Include="MonoGame.Extended.SceneGraphs">
       <HintPath>..\..\..\Documents\Visual Studio\MonoGame.Extended-develop\Source\MonoGame.Extended.SceneGraphs\bin\Debug\netstandard2.0\MonoGame.Extended.SceneGraphs.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoGame.Extended.Input">
+      <HintPath>..\..\..\Documents\Visual Studio\MonoGame.Extended-develop\Source\MonoGame.Extended.Gui\bin\Debug\netstandard2.0\MonoGame.Extended.Input.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -144,7 +136,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Content\player.png" />
-    <None Include="Content\Level_00_00.tmx" />
     <None Include="..\..\..\Downloads\Michael Hicks Toolbox\Art\pixel.png">
       <Link>Content\pixel.png</Link>
     </None>
@@ -153,8 +144,8 @@
     </None>
     <None Include="Content\enemy.png" />
     <None Include="Content\tinyCaro.png" />
-    <None Include="Content\Level_00_01.tmx" />
     <None Include="Content\ForestTiles.tsx" />
+    <None Include="Content\Level_0.tmx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Utilities\" />

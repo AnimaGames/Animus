@@ -32,15 +32,10 @@
 /processor:TiledMapTilesetProcessor
 /build:ForestTiles.tsx
 
-#begin Level_00_00.tmx
+#begin Level_0.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
-/build:Level_00_00.tmx
-
-#begin Level_00_01.tmx
-/importer:TiledMapImporter
-/processor:TiledMapProcessor
-/build:Level_00_01.tmx
+/build:Level_0.tmx
 
 #begin pixel.png
 /importer:TextureImporter

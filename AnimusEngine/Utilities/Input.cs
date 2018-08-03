@@ -18,11 +18,11 @@ namespace AnimusEngine
 
         public static void Update()
         {
-            lastKeyboardState = keyboardState;
-            keyboardState = Keyboard.GetState();
+                lastKeyboardState = keyboardState;
+                keyboardState = Keyboard.GetState();
 
-            lastMouseState = mouseState;
-            mouseState = Mouse.GetState();
+                lastMouseState = mouseState;
+                mouseState = Mouse.GetState();
         }
 
         /// <summary>

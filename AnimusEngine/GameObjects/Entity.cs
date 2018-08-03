@@ -62,20 +62,21 @@ namespace AnimusEngine
             if (applyGravity)
             {
                 ApplyGravity(map);
+
+                if (OnGround(map) != Rectangle.Empty && velocity.Y == 0)
+                {
+                    isJumping = false;
+                }
+                else if (OnGround(map) == Rectangle.Empty && velocity.Y == 0)
+                {
+                    position.Y -= 1;
+                }
             }
 
             velocity.X = TendToZero(velocity.X, friction);
             if (!applyGravity)
             {
                 velocity.Y = TendToZero(velocity.Y, friction);
-            }
-
-            if (OnGround(map) != Rectangle.Empty && velocity.Y == 0)
-            {
-                isJumping = false;
-            } else if (OnGround(map) == Rectangle.Empty && velocity.Y == 0)
-            {
-                position.Y -= 1;
             }
         }
 
