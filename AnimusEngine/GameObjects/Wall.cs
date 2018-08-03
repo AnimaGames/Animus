@@ -55,8 +55,8 @@ namespace AnimusEngine
 
         public void Load(ContentManager content)
         {
-            wallTexture = content.Load<Texture2D>("pixel");
-            doorTexture = content.Load<Texture2D>("pixel");
+            wallTexture = content.Load<Texture2D>("Sprites/pixel");
+            doorTexture = content.Load<Texture2D>("Sprites/pixel");
         }
 
         public void DrawWalls(SpriteBatch _spriteBatch)

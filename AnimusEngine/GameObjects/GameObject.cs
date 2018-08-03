@@ -60,7 +60,7 @@ namespace AnimusEngine
 
         public virtual void Load(ContentManager content)
         {
-            boundingBoxTexture = content.Load<Texture2D>("pixel");
+            boundingBoxTexture = content.Load<Texture2D>("Sprites/pixel");
             CalculateCenter();
             if (objectTexture != null)
             {

@@ -31,6 +31,9 @@ namespace AnimusEngine
         static public string screenDir;
         public int screenTimer;
 
+        //pause items
+        static public bool inMenu;
+
         //cleanup items
         public List<GameObject> _killObjects = new List<GameObject>();
         public List<Door> _killDoors = new List<Door>();
@@ -53,7 +56,7 @@ namespace AnimusEngine
         protected override void Initialize()
         {
             roomNumber = "1";
-            levelNumber = "0";
+            levelNumber = "StartScreen";
             screenTimer = 50;
             Camera.Initialize();
             Camera.cameraOffset = new Vector2(Resolution.VirtualWidth / 2, Resolution.VirtualHeight / 2);
@@ -64,7 +67,7 @@ namespace AnimusEngine
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            LevelLoader("Level_" + levelNumber);
+            LevelLoader("Maps/Level_" + levelNumber);
         }
 
         protected override void Update(GameTime gameTime)
@@ -270,7 +273,7 @@ namespace AnimusEngine
                 roomNumber = roomPlaceHolder;
                 Door.doorEnter = false;
                 screenTimer = 50;
-                LevelLoader("Level_" + levelNumber);
+                LevelLoader("Maps/Level_" + levelNumber);
                 Entity.applyGravity = true;
             }
         }

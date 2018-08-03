@@ -33,7 +33,7 @@ namespace AnimusEngine
         {
             // initiliaze sprite
             spriteWidth = spriteHeight = 32;
-            objectTexture = content.Load<Texture2D>(enemyName);
+            objectTexture = content.Load<Texture2D>("Sprites/" + enemyName);
             objectAtlas = TextureAtlas.Create("objectAtlas", objectTexture, spriteWidth, spriteHeight);
 
             //create animations from sprite sheet
