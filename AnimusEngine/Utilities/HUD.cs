@@ -7,14 +7,16 @@ using System.Collections.Generic;
 using MonoGame.Extended.Animations.SpriteSheets;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Animations;
+using System;
 
 namespace AnimusEngine
 {
     public class HUD : GameObject
     {
-        private int playerMaxHealth = 5;
-        private int playerHealth = 3;
-        private int playerLives = 3;
+        public static int playerMaxHealth = 5;
+        public static int playerHealth = 3;
+        public static int playerLives = 3;
+
         private Texture2D healthFullTexture;
         private Texture2D healthEmptyTexture;
         private Texture2D livesTexture;
@@ -23,9 +25,6 @@ namespace AnimusEngine
         {
             base.Initialize();
         }
-
-        public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
-        { }
 
         public override void Load(ContentManager content)
         {
@@ -42,7 +41,7 @@ namespace AnimusEngine
 
                 for (int i = 0; i < playerMaxHealth; i++)
                 {
-                    spriteBatch.Draw(healthFullTexture, new Vector2(12 + (i * 16), 12), Color.White);
+                    spriteBatch.Draw(healthEmptyTexture, new Vector2(12 + (i * 16), 12), Color.White);
                 }
                 for (int i = 0; i < playerHealth; i++)
                 {
@@ -56,5 +55,7 @@ namespace AnimusEngine
                 spriteBatch.End();
             }
         }
+
+
     }
 }

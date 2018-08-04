@@ -213,11 +213,16 @@ namespace AnimusEngine
             //check for object collisions
             for (int i = 0; i < _objects.Count; i++)
             {
-                if (_objects[i] != this && 
-                    _objects[i].active && 
-                    _objects[i].solid && 
+                if (_objects[i] != this &&
+                    _objects[i].active &&
+                    _objects[i].solid &&
                     _objects[i].CheckCollision(futureBoundingBox))
                 {
+                    if (!Player.playerInvinsible)
+                    {
+                        HUD.playerHealth -= 1;
+                        Player.playerInvinsible = true;
+                    }
                     return true;
                 }
             }

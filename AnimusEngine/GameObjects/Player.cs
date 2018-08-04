@@ -13,6 +13,10 @@ namespace AnimusEngine
 {
     public class Player : Entity
     {
+        public static bool playerInvinsible;
+        private int invincibleTimer;
+        private int invincibleTimerMax = 100;
+
         public Player()
         { }
 
@@ -42,7 +46,7 @@ namespace AnimusEngine
             objectAnimated = new AnimatedSprite(animationFactory, "idle");
             objectSprite = objectAnimated;
             objectSprite.Depth = 0.1f;
-
+                        
             base.Load(content);
             boundingBoxWidth = 14;
             boundingBoxHeight = 24;
@@ -53,11 +57,13 @@ namespace AnimusEngine
         {
             drawPosition = new Vector2(position.X + (spriteWidth/2), position.Y + (spriteHeight/2));
 
-            if (!Door.doorEnter)
+            if (!Door.doorEnter && !Game1.playerDead)
             {
                 CheckInput(map);
                 objectAnimated.Update(gameTime);
             }
+            Invincible();
+
             base.Update(_objects, map, gameTime);
         }
 
@@ -107,6 +113,28 @@ namespace AnimusEngine
                 {
                     objectAnimated.Play("jump");
                 }
+            }
+        }
+        private void Invincible()
+        {
+            if (playerInvinsible && invincibleTimer <= 0)
+            {
+                invincibleTimer = invincibleTimerMax;
+            }
+
+            if (invincibleTimer > 0)
+            {
+                if (invincibleTimer % 4 == 0)
+                {
+                    objectSprite.Color = Color.White;
+                }
+                if (invincibleTimer % 8 == 0)
+                {
+                    objectSprite.Color = new Color(0, 0, 0, 0);
+                }
+
+                invincibleTimer--;
+                playerInvinsible &= invincibleTimer > 0;
             }
         }
     }

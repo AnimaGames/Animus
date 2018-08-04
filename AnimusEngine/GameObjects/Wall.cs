@@ -71,7 +71,7 @@ namespace AnimusEngine
             wallTexture = content.Load<Texture2D>("Sprites/pixel");
             doorTexture = content.Load<Texture2D>("Sprites/pixel");
             pauseTexture = content.Load<Texture2D>("Sprites/pixel");
-            pauseScreenRec = new PauseMenu(new Rectangle(0, 0, Resolution.VirtualWidth, Resolution.VirtualHeight));
+            pauseScreenRec = new PauseMenu(new Rectangle(-20, -20, Resolution.VirtualWidth+40, Resolution.VirtualHeight+40));
         }
 
         public void DrawWalls(SpriteBatch _spriteBatch)

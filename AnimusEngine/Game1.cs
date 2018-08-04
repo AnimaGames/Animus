@@ -31,7 +31,9 @@ namespace AnimusEngine
         static public string roomPlaceHolder;
         public string roomNumber;
         static public string screenDir;
-        public int screenTimer;
+        static public int screenTimer;
+        static public int deathTimer;
+        static public bool playerDead;
 
         //menu items
         static public bool inMenu = true;
@@ -42,8 +44,8 @@ namespace AnimusEngine
         public List<GameObject> _killObjects = new List<GameObject>();
         public List<Door> _killDoors = new List<Door>();
         public List<Wall> _killWalls = new List<Wall>();
+        int willKillPlayer;
 
-        public int frameCounter;
 
         public Game1()
         {
@@ -62,6 +64,7 @@ namespace AnimusEngine
             roomNumber = "1";
             levelNumber = "StartScreen";
             screenTimer = 50;
+            deathTimer = 100;
             Camera.Initialize();
             Camera.cameraOffset = new Vector2(Resolution.VirtualWidth / 2, Resolution.VirtualHeight / 2);
             base.Initialize();
@@ -78,21 +81,14 @@ namespace AnimusEngine
         protected override void Update(GameTime gameTime)
         {
             if (Door.doorEnter) {
-                UnloadContent();
+                UnloadContent(false);
                 ScreenTransition(screenDir);
             }
 
-            if (!inMenu)
-            {
-                UpdateCamera();
-                UpdateObjects(gameTime);
-            } else {
-                UpdateMenu();
-            }
+            CheckForDeath();
+            CheckForMenu(gameTime);
 
             base.Update(gameTime);
-            if (frameCounter > 60) { frameCounter = 0; }
-            frameCounter++;
         }
 
         protected override void Draw(GameTime gameTime)
@@ -215,9 +211,16 @@ namespace AnimusEngine
             LoadObjects();
         }
 
-        protected override void UnloadContent()
+        protected void UnloadContent(bool killPlayer)
         {
-            for (int i = 1; i < _objects.Count; i++)
+            if (killPlayer == true)
+            {
+                willKillPlayer = 0;
+            } else {
+                willKillPlayer = 1;
+            }
+
+            for (int i = willKillPlayer; i < _objects.Count; i++)
             {
                 _killObjects.Add(_objects[i]);
             }
@@ -282,32 +285,6 @@ namespace AnimusEngine
             Camera.Update(_objects[0].position + new Vector2(16, 0));
         }
 
-
-        public void UpdateMenu()
-        {
-            var keyboardState = KeyboardExtended.GetState();
-
-            //darken screen
-            map.pauseScreenRec.pauseScreen.X = (int)(Camera.position.X - Camera.cameraOffset.X);
-            map.pauseScreenRec.pauseScreen.Y = (int)(Camera.position.Y - Camera.cameraOffset.Y);
-            map.pauseScreenRec.active = true;
-
-            if (keyboardState.WasKeyJustUp(Keys.Enter))
-            {
-                if (levelNumber != "StartScreen")
-                {
-                    map.pauseScreenRec.active = false;
-                    inMenu = false;
-                } else {
-                    levelNumber = "1";
-                    UnloadContent();
-                    inMenu = false;
-                    hudOn = true;
-                    LevelLoader("Maps/Level_" + levelNumber);
-                }
-            }
-        }
-
         public void ScreenTransition(string direction)
         {
             
@@ -335,6 +312,67 @@ namespace AnimusEngine
                 screenTimer = 50;
                 LevelLoader("Maps/Level_" + levelNumber);
                 Entity.applyGravity = true;
+            }
+        }
+
+        //IS PLAYER DEAD?
+        public void CheckForDeath()
+        {
+            if (HUD.playerHealth <= 0)
+            {
+                playerDead = true;
+                deathTimer--;
+                if (deathTimer <= 0)
+                {
+                    HUD.playerHealth = HUD.playerMaxHealth;
+                    levelNumber = "StartScreen";
+                    UnloadContent(true);
+                    map.pauseScreenRec.active = false;
+                    inMenu = true;
+                    LevelLoader("Maps/Level_" + levelNumber);
+                    deathTimer = 50;
+                    playerDead = false;
+                }
+            }
+        }
+
+        //MENU UPDATE
+        public void CheckForMenu(GameTime gameTime)
+        {
+            if (!inMenu)
+            {
+                UpdateCamera();
+                UpdateObjects(gameTime);
+            }
+            else
+            {
+                UpdateMenu();
+            }
+        }
+
+        public void UpdateMenu()
+        {
+            var keyboardState = KeyboardExtended.GetState();
+
+            if (keyboardState.WasKeyJustUp(Keys.Enter))
+            {
+                if (levelNumber != "StartScreen")
+                {
+                    //darken screen
+                    map.pauseScreenRec.pauseScreen.X = (int)(Camera.position.X - Camera.cameraOffset.X);
+                    map.pauseScreenRec.pauseScreen.Y = (int)(Camera.position.Y - Camera.cameraOffset.Y);
+                    map.pauseScreenRec.active = true;
+
+                    inMenu = false;
+                }
+                else
+                {
+                    levelNumber = "1";
+                    UnloadContent();
+                    inMenu = false;
+                    hudOn = true;
+                    LevelLoader("Maps/Level_" + levelNumber);
+                }
             }
         }
     }
