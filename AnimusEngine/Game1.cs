@@ -14,9 +14,10 @@ namespace AnimusEngine
 {
     public class Game1 : Game
     {
-        //
+        // graphics
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
+        HUD playerHUD = new HUD();
 
         //map items
         Map map = new Map();
@@ -32,9 +33,10 @@ namespace AnimusEngine
         static public string screenDir;
         public int screenTimer;
 
-        //pause items
+        //menu items
         static public bool inMenu = true;
         static public bool hudOn;
+        static public SpriteFont font;
 
         //cleanup items
         public List<GameObject> _killObjects = new List<GameObject>();
@@ -49,7 +51,7 @@ namespace AnimusEngine
             Content.RootDirectory = "Content";
             Resolution.Init(ref _graphics);
             Resolution.SetVirtualResolution(400, 240);
-            Resolution.SetResolution(800, 480, true);
+            Resolution.SetResolution(1920, 1080, true);
 
             IsFixedTimeStep = true;
             TargetElapsedTime = TimeSpan.FromSeconds(1f / 60f);
@@ -69,6 +71,7 @@ namespace AnimusEngine
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            font = Content.Load<SpriteFont>("Fonts/megaman");
             LevelLoader("Maps/Level_" + levelNumber);
         }
 
@@ -97,8 +100,14 @@ namespace AnimusEngine
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             Resolution.BeginDraw();
-            _spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend,
-                                 SamplerState.PointClamp, null, null, null, Camera.GetTransformMatrix());
+            //draw objects
+            _spriteBatch.Begin(SpriteSortMode.BackToFront, 
+                               BlendState.AlphaBlend,
+                               SamplerState.PointClamp, 
+                               null, 
+                               null, 
+                               null, 
+                               Camera.GetTransformMatrix());
 
             if (_objects.Count == 0)
             {
@@ -111,6 +120,11 @@ namespace AnimusEngine
             DrawObjects();
 
             _spriteBatch.End();
+
+            if (_objects.Count > 0)
+            {
+                playerHUD.Draw(_spriteBatch);
+            }
             base.Draw(gameTime);
         }
 
@@ -119,7 +133,6 @@ namespace AnimusEngine
             map.Load(Content);
             _map = Content.Load<TiledMap>(levelName);
             _renderer = new TiledMapRenderer(GraphicsDevice, _map);
-
 
             foreach (var tileLayer in _map.TileLayers)
             {
@@ -193,7 +206,12 @@ namespace AnimusEngine
                 {
                     _objects.Add(MapObjectLookUp.MapObjLUT(_objectLayer.Objects[i].Name, _objectLayer.Objects[i].Position));
                 }
-            }
+            } 
+            if (_objects.Count > 0) 
+            {
+                playerHUD = new HUD();
+            } 
+            playerHUD.Load(Content);
             LoadObjects();
         }
 

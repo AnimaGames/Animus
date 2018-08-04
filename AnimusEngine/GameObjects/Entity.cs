@@ -63,11 +63,11 @@ namespace AnimusEngine
             {
                 ApplyGravity(map);
 
-                if (OnGround(map) != Rectangle.Empty && (int)velocity.Y == 0)
+                if (OnGround(map) != Rectangle.Empty && velocity.Y == 0)
                 {
                     isJumping = false;
                 }
-                else if (OnGround(map) == Rectangle.Empty && (int)velocity.Y == 0)
+                else if (OnGround(map) == Rectangle.Empty && velocity.Y == 0)
                 {
                     position.Y -= 1;
                 }
@@ -213,7 +213,10 @@ namespace AnimusEngine
             //check for object collisions
             for (int i = 0; i < _objects.Count; i++)
             {
-                if (_objects[i] != this && _objects[i].active && _objects[i].solid && _objects[i].CheckCollision(futureBoundingBox))
+                if (_objects[i] != this && 
+                    _objects[i].active && 
+                    _objects[i].solid && 
+                    _objects[i].CheckCollision(futureBoundingBox))
                 {
                     return true;
                 }

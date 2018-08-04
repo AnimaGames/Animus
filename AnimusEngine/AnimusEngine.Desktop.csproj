@@ -57,6 +57,10 @@
     <Compile Include="Utilities\EnemyLookUp.cs" />
     <Compile Include="Utilities\MapObjectLookUp.cs" />
     <Compile Include="Utilities\NPCLookUp.cs" />
+    <Compile Include="Utilities\HUD.cs" />
+    <Compile Include="Utilities\TextManager.cs" />
+    <Compile Include="Systems\Knockback.cs" />
+    <Compile Include="Systems\DamageObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -153,6 +157,10 @@
     <None Include="Content\Maps\TileSets\ForestTiles.png" />
     <None Include="Content\Maps\Level_StartScreen.tmx" />
     <None Include="Content\Maps\Level_1.tmx" />
+    <None Include="Content\Fonts\megaman.spritefont" />
+    <None Include="Content\Sprites\HUD\playerHealthFull.png" />
+    <None Include="Content\Sprites\HUD\playerHealthEmpty.png" />
+    <None Include="Content\Sprites\HUD\playerLives.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Utilities\" />
@@ -161,6 +169,8 @@
     <Folder Include="Content\Audio\" />
     <Folder Include="GameObjects\Enemies\" />
     <Folder Include="GameObjects\MapObjects\" />
+    <Folder Include="Content\Sprites\HUD\" />
+    <Folder Include="Systems\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
