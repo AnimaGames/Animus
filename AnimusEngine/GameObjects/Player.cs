@@ -65,6 +65,11 @@ namespace AnimusEngine
         {
             var keyboardState = KeyboardExtended.GetState();
 
+            if (keyboardState.WasKeyJustUp(Keys.Enter))
+            {
+                Game1.inMenu = true;
+            }
+
             if (keyboardState.IsKeyDown(Keys.Left)) {
                 MoveLeft();
                 objectAnimated.Play("walk");

@@ -47,11 +47,16 @@
     <Compile Include="Utilities\Camera.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="GameObjects\Player.cs" />
-    <Compile Include="Utilities\Input.cs" />
     <Compile Include="GameObjects\Wall.cs" />
     <Compile Include="GameObjects\Entity.cs" />
     <Compile Include="GameObjects\Enemy.cs" />
     <Compile Include="Utilities\ScreenManager.cs" />
+    <Compile Include="GameObjects\NPC.cs" />
+    <Compile Include="GameObjects\Enemies\PatrolEnemy.cs" />
+    <Compile Include="GameObjects\MapObjects\MovingPlatform.cs" />
+    <Compile Include="Utilities\EnemyLookUp.cs" />
+    <Compile Include="Utilities\MapObjectLookUp.cs" />
+    <Compile Include="Utilities\NPCLookUp.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -147,12 +152,15 @@
     <None Include="Content\Maps\TileSets\.DS_Store" />
     <None Include="Content\Maps\TileSets\ForestTiles.png" />
     <None Include="Content\Maps\Level_StartScreen.tmx" />
+    <None Include="Content\Maps\Level_1.tmx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Utilities\" />
     <Folder Include="GameObjects\" />
     <Folder Include="Content\Fonts\" />
     <Folder Include="Content\Audio\" />
+    <Folder Include="GameObjects\Enemies\" />
+    <Folder Include="GameObjects\MapObjects\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

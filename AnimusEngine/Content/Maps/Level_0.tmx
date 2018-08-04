@@ -49,11 +49,11 @@
   <object id="36" name="cMax2" type="camera" x="1600" y="240">
    <point/>
   </object>
-  <object id="37" name="tinyCaro" type="enemy" x="768" y="192" width="16" height="32"/>
-  <object id="38" name="tinyCaro" type="enemy" x="896" y="192" width="16" height="32"/>
-  <object id="39" name="tinyCaro" type="enemy" x="1344" y="176" width="16" height="32"/>
+  <object id="37" name="tinyCaro" type="npc" x="768" y="192" width="16" height="32"/>
+  <object id="38" name="tinyCaro" type="npc" x="896" y="192" width="16" height="32"/>
+  <object id="39" name="tinyCaro" type="npc" x="1344" y="176" width="16" height="32"/>
  </objectgroup>
- <objectgroup name="Room1" visible="0">
+ <objectgroup name="Room1">
   <object id="2" name="cMin1" type="camera" x="0" y="0">
    <point/>
   </object>
@@ -61,11 +61,11 @@
    <point/>
   </object>
   <object id="9" name="playerStart" type="player" x="64" y="192" width="16" height="32"/>
-  <object id="12" name="tinyCaro" type="enemy" x="336" y="192" width="16" height="32"/>
+  <object id="12" name="tinyCaro" type="npc" x="336" y="192" width="16" height="32"/>
   <object id="13" name="2" type="door" x="608" y="96" width="16" height="128"/>
-  <object id="17" name="tinyCaro" type="enemy" x="496" y="96" width="16" height="32"/>
-  <object id="18" name="tinyCaro" type="enemy" x="224" y="96" width="16" height="32"/>
-  <object id="19" name="tinyCaro" type="enemy" x="128" y="48" width="16" height="32"/>
-  <object id="20" name="tinyCaro" type="enemy" x="336" y="32" width="16" height="32"/>
+  <object id="17" name="tinyCaro" type="npc" x="496" y="96" width="16" height="32"/>
+  <object id="18" name="tinyCaro" type="npc" x="224" y="96" width="16" height="32"/>
+  <object id="19" name="tinyCaro" type="npc" x="128" y="48" width="16" height="32"/>
+  <object id="20" name="enemy" type="enemy" x="400" y="48" width="16" height="32"/>
  </objectgroup>
 </map>

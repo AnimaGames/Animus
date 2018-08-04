@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
 using System.Collections.Generic;
 using MonoGame.Extended.Animations.SpriteSheets;
@@ -9,15 +10,18 @@ using MonoGame.Extended.Animations;
 
 namespace AnimusEngine
 {
-    public class Enemy : Entity
+    public class NPC : Entity
     {
-        public Enemy()
+        public string NPCName;
+
+        public NPC()
         { }
 
-        public Enemy(Vector2 initPosition)
+        public NPC(Vector2 initPosition, string NPCNameInput)
         {
             position = initPosition;
-            solid = true;
+            NPCName = NPCNameInput;
+            solid = false;
         }
 
         public override void Initialize()
@@ -29,7 +33,7 @@ namespace AnimusEngine
         {
             // initiliaze sprite
             spriteWidth = spriteHeight = 32;
-            objectTexture = content.Load<Texture2D>("Sprites/" + "enemy");
+            objectTexture = content.Load<Texture2D>("Sprites/" + NPCName);
             objectAtlas = TextureAtlas.Create("objectAtlas", objectTexture, spriteWidth, spriteHeight);
 
             //create animations from sprite sheet
@@ -52,5 +56,6 @@ namespace AnimusEngine
             drawPosition = new Vector2(position.X + (spriteWidth / 2), position.Y + (spriteHeight / 2));
             base.Update(_objects, map, gameTime);
         }
+
     }
 }

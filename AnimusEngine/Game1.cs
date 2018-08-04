@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Input;
 using Microsoft.Xna.Framework.Audio;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
@@ -32,7 +33,8 @@ namespace AnimusEngine
         public int screenTimer;
 
         //pause items
-        static public bool inMenu;
+        static public bool inMenu = true;
+        static public bool hudOn;
 
         //cleanup items
         public List<GameObject> _killObjects = new List<GameObject>();
@@ -47,7 +49,7 @@ namespace AnimusEngine
             Content.RootDirectory = "Content";
             Resolution.Init(ref _graphics);
             Resolution.SetVirtualResolution(400, 240);
-            Resolution.SetResolution(800, 480, false);
+            Resolution.SetResolution(800, 480, true);
 
             IsFixedTimeStep = true;
             TargetElapsedTime = TimeSpan.FromSeconds(1f / 60f);
@@ -77,8 +79,14 @@ namespace AnimusEngine
                 ScreenTransition(screenDir);
             }
 
-            UpdateCamera();
-            UpdateObjects(gameTime);
+            if (!inMenu)
+            {
+                UpdateCamera();
+                UpdateObjects(gameTime);
+            } else {
+                UpdateMenu();
+            }
+
             base.Update(gameTime);
             if (frameCounter > 60) { frameCounter = 0; }
             frameCounter++;
@@ -89,10 +97,16 @@ namespace AnimusEngine
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             Resolution.BeginDraw();
-            _spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, 
+            _spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend,
                                  SamplerState.PointClamp, null, null, null, Camera.GetTransformMatrix());
 
-            _renderer.Draw(Camera.GetTransformMatrix());
+            if (_objects.Count == 0)
+            {
+                _renderer.Draw(Resolution.GetTransformationMatrix());
+            } else {
+                _renderer.Draw(Camera.GetTransformMatrix());
+            }
+
             map.DrawWalls(_spriteBatch);
             DrawObjects();
 
@@ -165,18 +179,19 @@ namespace AnimusEngine
                 //create enemies
                 if (_objectLayer.Objects[i].Type == "enemy")
                 {
-                    _objects.Add(new Enemy(_objectLayer.Objects[i].Position, _objectLayer.Objects[i].Name));
+                    _objects.Add(EnemyLookUp.EnemyLUT(_objectLayer.Objects[i].Name, _objectLayer.Objects[i].Position));
                 }
 
                 //create npcs
                 if (_objectLayer.Objects[i].Type == "npc")
                 {
-                    //_objects.Add(new Enemy(_objectLayer.Objects[i].Position, _objectLayer.Objects[i].Name));
+                    _objects.Add(NPCLookUp.NpcLUT(_objectLayer.Objects[i].Name, _objectLayer.Objects[i].Position));
                 }
+
                 //create map objects
                 if (_objectLayer.Objects[i].Type == "object")
                 {
-                    //_objects.Add(new Enemy(_objectLayer.Objects[i].Position, _objectLayer.Objects[i].Name));
+                    _objects.Add(MapObjectLookUp.MapObjLUT(_objectLayer.Objects[i].Name, _objectLayer.Objects[i].Position));
                 }
             }
             LoadObjects();
@@ -243,11 +258,36 @@ namespace AnimusEngine
 
         public void UpdateCamera()
         {
+            Camera.LookAt(new Vector2(0, 0));
             if (_objects.Count == 0) { return; }
 
-
             Camera.Update(_objects[0].position + new Vector2(16, 0));
+        }
 
+
+        public void UpdateMenu()
+        {
+            var keyboardState = KeyboardExtended.GetState();
+
+            //darken screen
+            map.pauseScreenRec.pauseScreen.X = (int)(Camera.position.X - Camera.cameraOffset.X);
+            map.pauseScreenRec.pauseScreen.Y = (int)(Camera.position.Y - Camera.cameraOffset.Y);
+            map.pauseScreenRec.active = true;
+
+            if (keyboardState.WasKeyJustUp(Keys.Enter))
+            {
+                if (levelNumber != "StartScreen")
+                {
+                    map.pauseScreenRec.active = false;
+                    inMenu = false;
+                } else {
+                    levelNumber = "1";
+                    UnloadContent();
+                    inMenu = false;
+                    hudOn = true;
+                    LevelLoader("Maps/Level_" + levelNumber);
+                }
+            }
         }
 
         public void ScreenTransition(string direction)
@@ -256,6 +296,7 @@ namespace AnimusEngine
             if (direction == "right")
             {
                 Camera.cameraMin.X = Camera.position.X;
+                _objects[0].position.Y = _objects[0].position.Y;
                 _objects[0].position.X += 0.5f;
                 Camera.cameraMin.X += 8;
                 Camera.cameraMax.X += 8;
@@ -263,6 +304,7 @@ namespace AnimusEngine
             if (direction == "left")
             {
                 Camera.cameraMax.X = Camera.position.X;
+                _objects[0].position.Y = _objects[0].position.Y;
                 _objects[0].position.X -= 0.5f;
                 Camera.cameraMin.X -= 8;
                 Camera.cameraMax.X -= 8;

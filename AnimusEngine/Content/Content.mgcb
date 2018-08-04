@@ -25,6 +25,11 @@
 /processor:TiledMapProcessor
 /build:Maps/Level_0.tmx
 
+#begin Maps/Level_1.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:Maps/Level_1.tmx
+
 #begin Maps/Level_StartScreen.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor

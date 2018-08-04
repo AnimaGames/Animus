@@ -42,14 +42,27 @@ namespace AnimusEngine
         }
     }
 
+    public class PauseMenu
+    {
+        public Rectangle pauseScreen;
+        public bool active;
+
+        public PauseMenu(Rectangle initPosition)
+        {
+            pauseScreen = initPosition;
+        }
+    }
+
     public class Map
     {
         public List<Wall> walls = new List<Wall>();
         public List<Door> doors = new List<Door>();
         public List<Door> rooms = new List<Door>();
+        public PauseMenu pauseScreenRec;
 
         Texture2D wallTexture;
         Texture2D doorTexture;
+        Texture2D pauseTexture;
 
         public int tileSize = 16;
 
@@ -57,6 +70,8 @@ namespace AnimusEngine
         {
             wallTexture = content.Load<Texture2D>("Sprites/pixel");
             doorTexture = content.Load<Texture2D>("Sprites/pixel");
+            pauseTexture = content.Load<Texture2D>("Sprites/pixel");
+            pauseScreenRec = new PauseMenu(new Rectangle(0, 0, Resolution.VirtualWidth, Resolution.VirtualHeight));
         }
 
         public void DrawWalls(SpriteBatch _spriteBatch)
@@ -65,16 +80,45 @@ namespace AnimusEngine
             {
                 if (walls[i] != null && walls[i].active)
                 {
-                    //_spriteBatch.Draw(wallTexture, new Vector2(walls[i].wall.X, walls[i].wall.Y), walls[i].wall, Color.Black, 0f, Vector2.Zero, 1f, SpriteEffects.None, .5f);
+                    //_spriteBatch.Draw(wallTexture, 
+                                      //new Vector2(walls[i].wall.X, walls[i].wall.Y), 
+                                      //walls[i].wall, 
+                                      //Color.Black, 
+                                      //0f, 
+                                      //Vector2.Zero, 
+                                      //1f, 
+                                      //SpriteEffects.None, 
+                                      //0.5f);
                 }
             }
             for (int i = 0; i < doors.Count; i++)
             {
                 if (doors[i] != null && doors[i].active)
                 {
-                    _spriteBatch.Draw(doorTexture, new Vector2(doors[i].door.X, doors[i].door.Y), doors[i].door, Color.Red, 0f, Vector2.Zero, 1f, SpriteEffects.None, .5f);
+                    _spriteBatch.Draw(doorTexture, 
+                                      new Vector2(doors[i].door.X, doors[i].door.Y), 
+                                      doors[i].door, 
+                                      Color.Red, 
+                                      0f, 
+                                      Vector2.Zero, 
+                                      1f, 
+                                      SpriteEffects.None, 
+                                      0.5f);
                 }
             }
+            if (pauseScreenRec.active)
+            {
+                _spriteBatch.Draw(pauseTexture,
+                                  new Vector2(pauseScreenRec.pauseScreen.X, pauseScreenRec.pauseScreen.Y),
+                                  pauseScreenRec.pauseScreen,
+                                  new Color(0, 0, 0, 120),
+                                  0f,
+                                  Vector2.Zero,
+                                  1f,
+                                  SpriteEffects.None,
+                                  0.05f);
+            }
+            
         }
 
         public Rectangle CheckCollisions(Rectangle init)
