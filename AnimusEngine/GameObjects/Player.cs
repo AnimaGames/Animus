@@ -24,6 +24,7 @@ namespace AnimusEngine
 
         public Player(Vector2 initPosition)
         {
+            objectType = "player";
             position = initPosition;
         }
 
@@ -66,7 +67,6 @@ namespace AnimusEngine
                 objectAnimated.Update(gameTime);
             }
             Invincible();
-
             base.Update(_objects, map, gameTime);
         }
 

@@ -204,7 +204,7 @@ namespace AnimusEngine
                                                            new Rectangle((int)_objectLayer.Objects[i].Position.X,
                                                                          (int)_objectLayer.Objects[i].Position.Y,
                                                                          (int)_objectLayer.Objects[i].Size.Width,
-                                                                         (int)_objectLayer.Objects[i].Size.Width)));
+                                                                         (int)_objectLayer.Objects[i].Size.Height)));
                                                                          
                 }
             } 

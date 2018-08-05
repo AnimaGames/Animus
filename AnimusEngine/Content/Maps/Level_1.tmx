@@ -184,6 +184,6 @@
   <object id="16" name="Enemy" type="enemy" x="688" y="560" width="16" height="32"/>
   <object id="17" name="PatrolEnemy" type="enemy" x="816" y="656" width="16" height="32"/>
   <object id="18" name="tinyCaro" type="npc" x="912" y="608" width="16" height="32"/>
-  <object id="19" name="VertPlatformMed" type="object" x="160" y="576" width="16" height="96"/>
+  <object id="19" name="VertPlatformMed" type="object" x="208" y="576" width="16" height="80"/>
  </objectgroup>
 </map>

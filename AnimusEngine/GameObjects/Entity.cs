@@ -27,6 +27,7 @@ namespace AnimusEngine
         const float termVel = 8.0f;
         public Vector2 Knockback;
 
+        protected bool isOnPlatform;
         protected bool isJumping;
         public static bool applyGravity = true;
 
@@ -68,7 +69,7 @@ namespace AnimusEngine
                 {
                     isJumping = false;
                 }
-                else if (OnGround(map) == Rectangle.Empty && velocity.Y == 0)
+                else if (OnGround(map) == Rectangle.Empty && velocity.Y == 0 && objectType != "platform")
                 {
                     position.Y -= 1;
                 }
@@ -83,7 +84,7 @@ namespace AnimusEngine
 
         private void ApplyGravity(Map map)
         {
-            if (isJumping || OnGround(map) == Rectangle.Empty)
+            if ((isJumping || OnGround(map) == Rectangle.Empty) && objectType != "platform")
             {
                 velocity.Y += (float)(gravity*gravityAdjust);
             }
@@ -138,8 +139,9 @@ namespace AnimusEngine
         {
             if (isJumping) { return false; }
 
-            if ((int)velocity.Y == 0 && OnGround(map) != Rectangle.Empty)
+            if (((int)velocity.Y == 0 && OnGround(map) != Rectangle.Empty) || isOnPlatform)
             {
+                isOnPlatform = false;
                 velocity.Y -= jumpSpeed;
                 isJumping = true;
                 return true;
@@ -215,19 +217,40 @@ namespace AnimusEngine
             for (int i = 0; i < _objects.Count; i++)
             {
                 if (_objects[i] != this &&
+                    objectType != "platform" &&
                     _objects[i].active &&
-                    _objects[i].objectType == "enemy" &&
+                    (_objects[i].objectType == "player" || _objects[i].objectType == "enemy") &&
                     _objects[i].CheckCollision(futureBoundingBox))
                 {
                     if (!Player.playerInvinsible)
                     {
-                        Knockback = new Vector2((_objects[0].position.X - _objects[i].position.X), 
-                                                (_objects[0].position.Y - _objects[i].position.Y));
+                        Knockback = new Vector2((position.X - _objects[i].position.X), 
+                                                (position.Y - _objects[i].position.Y));
 
                         HUD.playerHealth -= 1;
                         Player.playerInvinsible = true;
                     }
                     return false;
+                }
+                // moving platform
+                if (_objects[i] != this &&
+                    _objects[i].active &&
+                    _objects[i].objectType == "platform" &&
+                    _objects[i].CheckCollision(futureBoundingBox))
+                {
+                    if (applyGravity &&
+                        (futureBoundingBox.Bottom >= _objects[i].BoundingBox.Top - maxSpeed) &&
+                        (futureBoundingBox.Bottom <= _objects[i].BoundingBox.Top + 8) &&
+                        velocity.Y > 0)
+                    {
+                        isJumping = false;
+                        isOnPlatform = true;
+                        LandResponse(_objects[i].BoundingBox);
+                        return true;
+                    } else if (!isOnPlatform)
+                    {
+                        return true;   
+                    }
                 }
             }
             return false;

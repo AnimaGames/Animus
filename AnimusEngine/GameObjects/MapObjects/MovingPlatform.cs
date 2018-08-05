@@ -22,6 +22,8 @@ namespace AnimusEngine
         public string platformSize;
         public string typeOfPlatform;
 
+        public float moveSpeed = 0.5f;
+
         public MovingPlatform(string platformName, Rectangle initPosition)
         {
             topRangeX = initPosition.Right;
@@ -46,11 +48,13 @@ namespace AnimusEngine
                 platformSize = "PlatformLarge";
             }
 
-            drawPosition = new Vector2(Camera.position.X, Camera.position.Y);
+            position = new Vector2 (initPosition.X, initPosition.Y);
+
         }
 
         public override void Initialize()
         {
+            objectType = "platform";
             base.Initialize();
         }
 
@@ -74,7 +78,19 @@ namespace AnimusEngine
 
         public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
         {
-            drawPosition = new Vector2(200, 120);
+            if (position.Y >= bottomRangeY)
+            {
+                moveSpeed = -moveSpeed;
+                //position.Y += moveSpeed;
+            } else if  (position.Y <= topRangeY && moveSpeed < 0)
+            {
+                moveSpeed = -moveSpeed;
+                //position.Y += moveSpeed;
+            }
+
+            velocity.Y = moveSpeed;
+
+            drawPosition = new Vector2(position.X + (spriteWidth / 2), position.Y + (spriteHeight / 2));
             base.Update(_objects, map, gameTime);
         }
 
