@@ -8,6 +8,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
+using MovingPlatform = AnimusEngine.MovingPlatform;
 using System;
 
 
@@ -17,28 +18,28 @@ namespace AnimusEngine
     {
         static private GameObject mapObj;
 
-        public static GameObject MapObjLUT(string inputName, Vector2 initPosition)
+        public static GameObject MapObjLUT(string inputName, Rectangle initPosition)
         {
             switch (inputName)
             {
                 case "HorPlatformSmall":
-                    mapObj = new PatrolEnemy(initPosition);
+                    mapObj = new MovingPlatform(inputName, initPosition);
                     break;
                 case "HorPlatformMed":
-                    mapObj = new Enemy(initPosition);
+                    mapObj = new MovingPlatform(inputName, initPosition);
                     break;
                 case "HorPlatformLarge":
-                    mapObj = new Enemy(initPosition);
+                    mapObj = new MovingPlatform(inputName, initPosition);
                     break;
 
                 case "VertPlatformSmall":
-                    mapObj = new PatrolEnemy(initPosition);
+                    mapObj = new MovingPlatform(inputName, initPosition);
                     break;
                 case "VertPlatformMed":
-                    mapObj = new Enemy(initPosition);
+                    mapObj = new MovingPlatform(inputName, initPosition);
                     break;
                 case "VertPlatformLarge":
-                    mapObj = new Enemy(initPosition);
+                    mapObj = new MovingPlatform(inputName, initPosition);
                     break;
                 default:
                     Console.WriteLine("got nuthin, stupid");

@@ -17,11 +17,12 @@ namespace AnimusEngine
         public Enemy(Vector2 initPosition)
         {
             position = initPosition;
-            solid = true;
+            solid = false;
         }
 
         public override void Initialize()
         {
+            objectType = "enemy";
             base.Initialize();
         }
 
@@ -34,7 +35,6 @@ namespace AnimusEngine
 
             //create animations from sprite sheet
             animationFactory = new SpriteSheetAnimationFactory(objectAtlas);
-            objectAtlas = TextureAtlas.Create("objectAtlas", objectTexture, spriteWidth, spriteHeight);
             animationFactory.Add("idle", new SpriteSheetAnimationData(new[] { 0 }));
 
             objectAnimated = new AnimatedSprite(animationFactory, "idle");

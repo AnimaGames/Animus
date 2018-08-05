@@ -54,13 +54,13 @@
     <Compile Include="GameObjects\NPC.cs" />
     <Compile Include="GameObjects\Enemies\PatrolEnemy.cs" />
     <Compile Include="GameObjects\MapObjects\MovingPlatform.cs" />
-    <Compile Include="Utilities\EnemyLookUp.cs" />
-    <Compile Include="Utilities\MapObjectLookUp.cs" />
-    <Compile Include="Utilities\NPCLookUp.cs" />
     <Compile Include="Utilities\HUD.cs" />
     <Compile Include="Utilities\TextManager.cs" />
-    <Compile Include="Systems\Knockback.cs" />
     <Compile Include="Systems\DamageObject.cs" />
+    <Compile Include="Systems\PauseMenu.cs" />
+    <Compile Include="Utilities\LUTS\EnemyLookUp.cs" />
+    <Compile Include="Utilities\LUTS\MapObjectLookUp.cs" />
+    <Compile Include="Utilities\LUTS\NPCLookUp.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -161,6 +161,9 @@
     <None Include="Content\Sprites\HUD\playerHealthFull.png" />
     <None Include="Content\Sprites\HUD\playerHealthEmpty.png" />
     <None Include="Content\Sprites\HUD\playerLives.png" />
+    <None Include="Content\Maps\MapObjects\PlatformLarge.png" />
+    <None Include="Content\Maps\MapObjects\PlatformMedium.png" />
+    <None Include="Content\Maps\MapObjects\PlatformSmall.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Utilities\" />
@@ -171,6 +174,8 @@
     <Folder Include="GameObjects\MapObjects\" />
     <Folder Include="Content\Sprites\HUD\" />
     <Folder Include="Systems\" />
+    <Folder Include="Utilities\LUTS\" />
+    <Folder Include="Content\Maps\MapObjects\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

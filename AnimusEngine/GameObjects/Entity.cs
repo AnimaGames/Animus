@@ -25,6 +25,7 @@ namespace AnimusEngine
         const float gravityAdjust = 0.5f;
         const float jumpSpeed = 8.0f;
         const float termVel = 8.0f;
+        public Vector2 Knockback;
 
         protected bool isJumping;
         public static bool applyGravity = true;
@@ -215,15 +216,18 @@ namespace AnimusEngine
             {
                 if (_objects[i] != this &&
                     _objects[i].active &&
-                    _objects[i].solid &&
+                    _objects[i].objectType == "enemy" &&
                     _objects[i].CheckCollision(futureBoundingBox))
                 {
                     if (!Player.playerInvinsible)
                     {
+                        Knockback = new Vector2((_objects[0].position.X - _objects[i].position.X), 
+                                                (_objects[0].position.Y - _objects[i].position.Y));
+
                         HUD.playerHealth -= 1;
                         Player.playerInvinsible = true;
                     }
-                    return true;
+                    return false;
                 }
             }
             return false;

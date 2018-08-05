@@ -20,7 +20,7 @@ namespace AnimusEngine
         public PatrolEnemy(Vector2 initPosition)
         {
             position = initPosition;
-            solid = true;
+            solid = false;
             maxSpeed = 1;
             walkSpeed = 0.3f;
         }

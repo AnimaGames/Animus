@@ -75,6 +75,7 @@ namespace AnimusEngine
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("Fonts/megaman");
+            HUD.playerHealth = HUD.playerMaxHealth;
             LevelLoader("Maps/Level_" + levelNumber);
         }
 
@@ -114,7 +115,6 @@ namespace AnimusEngine
 
             map.DrawWalls(_spriteBatch);
             DrawObjects();
-
             _spriteBatch.End();
 
             if (_objects.Count > 0)
@@ -200,7 +200,12 @@ namespace AnimusEngine
                 //create map objects
                 if (_objectLayer.Objects[i].Type == "object")
                 {
-                    _objects.Add(MapObjectLookUp.MapObjLUT(_objectLayer.Objects[i].Name, _objectLayer.Objects[i].Position));
+                    _objects.Add(MapObjectLookUp.MapObjLUT(_objectLayer.Objects[i].Name,
+                                                           new Rectangle((int)_objectLayer.Objects[i].Position.X,
+                                                                         (int)_objectLayer.Objects[i].Position.Y,
+                                                                         (int)_objectLayer.Objects[i].Size.Width,
+                                                                         (int)_objectLayer.Objects[i].Size.Width)));
+                                                                         
                 }
             } 
             if (_objects.Count > 0) 
@@ -254,7 +259,8 @@ namespace AnimusEngine
 
         public void LoadObjects()
         {
-            for (int i=1; i<_objects.Count; i++)
+            PauseMenu.Load(Content);
+            for (int i = 1; i<_objects.Count; i++)
             {
                 _objects[i].Initialize();
                 _objects[i].Load(Content);
@@ -271,6 +277,7 @@ namespace AnimusEngine
 
         public void DrawObjects()
         {
+            PauseMenu.Draw(_spriteBatch);
             for (int i = 0; i < _objects.Count; i++)
             {
                 _objects[i].Draw(_spriteBatch);
@@ -322,15 +329,32 @@ namespace AnimusEngine
             {
                 playerDead = true;
                 deathTimer--;
-                if (deathTimer <= 0)
+
+                if (deathTimer <= 0 && HUD.playerLives > 0)
+                {
+                    HUD.playerLives--;
+                    HUD.playerHealth = HUD.playerMaxHealth;
+                    UnloadContent(true);
+                    PauseMenu.active = false;
+                    inMenu = false;
+                    LevelLoader("Maps/Level_" + levelNumber);
+                    deathTimer = 50;
+                    Player.playerInvinsible = false;
+                    playerDead = false;
+                    Camera.LookAt(_objects[0].position);
+                }
+
+                if (deathTimer <= 0 && HUD.playerLives == 0)
                 {
                     HUD.playerHealth = HUD.playerMaxHealth;
+                    HUD.playerLives = 3;
                     levelNumber = "StartScreen";
                     UnloadContent(true);
-                    map.pauseScreenRec.active = false;
+                    PauseMenu.active = false;
                     inMenu = true;
                     LevelLoader("Maps/Level_" + levelNumber);
                     deathTimer = 50;
+                    Player.playerInvinsible = false;
                     playerDead = false;
                 }
             }
@@ -355,21 +379,19 @@ namespace AnimusEngine
             var keyboardState = KeyboardExtended.GetState();
 
             if (keyboardState.WasKeyJustUp(Keys.Enter))
+                
             {
                 if (levelNumber != "StartScreen")
                 {
-                    //darken screen
-                    map.pauseScreenRec.pauseScreen.X = (int)(Camera.position.X - Camera.cameraOffset.X);
-                    map.pauseScreenRec.pauseScreen.Y = (int)(Camera.position.Y - Camera.cameraOffset.Y);
-                    map.pauseScreenRec.active = true;
-
                     inMenu = false;
+                    PauseMenu.active = false;
                 }
                 else
                 {
                     levelNumber = "1";
                     UnloadContent();
                     inMenu = false;
+
                     hudOn = true;
                     LevelLoader("Maps/Level_" + levelNumber);
                 }

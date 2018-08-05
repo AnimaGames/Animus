@@ -31,8 +31,10 @@ namespace AnimusEngine
         public float layerDepth = 0.5f;
         public bool active = true;
         public Vector2 center;
+        public string objectType;
 
         public bool solid = true;
+
         protected int boundingBoxWidth, boundingBoxHeight;
         protected Vector2 boundingBoxOffset;
         Texture2D boundingBoxTexture;

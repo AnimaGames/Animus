@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using MonoGame.Extended.Animations.SpriteSheets;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Animations;
+using System;
 
 
 namespace AnimusEngine
@@ -16,6 +17,7 @@ namespace AnimusEngine
         public static bool playerInvinsible;
         private int invincibleTimer;
         private int invincibleTimerMax = 100;
+        private bool canMove = true;
 
         public Player()
         { }
@@ -46,7 +48,8 @@ namespace AnimusEngine
             objectAnimated = new AnimatedSprite(animationFactory, "idle");
             objectSprite = objectAnimated;
             objectSprite.Depth = 0.1f;
-                        
+
+
             base.Load(content);
             boundingBoxWidth = 14;
             boundingBoxHeight = 24;
@@ -57,7 +60,7 @@ namespace AnimusEngine
         {
             drawPosition = new Vector2(position.X + (spriteWidth/2), position.Y + (spriteHeight/2));
 
-            if (!Door.doorEnter && !Game1.playerDead)
+            if (!Door.doorEnter && !Game1.playerDead && canMove)
             {
                 CheckInput(map);
                 objectAnimated.Update(gameTime);
@@ -73,9 +76,16 @@ namespace AnimusEngine
 
             if (keyboardState.WasKeyJustUp(Keys.Enter))
             {
-                Game1.inMenu = true;
-            }
+                if (!Game1.inMenu)
+                {
+                    //darken screen
+                    PauseMenu.pauseScreen.X = (int)(Camera.position.X - Camera.cameraOffset.X);
+                    PauseMenu.pauseScreenRec.Y = (int)(Camera.position.Y - Camera.cameraOffset.Y);
+                    PauseMenu.active = true;
 
+                    Game1.inMenu = true;
+                }
+            }
             if (keyboardState.IsKeyDown(Keys.Left)) {
                 MoveLeft();
                 objectAnimated.Play("walk");
@@ -119,6 +129,8 @@ namespace AnimusEngine
         {
             if (playerInvinsible && invincibleTimer <= 0)
             {
+                canMove = false;
+                velocity += Knockback * new Vector2(0.55f, 0.5f);
                 invincibleTimer = invincibleTimerMax;
             }
 
@@ -130,9 +142,9 @@ namespace AnimusEngine
                 }
                 if (invincibleTimer % 8 == 0)
                 {
+                    canMove = true; 
                     objectSprite.Color = new Color(0, 0, 0, 0);
                 }
-
                 invincibleTimer--;
                 playerInvinsible &= invincibleTimer > 0;
             }

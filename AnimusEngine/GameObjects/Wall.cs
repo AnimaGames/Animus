@@ -42,23 +42,11 @@ namespace AnimusEngine
         }
     }
 
-    public class PauseMenu
-    {
-        public Rectangle pauseScreen;
-        public bool active;
-
-        public PauseMenu(Rectangle initPosition)
-        {
-            pauseScreen = initPosition;
-        }
-    }
-
     public class Map
     {
         public List<Wall> walls = new List<Wall>();
         public List<Door> doors = new List<Door>();
         public List<Door> rooms = new List<Door>();
-        public PauseMenu pauseScreenRec;
 
         Texture2D wallTexture;
         Texture2D doorTexture;
@@ -71,7 +59,6 @@ namespace AnimusEngine
             wallTexture = content.Load<Texture2D>("Sprites/pixel");
             doorTexture = content.Load<Texture2D>("Sprites/pixel");
             pauseTexture = content.Load<Texture2D>("Sprites/pixel");
-            pauseScreenRec = new PauseMenu(new Rectangle(-20, -20, Resolution.VirtualWidth+40, Resolution.VirtualHeight+40));
         }
 
         public void DrawWalls(SpriteBatch _spriteBatch)
@@ -105,18 +92,6 @@ namespace AnimusEngine
                                       SpriteEffects.None, 
                                       0.5f);
                 }
-            }
-            if (pauseScreenRec.active)
-            {
-                _spriteBatch.Draw(pauseTexture,
-                                  new Vector2(pauseScreenRec.pauseScreen.X, pauseScreenRec.pauseScreen.Y),
-                                  pauseScreenRec.pauseScreen,
-                                  new Color(0, 0, 0, 120),
-                                  0f,
-                                  Vector2.Zero,
-                                  1f,
-                                  SpriteEffects.None,
-                                  0.05f);
             }
             
         }
