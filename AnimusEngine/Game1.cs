@@ -147,7 +147,6 @@ namespace AnimusEngine
                     }
                 }
             }
-
             //parsing in objects from object layer
             _objectLayer = _map.GetLayer<TiledMapObjectLayer>("Room"+ roomNumber);
 

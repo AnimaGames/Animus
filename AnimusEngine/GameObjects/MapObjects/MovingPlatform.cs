@@ -21,6 +21,7 @@ namespace AnimusEngine
         public int bottomRangeY;
         public string platformSize;
         public string typeOfPlatform;
+        public bool isHorizontal;
 
         public float moveSpeed = 0.5f;
 
@@ -35,6 +36,7 @@ namespace AnimusEngine
 
             typeOfPlatform = platformName;
 
+            //set texture
             if (typeOfPlatform == "HorPlatformSmall" || typeOfPlatform == "VertPlatformSmall")
             {
                 platformSize = "PlatformSmall";
@@ -48,13 +50,23 @@ namespace AnimusEngine
                 platformSize = "PlatformLarge";
             }
 
+            //set direction
+            if (typeOfPlatform == "HorPlatformSmall" || typeOfPlatform == "HorPlatformMed" || typeOfPlatform == "HorPlatformLarge")
+            {
+                isHorizontal = true;
+            }
+            else 
+            {
+                isHorizontal = false;
+            }
+
             position = new Vector2 (initPosition.X, initPosition.Y);
 
         }
 
         public override void Initialize()
         {
-            objectType = "platform";
+            objectType = "platform"; 
             base.Initialize();
         }
 
@@ -78,17 +90,29 @@ namespace AnimusEngine
 
         public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
         {
-            if (position.Y >= bottomRangeY)
+            if (isHorizontal)
             {
-                moveSpeed = -moveSpeed;
-                //position.Y += moveSpeed;
-            } else if  (position.Y <= topRangeY && moveSpeed < 0)
+                if (position.X >= topRangeX)
+                {
+                    moveSpeed = -moveSpeed;
+                }
+                else if (position.X <= bottomRangeX && moveSpeed < 0)
+                {
+                    moveSpeed = -moveSpeed;
+                }
+                velocity.X = moveSpeed;
+            } else 
             {
-                moveSpeed = -moveSpeed;
-                //position.Y += moveSpeed;
+                if (position.Y >= bottomRangeY)
+                {
+                    moveSpeed = -moveSpeed;
+                }
+                else if (position.Y <= topRangeY && moveSpeed < 0)
+                {
+                    moveSpeed = -moveSpeed;
+                } 
+                velocity.Y = moveSpeed;
             }
-
-            velocity.Y = moveSpeed;
 
             drawPosition = new Vector2(position.X + (spriteWidth / 2), position.Y + (spriteHeight / 2));
             base.Update(_objects, map, gameTime);

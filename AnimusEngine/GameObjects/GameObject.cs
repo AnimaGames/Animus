@@ -24,6 +24,7 @@ namespace AnimusEngine
 
         public int spriteHeight, spriteWidth;
         public Vector2 position;
+        public Vector2 previousPosition;
         public Vector2 drawPosition;
 
         public Color drawColor = Color.White;

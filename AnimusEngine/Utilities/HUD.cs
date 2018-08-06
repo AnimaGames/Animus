@@ -13,7 +13,7 @@ namespace AnimusEngine
 {
     public class HUD : GameObject
     {
-        public static int playerMaxHealth = 5;
+        public static int playerMaxHealth = 3;
         public static int playerHealth = 3;
         public static int playerLives = 3;
 

@@ -16,6 +16,7 @@ namespace AnimusEngine
     {
         public Vector2 velocity;
 
+        public Vector2 parentPosition;
         //customize movement
         protected float friction = 1.2f;
         protected float accel = 0.75f;
@@ -37,6 +38,8 @@ namespace AnimusEngine
         public override void Initialize()
         {
             velocity = Vector2.Zero;
+            previousPosition = position;
+            parentPosition = Vector2.Zero;
             isJumping = false;
             base.Initialize();
         }
@@ -141,7 +144,6 @@ namespace AnimusEngine
 
             if (((int)velocity.Y == 0 && OnGround(map) != Rectangle.Empty) || isOnPlatform)
             {
-                isOnPlatform = false;
                 velocity.Y -= jumpSpeed;
                 isJumping = true;
                 return true;
@@ -240,17 +242,29 @@ namespace AnimusEngine
                 {
                     if (applyGravity &&
                         (futureBoundingBox.Bottom >= _objects[i].BoundingBox.Top - maxSpeed) &&
-                        (futureBoundingBox.Bottom <= _objects[i].BoundingBox.Top + 8) &&
-                        velocity.Y > 0)
+                        (futureBoundingBox.Bottom <= _objects[i].BoundingBox.Top + 8))
                     {
+                        //parenting Stuff
+                        Console.WriteLine(_objects[i].previousPosition);
+
+                        LandResponse(_objects[i].BoundingBox);
+                        _objects[0].position.X += parentPosition.X;
+                        if (parentPosition.Y  < 0) 
+                        {
+                            _objects[0].position.Y += parentPosition.Y;
+                        }
+
+                        if (_objects[i].previousPosition != Vector2.Zero)
+                        {
+                            parentPosition = _objects[i].position - _objects[i].previousPosition;
+                        }
+                        _objects[i].previousPosition = _objects[i].position;
                         isJumping = false;
                         isOnPlatform = true;
-                        LandResponse(_objects[i].BoundingBox);
                         return true;
-                    } else if (!isOnPlatform)
-                    {
-                        return true;   
                     }
+                    _objects[i].previousPosition = Vector2.Zero;
+                    return false;
                 }
             }
             return false;
