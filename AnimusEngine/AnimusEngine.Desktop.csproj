@@ -56,11 +56,11 @@
     <Compile Include="GameObjects\MapObjects\MovingPlatform.cs" />
     <Compile Include="Utilities\HUD.cs" />
     <Compile Include="Utilities\TextManager.cs" />
-    <Compile Include="Systems\DamageObject.cs" />
     <Compile Include="Systems\PauseMenu.cs" />
     <Compile Include="Utilities\LUTS\EnemyLookUp.cs" />
     <Compile Include="Utilities\LUTS\MapObjectLookUp.cs" />
     <Compile Include="Utilities\LUTS\NPCLookUp.cs" />
+    <Compile Include="GameObjects\DamageObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -145,7 +145,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Content\Sprites\.DS_Store" />
-    <None Include="Content\Sprites\Playerwalkk.png" />
     <None Include="Content\Sprites\enemy.png" />
     <None Include="Content\Sprites\pixel.png" />
     <None Include="Content\Sprites\player.png" />

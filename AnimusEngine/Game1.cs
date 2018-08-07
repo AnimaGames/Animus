@@ -39,13 +39,13 @@ namespace AnimusEngine
         static public bool inMenu = true;
         static public bool hudOn;
         static public SpriteFont font;
+        public static bool createDamageObject;
 
         //cleanup items
         public List<GameObject> _killObjects = new List<GameObject>();
         public List<Door> _killDoors = new List<Door>();
         public List<Wall> _killWalls = new List<Wall>();
         int willKillPlayer;
-
 
         public Game1()
         {
@@ -85,10 +85,9 @@ namespace AnimusEngine
                 UnloadContent(false);
                 ScreenTransition(screenDir);
             }
-
+            Console.WriteLine(_objects.Count);
             CheckForDeath();
             CheckForMenu(gameTime);
-
             base.Update(gameTime);
         }
 
@@ -212,6 +211,7 @@ namespace AnimusEngine
                 playerHUD = new HUD();
             } 
             playerHUD.Load(Content);
+
             LoadObjects();
         }
 

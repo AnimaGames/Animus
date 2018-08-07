@@ -15,10 +15,9 @@ namespace AnimusEngine
     public class Entity : GameObject
     {
         public Vector2 velocity;
-
         public Vector2 parentPosition;
         //customize movement
-        protected float friction = 1.2f;
+        protected float friction = .8f;
         protected float accel = 0.75f;
         protected float maxSpeed = 2.0f;
 
@@ -28,7 +27,6 @@ namespace AnimusEngine
         const float termVel = 8.0f;
         public Vector2 Knockback;
 
-        protected bool isOnPlatform;
         protected bool isJumping;
         public static bool applyGravity = true;
 
@@ -142,7 +140,7 @@ namespace AnimusEngine
         {
             if (isJumping) { return false; }
 
-            if (((int)velocity.Y == 0 && OnGround(map) != Rectangle.Empty) || isOnPlatform)
+            if (((int)velocity.Y == 0 && OnGround(map) != Rectangle.Empty) || Player.isOnPlatform)
             {
                 velocity.Y -= jumpSpeed;
                 isJumping = true;
@@ -221,18 +219,18 @@ namespace AnimusEngine
                 if (_objects[i] != this &&
                     objectType != "platform" &&
                     _objects[i].active &&
-                    (_objects[i].objectType == "player" || _objects[i].objectType == "enemy") &&
-                    _objects[i].CheckCollision(futureBoundingBox))
+                    _objects[i].CheckCollision(futureBoundingBox) &&
+                    (_objects[i].objectType == "player" || _objects[i].objectType == "enemy")
+                   )
                 {
+                    //hurt player
                     if (!Player.playerInvinsible)
                     {
-                        Knockback = new Vector2((position.X - _objects[i].position.X), 
+                        Knockback = new Vector2((position.X - _objects[i].position.X),
                                                 (position.Y - _objects[i].position.Y));
-
                         HUD.playerHealth -= 1;
                         Player.playerInvinsible = true;
                     }
-                    return false;
                 }
                 // moving platform
                 if (_objects[i] != this &&
@@ -240,32 +238,21 @@ namespace AnimusEngine
                     _objects[i].objectType == "platform" &&
                     _objects[i].CheckCollision(futureBoundingBox))
                 {
-                    if (applyGravity &&
+                    parentPosition = _objects[i].position - _objects[i].previousPosition;
+
+                    if ((applyGravity &&
                         (futureBoundingBox.Bottom >= _objects[i].BoundingBox.Top - maxSpeed) &&
-                        (futureBoundingBox.Bottom <= _objects[i].BoundingBox.Top + 8))
+                        (futureBoundingBox.Bottom <= _objects[i].BoundingBox.Top + 8)) || 
+                        Player.isOnPlatform)
+
                     {
-                        //parenting Stuff
-                        Console.WriteLine(_objects[i].previousPosition);
-
-                        LandResponse(_objects[i].BoundingBox);
-                        _objects[0].position.X += parentPosition.X;
-                        if (parentPosition.Y  < 0) 
-                        {
-                            _objects[0].position.Y += parentPosition.Y;
-                        }
-
-                        if (_objects[i].previousPosition != Vector2.Zero)
-                        {
-                            parentPosition = _objects[i].position - _objects[i].previousPosition;
-                        }
-                        _objects[i].previousPosition = _objects[i].position;
-                        isJumping = false;
-                        isOnPlatform = true;
+                        position += parentPosition;
+                        LandOnPlatform(_objects[i].BoundingBox);
                         return true;
                     }
-                    _objects[i].previousPosition = Vector2.Zero;
-                    return false;
+                    return true;
                 }
+                _objects[i].previousPosition = _objects[i].position;
             }
             return false;
         }
@@ -274,6 +261,14 @@ namespace AnimusEngine
         {
             position.Y = wallCollision.Top - (boundingBoxHeight + boundingBoxOffset.Y);
             velocity.Y = 0f;
+            Player.isOnPlatform = false;
+            isJumping = false;
+        }
+        public void LandOnPlatform(Rectangle wallCollision)
+        {
+            position.Y = wallCollision.Top - (boundingBoxHeight + boundingBoxOffset.Y+.4f);
+            velocity.Y = 0f;
+            Player.isOnPlatform = true;
             isJumping = false;
         }
 

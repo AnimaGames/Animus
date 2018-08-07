@@ -1,36 +1,37 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
+using MonoGame.Extended.Input;
 using System.Collections.Generic;
 using MonoGame.Extended.Animations.SpriteSheets;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Animations;
-
+using System;
 
 namespace AnimusEngine
 {
-    public class Enemy : Entity
+    public class DamageObject : GameObject
     {
-        public static bool enemyInvincible;
-        protected bool enemyInvinsible;
-        private int invincibleTimer;
-        private int invincibleTimerMax = 50;
 
-        public Enemy()
-        { }
+        public int radius;
+        public int deathTimer;
+        public int damageAmount;
+        public int deathTimerMax = 40;
+        Entity owner;
 
-        public Enemy(Vector2 initPosition)
+        public DamageObject()
         {
-            position = initPosition;
-            solid = false;
+            active = false;
         }
 
         public override void Initialize()
         {
-            health = 3;
-            objectType = "enemy";
+            objectType = "damage";
+            solid = true;
             base.Initialize();
         }
+
 
         public override void Load(ContentManager content)
         {
@@ -55,34 +56,39 @@ namespace AnimusEngine
 
         public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
         {
-            drawPosition = new Vector2(position.X + (spriteWidth / 2), position.Y + (spriteHeight / 2));
-            if (health <= 0){
-                _objects.Remove(this);
+            drawPosition = position;
+            deathTimer--;
+            if (deathTimer <= 0)
+            {
+               // _objects.Remove(this);
             }
             base.Update(_objects, map, gameTime);
         }
 
-        private void Invincible()
+        public void CheckCollisions(List<GameObject> objects, Map map)
         {
-            if (enemyInvinsible && invincibleTimer <= 0)
+            for (int i = 0; i < objects.Count; i++)
             {
-                velocity += Knockback * new Vector2(0.55f, 0.5f);
-                invincibleTimer = invincibleTimerMax;
+                if (objects[i].active && objects[i] != owner && objects[i].CheckCollision(BoundingBox))
+                {
+                    objects[i].health -= damageAmount;
+                    Destroy(); 
+                }
             }
+        }
 
-            if (invincibleTimer > 0)
-            {
-                if (invincibleTimer % 4 == 0)
-                {
-                    objectSprite.Color = Color.White;
-                }
-                if (invincibleTimer % 8 == 0)
-                {
-                    objectSprite.Color = new Color(0, 0, 0, 0);
-                }
-                invincibleTimer--;
-                enemyInvinsible &= invincibleTimer > 0;
-            }
+        public void Destroy()
+        {
+            active = false;
+        }
+
+        public void CreateDamageObj(Entity inputOwner, Vector2 initPosition, Vector2 initDirection)
+        {
+            owner = inputOwner;
+            position = initPosition;
+            direction = initDirection;
+            active = true;
+            deathTimer = deathTimerMax;
         }
     }
 }
