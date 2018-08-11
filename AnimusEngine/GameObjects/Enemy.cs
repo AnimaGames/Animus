@@ -11,11 +11,7 @@ namespace AnimusEngine
 {
     public class Enemy : Entity
     {
-        public static bool enemyInvincible;
-        protected bool enemyInvinsible;
-        private int invincibleTimer;
-        private int invincibleTimerMax = 50;
-
+     
         public Enemy()
         { }
 
@@ -55,34 +51,11 @@ namespace AnimusEngine
 
         public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
         {
-            drawPosition = new Vector2(position.X + (spriteWidth / 2), position.Y + (spriteHeight / 2));
+            //drawPosition = new Vector2(position.X + (spriteWidth / 2), position.Y + (spriteHeight / 2));
             if (health <= 0){
                 _objects.Remove(this);
             }
             base.Update(_objects, map, gameTime);
-        }
-
-        private void Invincible()
-        {
-            if (enemyInvinsible && invincibleTimer <= 0)
-            {
-                velocity += Knockback * new Vector2(0.55f, 0.5f);
-                invincibleTimer = invincibleTimerMax;
-            }
-
-            if (invincibleTimer > 0)
-            {
-                if (invincibleTimer % 4 == 0)
-                {
-                    objectSprite.Color = Color.White;
-                }
-                if (invincibleTimer % 8 == 0)
-                {
-                    objectSprite.Color = new Color(0, 0, 0, 0);
-                }
-                invincibleTimer--;
-                enemyInvinsible &= invincibleTimer > 0;
-            }
         }
     }
 }

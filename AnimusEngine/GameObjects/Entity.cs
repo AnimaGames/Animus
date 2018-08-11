@@ -25,7 +25,6 @@ namespace AnimusEngine
         const float gravityAdjust = 0.5f;
         const float jumpSpeed = 8.0f;
         const float termVel = 8.0f;
-        public Vector2 Knockback;
 
         protected bool isJumping;
         public static bool applyGravity = true;
@@ -45,6 +44,7 @@ namespace AnimusEngine
         public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
         {
             UpdateMovement(_objects, map);
+            Knockedback();
             base.Update(_objects, map, gameTime);
         }
 
@@ -196,7 +196,6 @@ namespace AnimusEngine
                 }
             }
 
-
             Rectangle wallCollision = map.CheckCollisions(futureBoundingBox);
 
             if (wallCollision != Rectangle.Empty)
@@ -223,13 +222,14 @@ namespace AnimusEngine
                     (_objects[i].objectType == "player" || _objects[i].objectType == "enemy")
                    )
                 {
-                    //hurt player
-                    if (!Player.playerInvinsible)
+                    //hurt object
+                    if (!_objects[i].invincible)
                     {
-                        Knockback = new Vector2((position.X - _objects[i].position.X),
-                                                (position.Y - _objects[i].position.Y));
-                        HUD.playerHealth -= 1;
-                        Player.playerInvinsible = true;
+                        if (_objects[i].objectType == "player")
+                        {
+                            HUD.playerHealth--;
+                            _objects[i].invincible = true;
+                        } 
                     }
                 }
                 // moving platform
@@ -284,6 +284,36 @@ namespace AnimusEngine
             if (val > 0f && (val -= amount) < 0f) return 0f;
             if (val < 0f && (val += amount) > 0f) return 0f;
             return val;
+        }
+
+        private void Knockedback()
+        {
+            if (invincible && invincibleTimer <= 0)
+            {
+                velocity += Knockback * new Vector2(0.4f, 0.3f);
+
+                if (!bouncing)
+                {
+                    canMove = false;
+                    invincibleTimer = invincibleTimerMax;
+                }
+                bouncing = false;
+            }
+
+            if (invincibleTimer > 0)
+            {
+                if (invincibleTimer % 4 == 0)
+                {
+                    objectSprite.Color = Color.White;
+                }
+                if (invincibleTimer % 8 == 0)
+                {
+                    canMove = true;
+                    objectSprite.Color = new Color(0, 0, 0, 0);
+                }
+                invincibleTimer--;
+                invincible &= invincibleTimer > 0;
+            }
         }
     }
 }

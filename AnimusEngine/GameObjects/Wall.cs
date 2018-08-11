@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
 using MonoGame.Extended;
-using MonoGame.Extended.Entities;
 using System.Collections.Generic;
 
 namespace AnimusEngine
@@ -119,7 +118,7 @@ namespace AnimusEngine
                     {
                         Game1.screenDir = "left";
                     }
-                    Game1.roomPlaceHolder = doors[i].nextRoomNumber;
+                    Screens.roomPlaceHolder = doors[i].nextRoomNumber;
                     return doors[i].door;
                 }
             }

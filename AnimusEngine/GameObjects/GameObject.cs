@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
 using MonoGame.Extended;
-using MonoGame.Extended.Entities;
 using System.Collections.Generic;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Animations;
@@ -33,9 +32,18 @@ namespace AnimusEngine
         public bool active = true;
         public Vector2 center;
         public string objectType;
-        public int health = 500;
 
         public bool solid = true;
+        public int health = 500;
+        public bool enemyInvincible;
+        public bool bouncing;
+        public Vector2 Knockback;
+
+        public bool invincible;
+        public int invincibleTimer;
+        public int invincibleTimerMax = 100;
+        public bool canMove = true;
+        public static int damageAmount = 1;
 
         protected int boundingBoxWidth, boundingBoxHeight;
         protected Vector2 boundingBoxOffset;
@@ -59,8 +67,7 @@ namespace AnimusEngine
         { }
 
         public virtual void Initialize()
-        {
-        }
+        { }
 
         public virtual void Load(ContentManager content)
         {
@@ -74,7 +81,9 @@ namespace AnimusEngine
         }
 
         public virtual void Update(List<GameObject> _objects, Map map, GameTime gameTime)
-        { }
+        {
+            drawPosition = new Vector2(position.X + (spriteWidth / 2), position.Y + (spriteHeight / 2));
+        }
 
         public virtual bool CheckCollision(Rectangle init)
         {
@@ -83,7 +92,7 @@ namespace AnimusEngine
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            if (boundingBoxTexture != null && drawBoundingBoxes == true)
+            if (boundingBoxTexture != null && drawBoundingBoxes == true && active == true)
             {
                 spriteBatch.Draw(boundingBoxTexture, 
                                  new Vector2(BoundingBox.X, BoundingBox.Y), 

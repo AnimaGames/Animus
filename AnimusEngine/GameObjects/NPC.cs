@@ -53,7 +53,7 @@ namespace AnimusEngine
 
         public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
         {
-            drawPosition = new Vector2(position.X + (spriteWidth / 2), position.Y + (spriteHeight / 2));
+            //drawPosition = new Vector2(position.X + (spriteWidth / 2), position.Y + (spriteHeight / 2));
             base.Update(_objects, map, gameTime);
         }
 

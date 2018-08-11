@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
 using MonoGame.Extended;
-using MonoGame.Extended.Entities;
 using System.Collections.Generic;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Animations;
@@ -78,11 +77,11 @@ namespace AnimusEngine
 
             objectAtlas = TextureAtlas.Create("objectAtlas", objectTexture, spriteWidth, spriteHeight);
             animationFactory = new SpriteSheetAnimationFactory(objectAtlas);
-            // initiliaze sprite
+
             animationFactory.Add("idle", new SpriteSheetAnimationData(new[] { 0 }));
             objectAnimated = new AnimatedSprite(animationFactory, "idle");
             objectSprite = objectAnimated;
-
+            objectSprite.Depth = 0.5f;
             base.Load(content);
             boundingBoxWidth = objectTexture.Width;
             boundingBoxHeight = objectTexture.Height;
@@ -114,7 +113,7 @@ namespace AnimusEngine
                 velocity.Y = moveSpeed;
             }
 
-            drawPosition = new Vector2(position.X + (spriteWidth / 2), position.Y + (spriteHeight / 2));
+            //drawPosition = new Vector2(position.X + (spriteWidth / 2), position.Y + (spriteHeight / 2));
             base.Update(_objects, map, gameTime);
         }
 

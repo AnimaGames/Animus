@@ -21,6 +21,8 @@ namespace AnimusEngine
         private Texture2D healthEmptyTexture;
         private Texture2D livesTexture;
 
+        private SpriteFont font;
+
         public override void Initialize()
         {
             base.Initialize();
@@ -28,6 +30,7 @@ namespace AnimusEngine
 
         public override void Load(ContentManager content)
         {
+            font = content.Load< SpriteFont > ("Fonts/megaman");
             healthFullTexture = content.Load<Texture2D>("Sprites/HUD/playerHealthFull");
             healthEmptyTexture = content.Load<Texture2D>("Sprites/HUD/playerHealthEmpty");
             livesTexture = content.Load<Texture2D>("Sprites/HUD/playerLives");
@@ -47,15 +50,11 @@ namespace AnimusEngine
                 {
                     spriteBatch.Draw(healthFullTexture, new Vector2(12 + (i * 16),12), Color.White);
                 }
-                for (int i = 0; i < playerLives; i++)
-                {
-                    spriteBatch.Draw(livesTexture, new Vector2(12 + (i * 16), 24), Color.White);
-                }
 
+                spriteBatch.Draw(livesTexture, new Vector2(12, 32), Color.White);
+                spriteBatch.DrawString(font, "X " + playerLives, new Vector2(32,32), Color.White);
                 spriteBatch.End();
             }
         }
-
-
     }
 }

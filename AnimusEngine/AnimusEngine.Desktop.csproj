@@ -54,13 +54,16 @@
     <Compile Include="GameObjects\NPC.cs" />
     <Compile Include="GameObjects\Enemies\PatrolEnemy.cs" />
     <Compile Include="GameObjects\MapObjects\MovingPlatform.cs" />
-    <Compile Include="Utilities\HUD.cs" />
     <Compile Include="Utilities\TextManager.cs" />
     <Compile Include="Systems\PauseMenu.cs" />
     <Compile Include="Utilities\LUTS\EnemyLookUp.cs" />
     <Compile Include="Utilities\LUTS\MapObjectLookUp.cs" />
     <Compile Include="Utilities\LUTS\NPCLookUp.cs" />
     <Compile Include="GameObjects\DamageObject.cs" />
+    <Compile Include="Systems\HUD.cs" />
+    <Compile Include="Systems\SceneCreator.cs" />
+    <Compile Include="Utilities\Screens.cs" />
+    <Compile Include="Systems\StateCheck.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -80,14 +83,8 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\Documents\Visual Studio\MonoGame.Extended-develop\Source\MonoGame.Extended.Content.Pipeline\bin\netstandard2.0\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="MonoGame.Extended.Entities">
-      <HintPath>..\..\..\Documents\Visual Studio\MonoGame.Extended-develop\Source\MonoGame.Extended.Entities\bin\Debug\netstandard2.0\MonoGame.Extended.Entities.dll</HintPath>
-    </Reference>
     <Reference Include="MonoGame.Extended.Gui">
       <HintPath>..\..\..\Documents\Visual Studio\MonoGame.Extended-develop\Source\MonoGame.Extended.Gui\bin\Debug\netstandard2.0\MonoGame.Extended.Gui.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoGame.Extended.SceneGraphs">
-      <HintPath>..\..\..\Documents\Visual Studio\MonoGame.Extended-develop\Source\MonoGame.Extended.SceneGraphs\bin\Debug\netstandard2.0\MonoGame.Extended.SceneGraphs.dll</HintPath>
     </Reference>
     <Reference Include="MonoGame.Extended.Input">
       <HintPath>..\..\..\Documents\Visual Studio\MonoGame.Extended-develop\Source\MonoGame.Extended.Gui\bin\Debug\netstandard2.0\MonoGame.Extended.Input.dll</HintPath>

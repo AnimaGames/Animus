@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
 using MonoGame.Extended;
-using MonoGame.Extended.Entities;
 using System.Collections.Generic;
 
 namespace AnimusEngine
@@ -37,7 +36,7 @@ namespace AnimusEngine
                                   Vector2.Zero,
                                   1f,
                                   SpriteEffects.None,
-                                  0.05f);
+                                  0.01f);
                 
                 _spriteBatch.DrawString(font, "Pause",
                                         new Vector2((Camera.position.X - (font.MeasureString("Pause").X)/2),

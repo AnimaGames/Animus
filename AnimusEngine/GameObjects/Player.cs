@@ -14,12 +14,9 @@ namespace AnimusEngine
 {
     public class Player : Entity
     {
-        public static bool playerInvinsible;
-        private int invincibleTimer;
-        private int invincibleTimerMax = 100;
-        private bool canMove = true;
+        
+        //private bool canMove = true;
         public static bool isOnPlatform;
-        public static int damageAmount = 1;
         public State PlayerState { get; set; }
         public DamageObject attackObj;
 
@@ -45,6 +42,7 @@ namespace AnimusEngine
         {
             attackObj = new DamageObject();
             objectType = "player";
+            attackObj.Initialize();
             base.Initialize();
         }
 
@@ -65,24 +63,25 @@ namespace AnimusEngine
 
             objectAnimated = new AnimatedSprite(animationFactory, "idle");
             objectSprite = objectAnimated;
+
             objectSprite.Depth = 0.1f;
 
+            attackObj.Load(content);
             base.Load(content);
             boundingBoxWidth = 14;
             boundingBoxHeight = 24;
-            boundingBoxOffset = new Vector2(16, 7);
+            boundingBoxOffset = new Vector2(17, 7);
         }
 
         public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
         {
-            drawPosition = new Vector2(position.X + (spriteWidth/2), position.Y + (spriteHeight/2));
+            attackObj.Update(_objects, map, gameTime);
 
-            if (!Door.doorEnter && !Game1.playerDead && canMove)
+            if (!Door.doorEnter && !StateCheck.playerDead && canMove)
             {
-                CheckInput(_objects, map);
+                CheckInput(map);
                 objectAnimated.Update(gameTime);
             }
-            Invincible();
 
             switch (PlayerState)
             {
@@ -113,11 +112,11 @@ namespace AnimusEngine
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            //attackObj.Draw(spriteBatch);
+            attackObj.Draw(spriteBatch);
             base.Draw(spriteBatch);
         }
 
-        private void CheckInput(List<GameObject> _objects, Map map)
+        private void CheckInput(Map map)
         {
             var keyboardState = KeyboardExtended.GetState();
 
@@ -136,6 +135,7 @@ namespace AnimusEngine
 
             if (!applyGravity)
             {
+                // move top down in overworld
                 if (keyboardState.IsKeyDown(Keys.Up)) {
                     MoveUp();
                     PlayerState = State.Walking;
@@ -147,33 +147,38 @@ namespace AnimusEngine
             } 
             else 
             {
-                //jump
+                //jump and attack in levels
                 if (keyboardState.WasKeyJustUp(Keys.Space)) {
                     Jump(map);
                 }
                 if (keyboardState.WasKeyJustDown(Keys.Space)) {
                     JumpCancel(map);
                 }
-                if (keyboardState.WasKeyJustUp(Keys.V))
+                if (keyboardState.WasKeyJustUp(Keys.V) && PlayerState != State.Attacking)
                 {
-                    attackObj.CreateDamageObj(this, position, direction);
-                    velocity.X = 0;
+                    if (keyboardState.IsKeyDown(Keys.Down) && isJumping){
+                        attackObj.CreateDamageObj(this, position, direction, true);
+                    }else {
+                        attackObj.CreateDamageObj(this, position, direction, false);
+                    }
+                    if (!isJumping) { velocity.X = 0; }
                     PlayerState = State.Attacking;
                 }
             }
 
+            //move
+            if (keyboardState.IsKeyDown(Keys.Left)) {
+                MoveLeft();
+                objectAnimated.Effect = SpriteEffects.FlipHorizontally;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.Right)) {
+                MoveRight();
+                objectAnimated.Effect = SpriteEffects.None;
+            } 
+
             if (PlayerState != State.Attacking)
             {
-                if (keyboardState.IsKeyDown(Keys.Left)) {
-                    MoveLeft();
-                    objectAnimated.Effect = SpriteEffects.FlipHorizontally;
-                }
-
-                if (keyboardState.IsKeyDown(Keys.Right)) {
-                    MoveRight();
-                    objectAnimated.Effect = SpriteEffects.None;
-                } 
-
                 if (velocity.X > 0 || velocity.X < 0)
                 { PlayerState = State.Walking; }
 
@@ -184,31 +189,6 @@ namespace AnimusEngine
 
                 if (isJumping)
                 { PlayerState = State.Jumping; }
-            }
-        }
-
-        private void Invincible()
-        {
-            if (playerInvinsible && invincibleTimer <= 0)
-            {
-                canMove = false;
-                velocity += Knockback * new Vector2(0.55f, 0.5f);
-                invincibleTimer = invincibleTimerMax;
-            }
-
-            if (invincibleTimer > 0)
-            {
-                if (invincibleTimer % 4 == 0)
-                {
-                    objectSprite.Color = Color.White;
-                }
-                if (invincibleTimer % 8 == 0)
-                {
-                    canMove = true; 
-                    objectSprite.Color = new Color(0, 0, 0, 0);
-                }
-                invincibleTimer--;
-                playerInvinsible &= invincibleTimer > 0;
             }
         }
     }

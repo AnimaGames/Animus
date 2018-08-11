@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimusEngine.Desktop", "AnimusEngine\AnimusEngine.Desktop.csproj", "{905B6B3B-33B1-49FB-B691-AE30F88CB4F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platformer", "..\..\Documents\Visual Studio\MonoGame.Extended-develop\Source\Demos\Platformer\Platformer.csproj", "{0DECA65A-C60E-42DA-A88D-351FE261793F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +13,5 @@ Global
 		{905B6B3B-33B1-49FB-B691-AE30F88CB4F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{905B6B3B-33B1-49FB-B691-AE30F88CB4F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{905B6B3B-33B1-49FB-B691-AE30F88CB4F5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0DECA65A-C60E-42DA-A88D-351FE261793F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0DECA65A-C60E-42DA-A88D-351FE261793F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0DECA65A-C60E-42DA-A88D-351FE261793F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0DECA65A-C60E-42DA-A88D-351FE261793F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
