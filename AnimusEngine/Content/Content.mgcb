@@ -15,6 +15,36 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Audio/Music/Level_1.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/Music/Level_1.mp3
+
+#begin Audio/Music/Level_StartScreen.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/Music/Level_StartScreen.mp3
+
+#begin Audio/Sound Effects/Jump.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Sound Effects/Jump.wav
+
+#begin Audio/Sound Effects/PlayerAttack.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Sound Effects/PlayerAttack.wav
+
+#begin Audio/Sound Effects/PlayerHurt.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Sound Effects/PlayerHurt.wav
+
 #begin Fonts/megaman.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

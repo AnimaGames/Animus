@@ -1,14 +1,6 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Content;
-using MonoGame.Extended;
+﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using MonoGame.Extended.TextureAtlases;
-using MonoGame.Extended.Animations;
-using MonoGame.Extended.Sprites;
-using MonoGame.Extended.Animations.SpriteSheets;
+
 
 namespace AnimusEngine
 {
@@ -45,6 +37,9 @@ namespace AnimusEngine
         {
             UpdateMovement(_objects, map);
             Knockedback();
+
+            isJumping |= (OnGround(map) == Rectangle.Empty && !Player.isOnPlatform);
+
             base.Update(_objects, map, gameTime);
         }
 
@@ -75,8 +70,8 @@ namespace AnimusEngine
                     position.Y -= 1;
                 }
             }
-
             velocity.X = TendToZero(velocity.X, friction);
+
             if (!applyGravity)
             {
                 velocity.Y = TendToZero(velocity.Y, friction);
@@ -87,7 +82,7 @@ namespace AnimusEngine
         {
             if ((isJumping || OnGround(map) == Rectangle.Empty) && objectType != "platform")
             {
-                velocity.Y += (float)(gravity*gravityAdjust);
+                velocity.Y += (float)(gravity * gravityAdjust);
             }
             if (velocity.Y > termVel)
             {
@@ -140,10 +135,11 @@ namespace AnimusEngine
         {
             if (isJumping) { return false; }
 
-            if (((int)velocity.Y == 0 && OnGround(map) != Rectangle.Empty) || Player.isOnPlatform)
+            if (OnGround(map) != Rectangle.Empty || Player.isOnPlatform)
             {
-                velocity.Y -= jumpSpeed;
                 isJumping = true;
+                velocity.Y -= jumpSpeed;
+                 Player.isOnPlatform = false;
                 return true;
             }
             return false;
@@ -196,7 +192,7 @@ namespace AnimusEngine
                 }
             }
 
-            Rectangle wallCollision = map.CheckCollisions(futureBoundingBox);
+            Rectangle wallCollision = map.CheckCollision(futureBoundingBox);
 
             if (wallCollision != Rectangle.Empty)
             {
@@ -239,6 +235,7 @@ namespace AnimusEngine
                     _objects[i].CheckCollision(futureBoundingBox))
                 {
                     parentPosition = _objects[i].position - _objects[i].previousPosition;
+                    position += parentPosition;
 
                     if ((applyGravity &&
                         (futureBoundingBox.Bottom >= _objects[i].BoundingBox.Top - maxSpeed) &&
@@ -246,7 +243,6 @@ namespace AnimusEngine
                         Player.isOnPlatform)
 
                     {
-                        position += parentPosition;
                         LandOnPlatform(_objects[i].BoundingBox);
                         return true;
                     }
@@ -266,7 +262,7 @@ namespace AnimusEngine
         }
         public void LandOnPlatform(Rectangle wallCollision)
         {
-            position.Y = wallCollision.Top - (boundingBoxHeight + boundingBoxOffset.Y+.4f);
+            position.Y = wallCollision.Top - (boundingBoxHeight + boundingBoxOffset.Y + 0.4f);
             velocity.Y = 0f;
             Player.isOnPlatform = true;
             isJumping = false;
@@ -274,9 +270,12 @@ namespace AnimusEngine
 
         protected Rectangle OnGround(Map map)
         {
-            Rectangle futureBoundingBox = new Rectangle((int)(position.X + boundingBoxOffset.X), (int)(position.Y + boundingBoxOffset.Y + (velocity.Y + gravity)), boundingBoxWidth, boundingBoxHeight);
-
-            return map.CheckCollisions(futureBoundingBox);
+            Rectangle futureBoundingBox = new Rectangle((int)(position.X + boundingBoxOffset.X), 
+                                                        (int)(position.Y + boundingBoxOffset.Y + (velocity.Y + gravity)), 
+                                                        boundingBoxWidth, 
+                                                        boundingBoxHeight);
+            
+            return map.CheckCollision(futureBoundingBox);
         }
 
         protected float TendToZero(float val, float amount)
@@ -291,11 +290,11 @@ namespace AnimusEngine
             if (invincible && invincibleTimer <= 0)
             {
                 velocity += Knockback * new Vector2(0.4f, 0.3f);
-
                 if (!bouncing)
                 {
                     canMove = false;
                     invincibleTimer = invincibleTimerMax;
+                    isHurt = true;
                 }
                 bouncing = false;
             }

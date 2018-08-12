@@ -95,7 +95,7 @@ namespace AnimusEngine
             
         }
 
-        public Rectangle CheckCollisions(Rectangle init)
+        public Rectangle CheckCollision(Rectangle init)
         {
             for (int i = 0; i < walls.Count; i++)
             {

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
-using System;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Content;
 
 namespace AnimusEngine
@@ -24,6 +24,7 @@ namespace AnimusEngine
         int willKillPlayer;
 
         public HUD playerHUD = new HUD();
+        Song bgMusic;
 
         public SceneCreator()
         {
@@ -35,6 +36,8 @@ namespace AnimusEngine
                                 string levelNumber, 
                                 string roomNumber)
         {
+            bgMusic = content.Load<Song>("Audio/Music/Level_" + levelNumber);
+            MediaPlayer.Play(bgMusic);
             map.Load(content);
             _map = content.Load<TiledMap>("Maps/Level_" + levelNumber);
             _renderer = new TiledMapRenderer(graphics, _map);

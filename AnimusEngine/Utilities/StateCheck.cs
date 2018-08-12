@@ -52,12 +52,12 @@ namespace AnimusEngine
                     HUD.playerHealth = HUD.playerMaxHealth;
                     HUD.playerLives = 3;
                     Game1.levelNumber = "StartScreen";
+                    _objects[0].invincible = false;
                     sceneCreator.UnloadObjects(true, _objects);
                     PauseMenu.active = false;
                     Game1.inMenu = true;
                     sceneCreator.LevelLoader(content, graphics.GraphicsDevice, _objects, Game1.levelNumber, roomNumber);
                     deathTimer = 50;
-                    _objects[0].invincible = false;
                     playerDead = false;
                 }
             }

@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Audio;
 using MonoGame.Extended;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Input;
@@ -22,7 +21,6 @@ namespace AnimusEngine
         static public SpriteFont font;
         Screens screens = new Screens();
         StateCheck stateCheck = new StateCheck();
-
 
         //level items
         static public string levelNumber;
@@ -54,6 +52,8 @@ namespace AnimusEngine
             Camera.cameraOffset = new Vector2(Resolution.VirtualWidth / 2, Resolution.VirtualHeight / 2);
             levelNumber = "StartScreen";
             roomNumber = "1";
+            HUD.playerHealth = HUD.playerMaxHealth;
+         
             base.Initialize();
         }
 
@@ -62,8 +62,8 @@ namespace AnimusEngine
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("Fonts/megaman");
-            HUD.playerHealth = HUD.playerMaxHealth;
             sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, roomNumber);
+
         }
 
         protected override void Update(GameTime gameTime)

@@ -36,6 +36,7 @@ namespace AnimusEngine
         public bool solid = true;
         public int health = 500;
         public bool enemyInvincible;
+        public bool isHurt;
         public bool bouncing;
         public Vector2 Knockback;
 
@@ -48,7 +49,7 @@ namespace AnimusEngine
         protected int boundingBoxWidth, boundingBoxHeight;
         protected Vector2 boundingBoxOffset;
         Texture2D boundingBoxTexture;
-        const bool drawBoundingBoxes = true;   //change for visible bounding boxes
+        bool drawBoundingBoxes = false;
 
         protected Vector2 direction = new Vector2(1, 0);
 
@@ -67,7 +68,11 @@ namespace AnimusEngine
         { }
 
         public virtual void Initialize()
-        { }
+        {
+#if DEBUG
+            drawBoundingBoxes = true;   //change for visible bounding boxes
+#endif
+        }
 
         public virtual void Load(ContentManager content)
         {

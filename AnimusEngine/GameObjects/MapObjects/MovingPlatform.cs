@@ -22,7 +22,6 @@ namespace AnimusEngine
         public string typeOfPlatform;
         public bool isHorizontal;
 
-        public float moveSpeed = 0.5f;
 
         public MovingPlatform(string platformName, Rectangle initPosition)
         {
@@ -32,7 +31,7 @@ namespace AnimusEngine
             bottomRangeY = initPosition.Bottom;
             solid = true;
             active = true;
-
+            maxSpeed = 0.5f;
             typeOfPlatform = platformName;
 
             //set texture
@@ -83,6 +82,7 @@ namespace AnimusEngine
             objectSprite = objectAnimated;
             objectSprite.Depth = 0.5f;
             base.Load(content);
+
             boundingBoxWidth = objectTexture.Width;
             boundingBoxHeight = objectTexture.Height;
         }
@@ -93,27 +93,26 @@ namespace AnimusEngine
             {
                 if (position.X >= topRangeX)
                 {
-                    moveSpeed = -moveSpeed;
+                    maxSpeed = -maxSpeed;
                 }
-                else if (position.X <= bottomRangeX && moveSpeed < 0)
+                else if (position.X <= bottomRangeX && maxSpeed < 0)
                 {
-                    moveSpeed = -moveSpeed;
+                    maxSpeed = -maxSpeed;
                 }
-                velocity.X = moveSpeed;
+                velocity.X = maxSpeed;
             } else 
             {
                 if (position.Y >= bottomRangeY)
                 {
-                    moveSpeed = -moveSpeed;
+                    maxSpeed = -maxSpeed;
                 }
-                else if (position.Y <= topRangeY && moveSpeed < 0)
+                else if (position.Y <= topRangeY && maxSpeed < 0)
                 {
-                    moveSpeed = -moveSpeed;
+                    maxSpeed = -maxSpeed;
                 } 
-                velocity.Y = moveSpeed;
+                velocity.Y = maxSpeed;
             }
 
-            //drawPosition = new Vector2(position.X + (spriteWidth / 2), position.Y + (spriteHeight / 2));
             base.Update(_objects, map, gameTime);
         }
 

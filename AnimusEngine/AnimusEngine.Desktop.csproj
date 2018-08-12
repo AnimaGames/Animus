@@ -63,7 +63,7 @@
     <Compile Include="Systems\HUD.cs" />
     <Compile Include="Systems\SceneCreator.cs" />
     <Compile Include="Utilities\Screens.cs" />
-    <Compile Include="Systems\StateCheck.cs" />
+    <Compile Include="Utilities\StateCheck.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -160,6 +160,11 @@
     <None Include="Content\Maps\MapObjects\PlatformLarge.png" />
     <None Include="Content\Maps\MapObjects\PlatformMedium.png" />
     <None Include="Content\Maps\MapObjects\PlatformSmall.png" />
+    <None Include="Content\Audio\Music\Level_1.mp3" />
+    <None Include="Content\Audio\Music\Level_StartScreen.mp3" />
+    <None Include="Content\Audio\Sound Effects\Jump.wav" />
+    <None Include="Content\Audio\Sound Effects\PlayerAttack.wav" />
+    <None Include="Content\Audio\Sound Effects\PlayerHurt.wav" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Utilities\" />
