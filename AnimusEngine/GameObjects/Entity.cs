@@ -182,6 +182,7 @@ namespace AnimusEngine
             }
             return false;
         }
+
         protected bool JumpCancel(Map map)
         {
             if (!isJumping || velocity.Y > 0) { return false; }
@@ -200,6 +201,7 @@ namespace AnimusEngine
                 }
             }
         }
+
         public void Damage(Vector2 offset)
         {
             for (int i = 0; i < numOfDamageObjects; i++)
@@ -210,8 +212,6 @@ namespace AnimusEngine
                 }
             }
         }
-
-
 
         protected virtual bool CheckCollisions(Map map, List<GameObject> _objects, bool xAxis)
         {
@@ -293,14 +293,13 @@ namespace AnimusEngine
                     _objects[i].CheckCollision(futureBoundingBox))
                 {
                     parentPosition = _objects[i].position - _objects[i].previousPosition;
-                    position += parentPosition;
+                    position += parentPosition * (-direction);
 
                     if ((applyGravity &&
                         (futureBoundingBox.Bottom >= _objects[i].BoundingBox.Top - maxSpeed) &&
-                        (futureBoundingBox.Bottom <= _objects[i].BoundingBox.Top + 8) &&
-                         velocity.Y > 0) || 
+                        (futureBoundingBox.Bottom <= _objects[i].BoundingBox.Top + 4) &&
+                         velocity.Y > 0) ||
                         Player.isOnPlatform)
-
                     {
                         LandOnPlatform(_objects[i].BoundingBox);
                         return true;
