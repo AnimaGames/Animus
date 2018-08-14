@@ -11,20 +11,20 @@ namespace AnimusEngine
 {
     public class Enemy : Entity
     {
-     
         public Enemy()
         { }
 
         public Enemy(Vector2 initPosition)
         {
             position = initPosition;
-            solid = false;
         }
 
         public override void Initialize()
         {
             health = 3;
             objectType = "enemy";
+            solid = false;
+            invincibleTimerMax = 30;
             base.Initialize();
         }
 
@@ -32,14 +32,15 @@ namespace AnimusEngine
         {
             // initiliaze sprite
             spriteWidth = spriteHeight = 32;
-            objectTexture = content.Load<Texture2D>("Sprites/" + "enemy");
+            objectTexture = content.Load<Texture2D>("Sprites/" + "tinyCaro");
             objectAtlas = TextureAtlas.Create("objectAtlas", objectTexture, spriteWidth, spriteHeight);
 
             //create animations from sprite sheet
             animationFactory = new SpriteSheetAnimationFactory(objectAtlas);
             animationFactory.Add("idle", new SpriteSheetAnimationData(new[] { 0 }));
-
+     
             objectAnimated = new AnimatedSprite(animationFactory, "idle");
+
             objectSprite = objectAnimated;
             objectSprite.Depth = 0.2F;
 
@@ -51,10 +52,16 @@ namespace AnimusEngine
 
         public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
         {
-            //drawPosition = new Vector2(position.X + (spriteWidth / 2), position.Y + (spriteHeight / 2));
-            if (health <= 0){
+            if (health <= 0 && knockbackTimer <= 0)
+            {
                 _objects.Remove(this);
             }
+
+            if (knockbackTimer > 0)
+            {
+                velocity = NormalizeVector(knockback) * (2*maxSpeed);
+            }
+
             base.Update(_objects, map, gameTime);
         }
     }

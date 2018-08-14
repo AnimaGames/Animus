@@ -1,9 +1,6 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
-using MonoGame.Extended;
 using System.Collections.Generic;
 
 namespace AnimusEngine
@@ -52,6 +49,9 @@ namespace AnimusEngine
         Texture2D pauseTexture;
 
         public int tileSize = 16;
+
+        //screen trans
+        static public string screenDir;
 
         public void Load(ContentManager content)
         {
@@ -112,11 +112,11 @@ namespace AnimusEngine
                     Entity.applyGravity = false;
                     if (init.Left < doors[i].door.Left)
                     {
-                        Game1.screenDir = "right";
+                        screenDir = "right";
                     }
                     else if (init.Left > doors[i].door.Left)
                     {
-                        Game1.screenDir = "left";
+                        screenDir = "left";
                     }
                     Screens.roomPlaceHolder = doors[i].nextRoomNumber;
                     return doors[i].door;

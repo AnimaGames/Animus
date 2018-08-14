@@ -20,7 +20,6 @@ namespace AnimusEngine
         public PatrolEnemy(Vector2 initPosition)
         {
             position = initPosition;
-            solid = false;
             maxSpeed = 1;
             walkSpeed = 0.3f;
         }
@@ -33,21 +32,23 @@ namespace AnimusEngine
 
         public override void Load(ContentManager content)
         {
+            base.Load(content);
             // initiliaze sprite
             spriteWidth = spriteHeight = 32;
-            objectTexture = content.Load<Texture2D>("Sprites/" + "tinyCaro");
+            objectTexture = content.Load<Texture2D>("Sprites/" + "enemy");
             objectAtlas = TextureAtlas.Create("objectAtlas", objectTexture, spriteWidth, spriteHeight);
 
             //create animations from sprite sheet
             animationFactory = new SpriteSheetAnimationFactory(objectAtlas);
             objectAtlas = TextureAtlas.Create("objectAtlas", objectTexture, spriteWidth, spriteHeight);
             animationFactory.Add("idle", new SpriteSheetAnimationData(new[] { 0 }));
+            animationFactory.Add("walk", new SpriteSheetAnimationData(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, frameDuration: 0.1f, isLooping: true));
 
             objectAnimated = new AnimatedSprite(animationFactory, "idle");
+
             objectSprite = objectAnimated;
             objectSprite.Depth = 0.2F;
 
-            base.Load(content);
             boundingBoxWidth = 14;
             boundingBoxHeight = 21;
             boundingBoxOffset = new Vector2(9, 6);
@@ -55,23 +56,29 @@ namespace AnimusEngine
 
         public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
         {
-            //drawPosition = new Vector2(position.X + (spriteWidth / 2), position.Y + (spriteHeight / 2));
-            base.Update(_objects, map, gameTime);
+            objectAnimated.Play("walk");
+            objectAnimated.Update(gameTime);
 
-            velocity.X = walkSpeed;
-
-            if (position.X == previousX)
+            if (knockbackTimer <= 0)
             {
-                walkSpeed = -walkSpeed;
-                position.X += walkSpeed;
-                if(objectAnimated.Effect == SpriteEffects.None)
+                velocity.X = walkSpeed;
+
+                if (position.X == previousX)
                 {
-                    objectAnimated.Effect = SpriteEffects.FlipHorizontally;
-                } else {
-                    objectAnimated.Effect = SpriteEffects.None;
+                    walkSpeed = -walkSpeed;
+                    position.X += walkSpeed;
+                    if (objectAnimated.Effect == SpriteEffects.None)
+                    {
+                        objectAnimated.Effect = SpriteEffects.FlipHorizontally;
+                    }
+                    else
+                    {
+                        objectAnimated.Effect = SpriteEffects.None;
+                    }
                 }
+                previousX = position.X;
             }
-            previousX = position.X;
+            base.Update(_objects, map, gameTime);
         }
     }
 }

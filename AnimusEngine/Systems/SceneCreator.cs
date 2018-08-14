@@ -25,6 +25,7 @@ namespace AnimusEngine
 
         public HUD playerHUD = new HUD();
         Song bgMusic;
+        public string songSingleton;
 
         public SceneCreator()
         {
@@ -37,7 +38,14 @@ namespace AnimusEngine
                                 string roomNumber)
         {
             bgMusic = content.Load<Song>("Audio/Music/Level_" + levelNumber);
-            MediaPlayer.Play(bgMusic);
+
+            if (bgMusic.Name != songSingleton)
+            {
+                MediaPlayer.Play(bgMusic);
+            }
+            MediaPlayer.IsRepeating = true;
+            songSingleton = bgMusic.Name;
+
             map.Load(content);
             _map = content.Load<TiledMap>("Maps/Level_" + levelNumber);
             _renderer = new TiledMapRenderer(graphics, _map);

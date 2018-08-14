@@ -3,14 +3,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended.Input;
 using System.Collections.Generic;
 using MonoGame.Extended.Animations.SpriteSheets;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Animations;
 using System;
-using MonoGame.Extended;
 
 namespace AnimusEngine
 {
@@ -20,12 +18,17 @@ namespace AnimusEngine
         //private bool canMove = true;
         public static bool isOnPlatform;
         public State PlayerState { get; set; }
-        public DamageObject attackObj;
+
+        private Vector2 attackOffset = new Vector2(16, 0);
+        private Vector2 positionOffset = new Vector2(7, 6);
+        const float jumpSpeed = 8.0f;
+
+        private int attackTimer;
+        private int attackTimerMax = 6;
 
         public SoundEffect jumpSFX;
         public SoundEffect attackSFX;
         public SoundEffect hurtSFX;
-        const float jumpSpeed = 8.0f;
 
         public Player()
         { }
@@ -34,6 +37,8 @@ namespace AnimusEngine
         {
             Idle,
             Attacking,
+            AttackingDown,
+            JumpAttack,
             Jumping,
             Falling,
             Walking,
@@ -48,9 +53,8 @@ namespace AnimusEngine
 
         public override void Initialize()
         {
-            attackObj = new DamageObject();
             objectType = "player";
-            attackObj.Initialize();
+            health = 3;
             base.Initialize();
         }
 
@@ -68,14 +72,13 @@ namespace AnimusEngine
             animationFactory.Add("walk", new SpriteSheetAnimationData(new[] { 1, 2, 3, 4 }, frameDuration: 0.1f, isLooping: true));
             animationFactory.Add("jump", new SpriteSheetAnimationData(new[] { 3 }));
             animationFactory.Add("attack", new SpriteSheetAnimationData(new[] { 6, 7, 8, 9 }, frameDuration: 0.1f, isLooping: true));
+            animationFactory.Add("attackDown", new SpriteSheetAnimationData(new[] { 6, 7, 8, 9 }, frameDuration: 0.1f, isLooping: true));
             animationFactory.Add("hurt", new SpriteSheetAnimationData(new[] { 3 }));
 
             objectAnimated = new AnimatedSprite(animationFactory, "idle");
             objectSprite = objectAnimated;
 
             objectSprite.Depth = 0.1f;
-
-            attackObj.Load(content);
 
             // load sound effects
             jumpSFX = content.Load<SoundEffect>("Audio/Sound Effects/Jump");
@@ -90,15 +93,28 @@ namespace AnimusEngine
 
         public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
         {
-            attackObj.Update(_objects, map, gameTime);
+            HUD.playerHealth = health;
 
-            if (!Door.doorEnter && !StateCheck.playerDead && canMove)
+            StateCheck.playerDead |= health == 0;
+
+            if (!Door.doorEnter && !StateCheck.playerDead && canMove && knockbackTimer <=0)
             {
                 CheckInput(map);
                 if (isHurt) { PlayerState = State.Hurt; }
                 objectAnimated.Update(gameTime);
+            } 
+            else if (knockbackTimer > 0)
+            {
+                velocity = NormalizeVector(knockback) * 2 * maxSpeed;
             }
 
+            if (attackTimer < 3 && attackTimer > 0)
+            {
+                Damage((attackOffset * direction + positionOffset));
+                attackTimer--;
+            } else if (attackTimer > 0) {
+                attackTimer--;
+            }
 
             switch (PlayerState)
             {
@@ -117,6 +133,12 @@ namespace AnimusEngine
                 case State.Attacking:
                     objectAnimated.Play("attack", () => PlayerState = State.Idle);
                     break;
+                case State.JumpAttack:
+                    objectAnimated.Play("attack", () => PlayerState = State.Idle);
+                    break;
+                case State.AttackingDown:
+                    objectAnimated.Play("attackDown", () => PlayerState = State.Idle);
+                    break;
                 case State.Ducking:
                     objectAnimated.Play("duck");
                     break;
@@ -134,7 +156,6 @@ namespace AnimusEngine
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            attackObj.Draw(spriteBatch);
             base.Draw(spriteBatch);
         }
 
@@ -153,16 +174,22 @@ namespace AnimusEngine
                     Game1.inMenu = true;
                 }
             }
-            //move left right
-            if (keyboardState.IsKeyDown(Keys.Left)) {
-                MoveLeft();
-                objectAnimated.Effect = SpriteEffects.FlipHorizontally;
-            }
 
-            if (keyboardState.IsKeyDown(Keys.Right)) {
-                MoveRight();
-                objectAnimated.Effect = SpriteEffects.None;
-            } 
+            if (PlayerState != State.Attacking)
+            {
+                //move left right
+                if (keyboardState.IsKeyDown(Keys.Left))
+                {
+                    MoveLeft();
+                    objectAnimated.Effect = SpriteEffects.FlipHorizontally;
+                }
+
+                if (keyboardState.IsKeyDown(Keys.Right))
+                {
+                    MoveRight();
+                    objectAnimated.Effect = SpriteEffects.None;
+                }
+            }
 
             if (!applyGravity)
             {
@@ -186,18 +213,26 @@ namespace AnimusEngine
                 }
                 if (keyboardState.WasKeyJustUp(Keys.V) && PlayerState != State.Attacking)
                 {
+                    attackTimer = attackTimerMax;
                     if (keyboardState.IsKeyDown(Keys.Down) && isJumping){
-                        attackObj.CreateDamageObj(this, position, direction, true);
-                    }else {
-                        attackObj.CreateDamageObj(this, position, direction, false);
+                        Damage((new Vector2(0, 24)+ positionOffset));
+                        PlayerState = State.AttackingDown;
+                    } 
+                    else if (!keyboardState.IsKeyDown(Keys.Down) && isJumping) 
+                    {
+                        PlayerState = State.JumpAttack;
+                    } else {
+                        PlayerState = State.Attacking;
                     }
+
                     if (!isJumping) { velocity.X = 0; }
                     attackSFX.Play();
-                    PlayerState = State.Attacking;
                 }
             }
 
-            if (PlayerState != State.Attacking)
+            if (PlayerState != State.Attacking && 
+                PlayerState != State.JumpAttack && 
+                PlayerState != State.AttackingDown)
             {
                 if ((int)velocity.X != 0)
                 { PlayerState = State.Walking; }

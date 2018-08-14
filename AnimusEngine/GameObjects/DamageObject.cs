@@ -1,54 +1,43 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using MonoGame.Extended;
+using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using MonoGame.Extended.TextureAtlases;
-using MonoGame.Extended.Animations;
-using MonoGame.Extended.Sprites;
-using MonoGame.Extended.Animations.SpriteSheets;
 
 namespace AnimusEngine
 {
     public class DamageObject : GameObject
     {
-        public int radius;
+        public GameObject owner;
         public int deathTimer;
-        public int deathTimerMax = 15;
-        Entity owner;
+        public int deathTimerMax = 3;
+
         public bool bounce;
 
         public DamageObject()
         {
-            active = false;
-        }
-
-        public override void Initialize()
-        {
             objectType = "damage";
             solid = true;
-            base.Initialize();
+            active = false;
+#if DEBUG
+            drawBoundingBoxes = true;   //change for visible bounding boxes
+#endif
         }
-
 
         public override void Load(ContentManager content)
         {
-            // initiliaze sprite
             base.Load(content);
-            boundingBoxWidth = 14;
-            boundingBoxHeight = 21;
+            boundingBoxWidth = 16;
+            boundingBoxHeight = 16;
             boundingBoxOffset = new Vector2(9, 6);
         }
 
         public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
         {
-            //CheckCollisions(_objects);
+            if (active) { CheckCollisions(_objects); }
 
             if (deathTimer <= 0)
             {
-                Destroy();
+                Destroy(_objects);
             } else {
                 deathTimer--;
             }
@@ -56,59 +45,64 @@ namespace AnimusEngine
             base.Update(_objects, map, gameTime);
         }
 
-        //public void CheckCollisions(List<GameObject> objects)
-        //{ if (active)
-        //    {
-        //        for (int i = 0; i < objects.Count; i++)
-        //        {
-        //            if (objects[i].active &&objects[i].objectType == "enemy" && objects[i] != owner && objects[i].CheckCollision(BoundingBox))
-        //            {
-        //                objects[i].Knockback = new Vector2(-(position.X - objects[i].position.X),
-        //                                        (position.Y - objects[i].position.Y));
-        //                if (bounce){
-        //                    objects[0].bouncing = true;
-        //                    objects[0].Knockback = new Vector2(0, -40);
-        //                    bounce = false;
-        //                }
-        //                objects[i].enemyInvincible = true;
-        //                objects[i].health -= 1;
-        //                Destroy();
-        //            }
-        //        }
-        //    }
-        //}
-
         public override void Draw(SpriteBatch spriteBatch)
         {
+            if (active && drawBoundingBoxes)
+            {
+                spriteBatch.Draw(boundingBoxTexture,
+                                     new Vector2(BoundingBox.X, BoundingBox.Y),
+                                     BoundingBox,
+                                     new Color(255, 0, 0, 128),
+                                     rotation,
+                                     Vector2.Zero,
+                                     scale,
+                                     SpriteEffects.None,
+                                     layerDepth);
+            }
             base.Draw(spriteBatch);
         }
 
-        public void Destroy()
+        public void CheckCollisions(List<GameObject> _objects)
         {
-            active = false;
+            for (int i = 0; i < _objects.Count; i++)
+            {
+                if (_objects[i].active && 
+                    _objects[i] != owner && 
+                    !_objects[i].invincible &&
+                    (_objects[i].objectType == "player" || 
+                     _objects[i].objectType == "enemy" || 
+                     _objects[i].objectType == "destructible") &&
+                    _objects[i].CheckCollision(BoundingBox))
+                {
+                    _objects[i].knockback = new Vector2(-(owner.position.X - _objects[i].position.X),
+                                                        (_objects[i].position.Y - owner.position.Y));
+                    
+                    _objects[i].invincible = true;
+                    Destroy(_objects);
+
+                    // bouce off enemy
+                    if (bounce)
+                    {
+                        _objects[0].bouncing = true;
+                        _objects[0].knockback = new Vector2(0, -40);
+                        bounce = false;
+                    }
+                }
+            }
         }
 
-        public void CreateDamageObj(Entity inputOwner, Vector2 initPosition, Vector2 initDirection, bool isDown)
+        public void Damage(GameObject inputOwner, Vector2 initPosition)
         {
             owner = inputOwner;
             position = initPosition;
-            direction = initDirection;
-            deathTimer = deathTimerMax;
             active = true;
+            deathTimer = deathTimerMax;
+        }
 
-            if (isDown)
-            {
-                bounce = true;
-                position = new Vector2(initPosition.X+6, initPosition.Y + 50);
-
-            } else
-            {
-                if (direction.X > 0) {
-                    position = new Vector2(initPosition.X + 18, initPosition.Y + 6);
-                } else {
-                    position = new Vector2(initPosition.X - 5, initPosition.Y + 6);
-                }
-            }
+        public void Destroy(List<GameObject> _objects)
+        {
+                _objects.Remove(this);
+                active = false;
         }
     }
 }

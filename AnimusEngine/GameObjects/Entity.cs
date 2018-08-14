@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 
 
@@ -21,8 +23,19 @@ namespace AnimusEngine
         protected bool isJumping;
         public static bool applyGravity = true;
 
+        List<DamageObject> damageObjects = new List<DamageObject>();
+        const int numOfDamageObjects = 25;
+
         public Entity()
-        { }
+        {
+            if (damageObjects.Count == 0)
+            {
+                for (int i = 0; i < numOfDamageObjects; i++)
+                {
+                    damageObjects.Add(new DamageObject());
+                }
+            }
+        }
 
         public override void Initialize()
         {
@@ -30,17 +43,42 @@ namespace AnimusEngine
             previousPosition = position;
             parentPosition = Vector2.Zero;
             isJumping = false;
+
             base.Initialize();
+        }
+
+        public override void Load(ContentManager content)
+        {
+            for (int i = 0; i < numOfDamageObjects; i++)
+            {
+                damageObjects[i].Load(content);
+            }
+            base.Load(content);
         }
 
         public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
         {
+          
             UpdateMovement(_objects, map);
-            Knockedback();
 
+            Knockedback();
             isJumping |= (OnGround(map) == Rectangle.Empty && !Player.isOnPlatform);
 
+            for (int i = 0; i < numOfDamageObjects; i++)
+            {
+                damageObjects[i].Update(_objects, map, gameTime);
+            }
+
             base.Update(_objects, map, gameTime);
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            for (int i = 0; i < numOfDamageObjects; i++)
+            {
+                damageObjects[i].Draw(spriteBatch);
+            }
+            base.Draw(spriteBatch);
         }
 
         private void UpdateMovement(List<GameObject> _objects, Map map)
@@ -57,7 +95,7 @@ namespace AnimusEngine
             }
             position.Y += velocity.Y;
 
-            if (applyGravity)
+            if (applyGravity && kinematic)
             {
                 ApplyGravity(map);
 
@@ -152,6 +190,28 @@ namespace AnimusEngine
             return true;
         }
 
+        public void Damage(GameObject owner)
+        {
+            for (int i = 0; i < numOfDamageObjects; i++)
+            {
+                if (!damageObjects[i].active)
+                {
+                    damageObjects[i].Damage(owner, position);
+                }
+            }
+        }
+        public void Damage(Vector2 offset)
+        {
+            for (int i = 0; i < numOfDamageObjects; i++)
+            {
+                if (!damageObjects[i].active)
+                {
+                    damageObjects[i].Damage(this, position+offset);
+                }
+            }
+        }
+
+
 
         protected virtual bool CheckCollisions(Map map, List<GameObject> _objects, bool xAxis)
         {
@@ -212,20 +272,18 @@ namespace AnimusEngine
             for (int i = 0; i < _objects.Count; i++)
             {
                 if (_objects[i] != this &&
-                    objectType != "platform" &&
+                    (_objects[i].objectType == "player" || _objects[i].objectType == "enemy") &&
                     _objects[i].active &&
-                    _objects[i].CheckCollision(futureBoundingBox) &&
-                    (_objects[i].objectType == "player" || _objects[i].objectType == "enemy")
-                   )
+                    _objects[i].CheckCollision(futureBoundingBox))
+                     
                 {
-                    //hurt object
-                    if (!_objects[i].invincible)
+                    if (objectType == "player")
                     {
-                        if (_objects[i].objectType == "player")
-                        {
-                            HUD.playerHealth--;
-                            _objects[i].invincible = true;
-                        } 
+                        Damage(_objects[i]);
+                    }
+                    else if (objectType == "enemy")
+                    {
+                        Damage(this); 
                     }
                 }
                 // moving platform
@@ -239,7 +297,8 @@ namespace AnimusEngine
 
                     if ((applyGravity &&
                         (futureBoundingBox.Bottom >= _objects[i].BoundingBox.Top - maxSpeed) &&
-                        (futureBoundingBox.Bottom <= _objects[i].BoundingBox.Top + 8)) || 
+                        (futureBoundingBox.Bottom <= _objects[i].BoundingBox.Top + 8) &&
+                         velocity.Y > 0) || 
                         Player.isOnPlatform)
 
                     {
@@ -284,16 +343,23 @@ namespace AnimusEngine
             if (val < 0f && (val += amount) > 0f) return 0f;
             return val;
         }
+        public Vector2 NormalizeVector(Vector2 vectorToNormalize)
+        {
+            vectorToNormalize.Normalize();
+
+            return vectorToNormalize;
+        }
 
         private void Knockedback()
         {
             if (invincible && invincibleTimer <= 0)
             {
-                velocity += Knockback * new Vector2(0.4f, 0.3f);
                 if (!bouncing)
                 {
                     canMove = false;
+                    health -= damageAmount;
                     invincibleTimer = invincibleTimerMax;
+                    knockbackTimer = knockbackTimerMax;
                     isHurt = true;
                 }
                 bouncing = false;
@@ -308,9 +374,17 @@ namespace AnimusEngine
                 if (invincibleTimer % 8 == 0)
                 {
                     canMove = true;
-                    objectSprite.Color = new Color(0, 0, 0, 0);
+                    if (objectType == "player")
+                    {
+                        objectSprite.Color = new Color(0, 0, 0, 0);
+                    }
+                    else
+                    {
+                        objectSprite.Color = new Color(255, 0, 0, 250);
+                    }
                 }
                 invincibleTimer--;
+                knockbackTimer--;
                 invincible &= invincibleTimer > 0;
             }
         }

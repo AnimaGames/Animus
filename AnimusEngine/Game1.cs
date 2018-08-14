@@ -2,10 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended;
-using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Input;
-using MonoGame.Extended.Tiled.Renderers;
 using System;
 
 namespace AnimusEngine
@@ -25,9 +22,6 @@ namespace AnimusEngine
         //level items
         static public string levelNumber;
         public string roomNumber;
-
-        //screen trans
-        static public string screenDir;
       
         //menu items
         static public bool inMenu = true;
@@ -53,7 +47,6 @@ namespace AnimusEngine
             levelNumber = "StartScreen";
             roomNumber = "1";
             HUD.playerHealth = HUD.playerMaxHealth;
-         
             base.Initialize();
         }
 
@@ -63,7 +56,6 @@ namespace AnimusEngine
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("Fonts/megaman");
             sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, roomNumber);
-
         }
 
         protected override void Update(GameTime gameTime)
@@ -74,11 +66,12 @@ namespace AnimusEngine
                                          sceneCreator, 
                                          graphics, 
                                          Content, 
-                                         screenDir, 
+                                         Map.screenDir, 
                                          roomNumber);
             }
             stateCheck.CheckForDeath(_objects, sceneCreator, graphics, Content, roomNumber);
             CheckForMenu(gameTime);
+
             base.Update(gameTime);
         }
 

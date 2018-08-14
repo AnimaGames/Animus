@@ -28,9 +28,8 @@ namespace AnimusEngine
                                  ContentManager content,
                                  string roomNumber)
         {
-            if (HUD.playerHealth <= 0)
+            if (playerDead)
             {
-                playerDead = true;
                 deathTimer--;
 
                 if (deathTimer <= 0 && HUD.playerLives > 0)

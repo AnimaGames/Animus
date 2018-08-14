@@ -1,9 +1,6 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
-using MonoGame.Extended;
 using System.Collections.Generic;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Animations;
@@ -16,10 +13,10 @@ namespace AnimusEngine
     public class GameObject
     {
         protected Texture2D objectTexture;
-        public TextureAtlas objectAtlas;
-        public SpriteSheetAnimationFactory animationFactory;
-        public AnimatedSprite objectAnimated;
-        public Sprite objectSprite;
+        protected TextureAtlas objectAtlas;
+        protected SpriteSheetAnimationFactory animationFactory;
+        protected AnimatedSprite objectAnimated;
+        protected Sprite objectSprite;
 
         public int spriteHeight, spriteWidth;
         public Vector2 position;
@@ -35,21 +32,24 @@ namespace AnimusEngine
 
         public bool solid = true;
         public int health = 500;
-        public bool enemyInvincible;
         public bool isHurt;
         public bool bouncing;
-        public Vector2 Knockback;
+
+        public Vector2 knockback;
+        public int knockbackTimer;
+        public int knockbackTimerMax = 15;
+        public bool kinematic = true;
 
         public bool invincible;
-        public int invincibleTimer;
-        public int invincibleTimerMax = 100;
-        public bool canMove = true;
+        protected int invincibleTimer;
+        protected int invincibleTimerMax = 100;
+        protected bool canMove = true;
         public static int damageAmount = 1;
 
         protected int boundingBoxWidth, boundingBoxHeight;
         protected Vector2 boundingBoxOffset;
-        Texture2D boundingBoxTexture;
-        bool drawBoundingBoxes = false;
+        public Texture2D boundingBoxTexture;
+        public bool drawBoundingBoxes = false;
 
         protected Vector2 direction = new Vector2(1, 0);
 
@@ -119,8 +119,8 @@ namespace AnimusEngine
         {
             if (spriteWidth == 0) { return; }
 
-            center.X = spriteWidth / 2;
-            center.Y = spriteHeight / 2;
+            center.X = BoundingBox.Width / 2;
+            center.Y = BoundingBox.Height / 2;
         }
     }
 }
