@@ -25,7 +25,6 @@ namespace AnimusEngine
       
         //menu items
         static public bool inMenu = true;
-        static public bool hudOn;
 
         public Game1()
         {
@@ -153,19 +152,32 @@ namespace AnimusEngine
             if (keyboardState.WasKeyJustUp(Keys.Enter))
                 
             {
-                if (levelNumber != "StartScreen")
+                if (levelNumber == "StartScreen")
                 {
+                    levelNumber = "Load";
+                    sceneCreator.UnloadObjects(false, _objects);
+
+                    sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, roomNumber);
+                }
+                else if (levelNumber == "Load")
+                {
+                    levelNumber = "1";
+                    sceneCreator.UnloadObjects(true, _objects);
                     inMenu = false;
-                    PauseMenu.active = false;
+
+                    sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, roomNumber);
+                }
+                else if (levelNumber == "GameOver")
+                {
+                    levelNumber = "StartScreen";
+                    sceneCreator.UnloadObjects(false, _objects);
+
+                    sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, roomNumber);
                 }
                 else
                 {
-                    levelNumber = "1";
-                    UnloadContent();
                     inMenu = false;
-
-                    hudOn = true;
-                    sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, roomNumber);
+                    PauseMenu.active = false;
                 }
             }
         }

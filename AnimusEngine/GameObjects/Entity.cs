@@ -212,6 +212,16 @@ namespace AnimusEngine
                 }
             }
         }
+        public void Damage(Vector2 offset, bool bounce)
+        {
+            for (int i = 0; i < numOfDamageObjects; i++)
+            {
+                if (!damageObjects[i].active)
+                {
+                    damageObjects[i].Damage(this, position + offset, bounce);
+                }
+            }
+        }
 
         protected virtual bool CheckCollisions(Map map, List<GameObject> _objects, bool xAxis)
         {
@@ -301,6 +311,7 @@ namespace AnimusEngine
                          velocity.Y > 0) ||
                         Player.isOnPlatform)
                     {
+                        position += 2 * parentPosition * (direction);
                         LandOnPlatform(_objects[i].BoundingBox);
                         return true;
                     }

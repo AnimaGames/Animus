@@ -50,7 +50,7 @@ namespace AnimusEngine
                 {
                     HUD.playerHealth = HUD.playerMaxHealth;
                     HUD.playerLives = 3;
-                    Game1.levelNumber = "StartScreen";
+                    Game1.levelNumber = "GameOver";
                     _objects[0].invincible = false;
                     sceneCreator.UnloadObjects(true, _objects);
                     PauseMenu.active = false;

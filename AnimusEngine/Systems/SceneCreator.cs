@@ -6,6 +6,7 @@ using MonoGame.Extended.Tiled.Renderers;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Content;
+using System;
 
 namespace AnimusEngine
 {
@@ -24,8 +25,10 @@ namespace AnimusEngine
         int willKillPlayer;
 
         public HUD playerHUD = new HUD();
-        Song bgMusic;
-        public string songSingleton;
+        static SoundEffect bgMusic;
+        public string levelNumberHolder;
+        static SoundEffectInstance soundEffectInstance;
+
 
         public SceneCreator()
         {
@@ -37,14 +40,21 @@ namespace AnimusEngine
                                 string levelNumber, 
                                 string roomNumber)
         {
-            bgMusic = content.Load<Song>("Audio/Music/Level_" + levelNumber);
+           
+            bgMusic = content.Load<SoundEffect>("Audio/Music/Level_" + levelNumber);
 
-            if (bgMusic.Name != songSingleton)
+            soundEffectInstance = bgMusic.CreateInstance();
+
+            if (levelNumber != levelNumberHolder && levelNumber != "Load")
             {
-                MediaPlayer.Play(bgMusic);
+                soundEffectInstance.Play();
             }
-            MediaPlayer.IsRepeating = true;
-            songSingleton = bgMusic.Name;
+            if (levelNumber != "GameOver")
+            {
+                soundEffectInstance.IsLooped = true;
+            }
+
+            levelNumberHolder = levelNumber;
 
             map.Load(content);
             _map = content.Load<TiledMap>("Maps/Level_" + levelNumber);
@@ -140,6 +150,13 @@ namespace AnimusEngine
         {
             if (killPlayer == true)
             {
+                
+                soundEffectInstance.Stop(true);
+                soundEffectInstance.Dispose();
+                bgMusic.Dispose();
+                Console.WriteLine(soundEffectInstance.State);
+                Console.WriteLine(soundEffectInstance.IsDisposed);
+
                 willKillPlayer = 0;
             }
             else

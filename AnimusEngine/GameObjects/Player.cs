@@ -213,16 +213,18 @@ namespace AnimusEngine
                 }
                 if (keyboardState.WasKeyJustUp(Keys.V) && PlayerState != State.Attacking)
                 {
-                    attackTimer = attackTimerMax;
+                    
                     if (keyboardState.IsKeyDown(Keys.Down) && isJumping){
-                        Damage((new Vector2(0, 24)+ positionOffset));
+                        Damage((new Vector2(0, 32)+ positionOffset), true);
                         PlayerState = State.AttackingDown;
                     } 
                     else if (!keyboardState.IsKeyDown(Keys.Down) && isJumping) 
                     {
                         PlayerState = State.JumpAttack;
+                        attackTimer = attackTimerMax;
                     } else {
                         PlayerState = State.Attacking;
+                        attackTimer = attackTimerMax;
                     }
 
                     if (!isJumping) { velocity.X = 0; }

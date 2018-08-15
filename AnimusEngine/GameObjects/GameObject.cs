@@ -37,7 +37,7 @@ namespace AnimusEngine
 
         public Vector2 knockback;
         public int knockbackTimer;
-        public int knockbackTimerMax = 15;
+        public int knockbackTimerMax = 10;
         public bool kinematic = true;
 
         public bool invincible;

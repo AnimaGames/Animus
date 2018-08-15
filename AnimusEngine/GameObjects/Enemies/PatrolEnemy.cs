@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using MonoGame.Extended.Animations.SpriteSheets;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Animations;
+using System;
 
 namespace AnimusEngine
 {
@@ -12,6 +13,7 @@ namespace AnimusEngine
     {
         public float walkSpeed;
         private float previousX;
+        Random randomNum;
 
         public PatrolEnemy()
         {
@@ -26,7 +28,9 @@ namespace AnimusEngine
 
         public override void Initialize()
         {
+            randomNum = new Random();
             previousX = position.X;
+            walkSpeed = (walkSpeed * randomNum.Next(1, 5))/3;
             base.Initialize();
         }
 

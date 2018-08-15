@@ -32,7 +32,7 @@ namespace AnimusEngine
         {
             // initiliaze sprite
             spriteWidth = spriteHeight = 32;
-            objectTexture = content.Load<Texture2D>("Sprites/" + "tinyCaro");
+            objectTexture = content.Load<Texture2D>("Sprites/" + "enemy");
             objectAtlas = TextureAtlas.Create("objectAtlas", objectTexture, spriteWidth, spriteHeight);
 
             //create animations from sprite sheet
@@ -59,7 +59,7 @@ namespace AnimusEngine
 
             if (knockbackTimer > 0)
             {
-                velocity = NormalizeVector(knockback) * (2*maxSpeed);
+                velocity = NormalizeVector(knockback) * (5);
             }
 
             base.Update(_objects, map, gameTime);

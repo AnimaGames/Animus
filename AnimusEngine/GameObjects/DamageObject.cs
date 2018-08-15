@@ -76,15 +76,17 @@ namespace AnimusEngine
                 {
                     _objects[i].knockback = new Vector2(-(owner.position.X - _objects[i].position.X),
                                                         (_objects[i].position.Y - owner.position.Y));
-                    
-                    _objects[i].invincible = true;
-                    Destroy(_objects);
-
+                    if (owner.objectType != _objects[i].objectType)
+                    {
+                        _objects[i].invincible = true;
+                        Destroy(_objects);
+                    }
                     // bouce off enemy
                     if (bounce)
                     {
                         _objects[0].bouncing = true;
-                        _objects[0].knockback = new Vector2(0, -40);
+                        _objects[0].invincible = true;
+                        _objects[0].knockback = new Vector2(0, -100);
                         bounce = false;
                     }
                 }
@@ -96,6 +98,16 @@ namespace AnimusEngine
             owner = inputOwner;
             position = initPosition;
             active = true;
+            deathTimer = deathTimerMax;
+        }
+
+        public void Damage(GameObject inputOwner, Vector2 initPosition, bool isBouncing)
+        {
+            owner = inputOwner;
+            position = initPosition;
+            active = true;
+            bounce = true;
+            bounce = isBouncing;
             deathTimer = deathTimerMax;
         }
 
