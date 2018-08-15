@@ -25,9 +25,9 @@ namespace AnimusEngine
         int willKillPlayer;
 
         public HUD playerHUD = new HUD();
-        static SoundEffect bgMusic;
+        public static SoundEffect bgMusic;
         public string levelNumberHolder;
-        static SoundEffectInstance soundEffectInstance;
+        public static SoundEffectInstance soundEffectInstance;
 
 
         public SceneCreator()
@@ -38,21 +38,26 @@ namespace AnimusEngine
                                 GraphicsDevice graphics, 
                                 List<GameObject> _objects,  
                                 string levelNumber, 
-                                string roomNumber)
+                                string roomNumber, 
+                                bool restartMusic)
         {
-           
+            
             bgMusic = content.Load<SoundEffect>("Audio/Music/Level_" + levelNumber);
+            Console.WriteLine(bgMusic.Name);
 
-            soundEffectInstance = bgMusic.CreateInstance();
-
-            if (levelNumber != levelNumberHolder && levelNumber != "Load")
+            if (soundEffectInstance != null && levelNumber != levelNumberHolder)
             {
+                soundEffectInstance.Stop(true);
+                soundEffectInstance.Dispose();
+            }
+            
+            if (restartMusic)
+            {
+                soundEffectInstance = bgMusic.CreateInstance();
                 soundEffectInstance.Play();
             }
-            if (levelNumber != "GameOver")
-            {
-                soundEffectInstance.IsLooped = true;
-            }
+
+            soundEffectInstance.IsLooped |= levelNumber != "GameOver";
 
             levelNumberHolder = levelNumber;
 
@@ -142,21 +147,15 @@ namespace AnimusEngine
                 playerHUD = new HUD();
             }
             playerHUD.Load(content);
-
             LoadObjects(content, _objects);
         }
 
         public void UnloadObjects(bool killPlayer, List<GameObject> _objects)
         {
+            Game1.currentLevel = Game1.levelNumber;
+
             if (killPlayer == true)
             {
-                
-                soundEffectInstance.Stop(true);
-                soundEffectInstance.Dispose();
-                bgMusic.Dispose();
-                Console.WriteLine(soundEffectInstance.State);
-                Console.WriteLine(soundEffectInstance.IsDisposed);
-
                 willKillPlayer = 0;
             }
             else

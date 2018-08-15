@@ -33,7 +33,6 @@ namespace AnimusEngine
         public bool solid = true;
         public int health = 500;
         public bool isHurt;
-        public bool bouncing;
 
         public Vector2 knockback;
         public int knockbackTimer;

@@ -52,7 +52,7 @@ namespace AnimusEngine
                 roomNumber = roomPlaceHolder;
                 Door.doorEnter = false;
                 screenTimer = 50;
-                sceneCreator.LevelLoader(content, graphics.GraphicsDevice, _objects, Game1.levelNumber, roomNumber);
+                sceneCreator.LevelLoader(content, graphics.GraphicsDevice, _objects, Game1.levelNumber, roomNumber, false);
                 Entity.applyGravity = true;
             }
         }

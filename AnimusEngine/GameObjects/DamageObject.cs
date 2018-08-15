@@ -81,14 +81,7 @@ namespace AnimusEngine
                         _objects[i].invincible = true;
                         Destroy(_objects);
                     }
-                    // bouce off enemy
-                    if (bounce)
-                    {
-                        _objects[0].bouncing = true;
-                        _objects[0].invincible = true;
-                        _objects[0].knockback = new Vector2(0, -100);
-                        bounce = false;
-                    }
+                    // TODO bouce off enemy
                 }
             }
         }

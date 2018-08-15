@@ -59,7 +59,7 @@ namespace AnimusEngine
 
             if (knockbackTimer > 0)
             {
-                velocity = NormalizeVector(knockback) * (5);
+                velocity = NormalizeVector(knockback) * (4);
             }
 
             base.Update(_objects, map, gameTime);

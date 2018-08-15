@@ -160,7 +160,6 @@
     <None Include="Content\Maps\MapObjects\PlatformMedium.png" />
     <None Include="Content\Maps\MapObjects\PlatformSmall.png" />
     <None Include="Content\Audio\Music\Level_1.mp3" />
-    <None Include="Content\Audio\Music\Level_StartScreen.mp3" />
     <None Include="Content\Audio\Sound Effects\Jump.wav" />
     <None Include="Content\Audio\Sound Effects\PlayerAttack.wav" />
     <None Include="Content\Audio\Sound Effects\PlayerHurt.wav" />

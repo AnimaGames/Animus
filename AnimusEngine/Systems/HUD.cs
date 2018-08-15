@@ -15,7 +15,7 @@ namespace AnimusEngine
     {
         public static int playerMaxHealth = 3;
         public static int playerHealth = 3;
-        public static int playerLives = 0;
+        public static int playerLives = 3;
 
         private Texture2D healthFullTexture;
         private Texture2D healthEmptyTexture;

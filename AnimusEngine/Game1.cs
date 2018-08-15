@@ -21,7 +21,8 @@ namespace AnimusEngine
 
         //level items
         static public string levelNumber;
-        public string roomNumber;
+        static public string currentLevel;
+        public string checkPoint;
       
         //menu items
         static public bool inMenu = true;
@@ -44,7 +45,7 @@ namespace AnimusEngine
             Camera.Initialize();
             Camera.cameraOffset = new Vector2(Resolution.VirtualWidth / 2, Resolution.VirtualHeight / 2);
             levelNumber = "StartScreen";
-            roomNumber = "1";
+            checkPoint = "1";
             HUD.playerHealth = HUD.playerMaxHealth;
             base.Initialize();
         }
@@ -54,7 +55,7 @@ namespace AnimusEngine
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("Fonts/megaman");
-            sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, roomNumber);
+            sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, checkPoint, true);
         }
 
         protected override void Update(GameTime gameTime)
@@ -66,9 +67,10 @@ namespace AnimusEngine
                                          graphics, 
                                          Content, 
                                          Map.screenDir, 
-                                         roomNumber);
+                                         checkPoint);
+                
             }
-            stateCheck.CheckForDeath(_objects, sceneCreator, graphics, Content, roomNumber);
+            stateCheck.CheckForDeath(_objects, sceneCreator, graphics, Content, checkPoint);
             CheckForMenu(gameTime);
 
             base.Update(gameTime);
@@ -154,25 +156,25 @@ namespace AnimusEngine
             {
                 if (levelNumber == "StartScreen")
                 {
-                    levelNumber = "Load";
-                    sceneCreator.UnloadObjects(false, _objects);
-
-                    sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, roomNumber);
-                }
-                else if (levelNumber == "Load")
-                {
                     levelNumber = "1";
                     sceneCreator.UnloadObjects(true, _objects);
                     inMenu = false;
-
-                    sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, roomNumber);
+                    sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, checkPoint, true);
                 }
+                //else if (levelNumber == "Load")
+                //{
+                //    levelNumber = "1";
+                //    sceneCreator.UnloadObjects(true, _objects);
+                //    inMenu = false;
+
+                //    sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, roomNumber);
+                //}
                 else if (levelNumber == "GameOver")
                 {
-                    levelNumber = "StartScreen";
-                    sceneCreator.UnloadObjects(false, _objects);
-
-                    sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, roomNumber);
+                    levelNumber = currentLevel;
+                    sceneCreator.UnloadObjects(true, _objects);
+                    inMenu = false;
+                    sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, checkPoint, true);
                 }
                 else
                 {

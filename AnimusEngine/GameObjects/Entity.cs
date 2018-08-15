@@ -227,6 +227,7 @@ namespace AnimusEngine
         {
             Rectangle futureBoundingBox = BoundingBox;
 
+          
             int maxX = (int)maxSpeed;
             int maxY = (int)maxSpeed;
 
@@ -363,16 +364,12 @@ namespace AnimusEngine
         private void Knockedback()
         {
             if (invincible && invincibleTimer <= 0)
-            {
-                if (!bouncing)
-                {
-                    canMove = false;
-                    health -= damageAmount;
-                    invincibleTimer = invincibleTimerMax;
-                    knockbackTimer = knockbackTimerMax;
-                    isHurt = true;
-                }
-                bouncing = false;
+            {             
+                canMove = false;
+                health -= damageAmount;
+                invincibleTimer = invincibleTimerMax;
+                knockbackTimer = knockbackTimerMax;
+                isHurt = true;
             }
 
             if (invincibleTimer > 0)

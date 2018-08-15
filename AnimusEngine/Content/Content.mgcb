@@ -15,11 +15,11 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Audio/Music/Level_1.mp3
-/importer:Mp3Importer
+#begin Audio/Music/Level_1.wav
+/importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Audio/Music/Level_1.mp3
+/build:Audio/Music/Level_1.wav
 
 #begin Audio/Music/Level_GameOver.wav
 /importer:WavImporter
@@ -50,6 +50,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Audio/Sound Effects/PlayerAttack.wav
+
+#begin Audio/Sound Effects/playerDeath.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Sound Effects/playerDeath.mp3
 
 #begin Audio/Sound Effects/PlayerHurt.wav
 /importer:WavImporter

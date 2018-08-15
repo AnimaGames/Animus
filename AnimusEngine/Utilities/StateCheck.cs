@@ -14,7 +14,8 @@ namespace AnimusEngine
 {
     public class StateCheck
     {
-        static public int deathTimer = 100;
+        int deathTimerMax = 150;
+        public int deathTimer = 150;
         static public bool playerDead;
 
         public StateCheck()
@@ -30,33 +31,37 @@ namespace AnimusEngine
         {
             if (playerDead)
             {
+                if (SceneCreator.soundEffectInstance != null)
+                {
+                    SceneCreator.soundEffectInstance.Stop(true);
+                    SceneCreator.soundEffectInstance.Dispose();
+                }
                 deathTimer--;
 
-                if (deathTimer <= 0 && HUD.playerLives > 0)
+                if (deathTimer <= 0)
                 {
-                    HUD.playerLives--;
                     HUD.playerHealth = HUD.playerMaxHealth;
-                    sceneCreator.UnloadObjects(true, _objects);
-                    PauseMenu.active = false;
-                    Game1.inMenu = false;
-                    sceneCreator.LevelLoader(content, graphics.GraphicsDevice, _objects, Game1.levelNumber, roomNumber);
-                    deathTimer = 50;
                     _objects[0].invincible = false;
-                    playerDead = false;
-                    Camera.LookAt(_objects[0].position);
-                }
 
-                if (deathTimer <= 0 && HUD.playerLives == 0)
-                {
-                    HUD.playerHealth = HUD.playerMaxHealth;
-                    HUD.playerLives = 3;
-                    Game1.levelNumber = "GameOver";
-                    _objects[0].invincible = false;
-                    sceneCreator.UnloadObjects(true, _objects);
+                    if (HUD.playerLives > 0)
+                    {
+                        HUD.playerLives--;
+                        sceneCreator.UnloadObjects(true, _objects);
+                        Game1.inMenu = false;
+                        sceneCreator.LevelLoader(content, graphics.GraphicsDevice, _objects, Game1.levelNumber, roomNumber, true);
+                        Camera.LookAt(_objects[0].position);
+                    }
+
+                    if (HUD.playerLives == 0)
+                    {
+                        HUD.playerLives = 3;
+                        sceneCreator.UnloadObjects(true, _objects);
+                        Game1.levelNumber = "GameOver";
+                        Game1.inMenu = true;
+                        sceneCreator.LevelLoader(content, graphics.GraphicsDevice, _objects, Game1.levelNumber, roomNumber, true);
+                    }
                     PauseMenu.active = false;
-                    Game1.inMenu = true;
-                    sceneCreator.LevelLoader(content, graphics.GraphicsDevice, _objects, Game1.levelNumber, roomNumber);
-                    deathTimer = 50;
+                    deathTimer = deathTimerMax;
                     playerDead = false;
                 }
             }
