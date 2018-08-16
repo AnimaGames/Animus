@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
 using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Content;
 using System;
 
@@ -109,9 +108,9 @@ namespace AnimusEngine
                         _objects[0].Initialize();
                         _objects[0].Load(content);
                     }
-                    if (_objectLayer.Objects[i].Name == "overWorldPlayer" + Game1.currentLevel)
+                    if (_objectLayer.Objects[i].Name == "playerOverworld" + Game1.currentLevel)
                     {
-                        _objects.Add(new OverWorldPlayer(_objectLayer.Objects[i].Position));
+                        _objects.Add(new PlayerOverworld(_objectLayer.Objects[i].Position));
                         _objects[0].Initialize();
                         _objects[0].Load(content);
                         Console.WriteLine("poop");

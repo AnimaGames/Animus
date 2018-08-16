@@ -12,7 +12,7 @@ using System;
 
 namespace AnimusEngine
 {
-    public class OverWorldPlayer : Entity
+    public class PlayerOverworld : Entity
     {
 
         //private bool canMove = true;
@@ -28,16 +28,17 @@ namespace AnimusEngine
         public SoundEffect hurtSFX;
         public SoundEffect deadSFX;
 
-        public OverWorldPlayer()
+        public PlayerOverworld()
         { }
 
         public enum State
         {
-            Idle,
-            Walking
+            Right,
+            Up,
+            Down
         }
 
-        public OverWorldPlayer(Vector2 initPosition)
+        public PlayerOverworld(Vector2 initPosition)
         {
             position = initPosition;
         }
@@ -53,15 +54,16 @@ namespace AnimusEngine
         public override void Load(ContentManager content)
         {
             // initiliaze sprite
-            spriteWidth = 48;
-            spriteHeight = 32;
-            objectTexture = content.Load<Texture2D>("Sprites/player");
+            spriteWidth = 20;
+            spriteHeight = 20;
+            objectTexture = content.Load<Texture2D>("Sprites/playerOverworld");
             objectAtlas = TextureAtlas.Create("objectAtlas", objectTexture, spriteWidth, spriteHeight);
 
             //create animations from sprite sheet
             animationFactory = new SpriteSheetAnimationFactory(objectAtlas);
-            animationFactory.Add("idle", new SpriteSheetAnimationData(new[] { 0 }));
-            animationFactory.Add("walk", new SpriteSheetAnimationData(new[] { 1, 2, 3, 4 }, frameDuration: 0.1f, isLooping: true));
+            animationFactory.Add("down", new SpriteSheetAnimationData(new[] { 0 }, frameDuration: 0.1f, isLooping: true));
+            animationFactory.Add("up", new SpriteSheetAnimationData(new[] { 1 }, frameDuration: 0.1f, isLooping: true));
+            animationFactory.Add("right", new SpriteSheetAnimationData(new[] { 2 }));
 
             objectAnimated = new AnimatedSprite(animationFactory, "idle");
             objectSprite = objectAnimated;
@@ -69,9 +71,9 @@ namespace AnimusEngine
             objectSprite.Depth = 0.1f;
 
             base.Load(content);
-            boundingBoxWidth = 14;
-            boundingBoxHeight = 22;
-            boundingBoxOffset = new Vector2(17, 9);
+            boundingBoxWidth = 16;
+            boundingBoxHeight = 16;
+            boundingBoxOffset = new Vector2(2, 4);
         }
 
         public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
@@ -86,11 +88,14 @@ namespace AnimusEngine
 
             switch (PlayerState)
             {
-                case State.Walking:
-                    objectAnimated.Play("walk");
+                case State.Right:
+                    objectAnimated.Play("right");
                     break;
-                case State.Idle:
-                    objectAnimated.Play("idle");
+                case State.Down:
+                    objectAnimated.Play("down");
+                    break;
+                case State.Up:
+                    objectAnimated.Play("up");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -120,36 +125,36 @@ namespace AnimusEngine
                 }
             }
             // move top down in overworld
-            if (keyboardState.IsKeyDown(Keys.Up))
-            {
-                MoveUp();
-            }
-            if (keyboardState.IsKeyDown(Keys.Down))
-            {
-                MoveDown();
-            }
-
-            //move left right
             if (keyboardState.IsKeyDown(Keys.Left))
             {
                 MoveLeft();
+                PlayerState = State.Right;
                 objectAnimated.Effect = SpriteEffects.FlipHorizontally;
             }
-
-            if (keyboardState.IsKeyDown(Keys.Right))
+            else if (keyboardState.IsKeyDown(Keys.Right))
             {
                 MoveRight();
+                PlayerState = State.Right;
                 objectAnimated.Effect = SpriteEffects.None;
             }
-
-            if ((int)velocity.X != 0)
-            { PlayerState = State.Walking; }
-            else
-            { PlayerState = State.Idle; }
+            else if (keyboardState.IsKeyDown(Keys.Up))
+            {
+                PlayerState = State.Up;
+                MoveUp();
+            } 
+            else if (keyboardState.IsKeyDown(Keys.Down))
+            {
+                PlayerState = State.Down;
+                MoveDown();
+            } 
 
             if (isOnPlatform && !keyboardState.IsKeyDown(Keys.Left) &&
-                !keyboardState.IsKeyDown(Keys.Right) && !keyboardState.IsKeyDown(Keys.Down))
-            { PlayerState = State.Idle; }
+                                !keyboardState.IsKeyDown(Keys.Right) &&
+                                !keyboardState.IsKeyDown(Keys.Down) &&
+                                !keyboardState.IsKeyDown(Keys.Up))
+            {
+                //stand still
+            }
 
         }
     }

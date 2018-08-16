@@ -62,9 +62,9 @@
     <Compile Include="Systems\HUD.cs" />
     <Compile Include="Systems\SceneCreator.cs" />
     <Compile Include="GameObjects\Enemies\Enemy.cs" />
-    <Compile Include="GameObjects\OverWorldPlayer.cs" />
     <Compile Include="Systems\Screens.cs" />
     <Compile Include="Systems\StateCheck.cs" />
+    <Compile Include="GameObjects\PlayerOverworld.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

@@ -91,8 +91,8 @@ namespace AnimusEngine
 
             base.Load(content);
             boundingBoxWidth = 14;
-            boundingBoxHeight = 22;
-            boundingBoxOffset = new Vector2(17, 9);
+            boundingBoxHeight = 24;
+            boundingBoxOffset = new Vector2(17, 7);
         }
 
         public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)

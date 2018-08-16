@@ -225,6 +225,18 @@
 /processorParam:TextureFormat=Color
 /build:Sprites/player.png
 
+#begin Sprites/playerOverworld.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Sprites/playerOverworld.png
+
 #begin Sprites/tinyCaro.png
 /importer:TextureImporter
 /processor:TextureProcessor
