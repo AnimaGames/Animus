@@ -61,9 +61,10 @@
     <Compile Include="GameObjects\DamageObject.cs" />
     <Compile Include="Systems\HUD.cs" />
     <Compile Include="Systems\SceneCreator.cs" />
-    <Compile Include="Utilities\Screens.cs" />
-    <Compile Include="Utilities\StateCheck.cs" />
     <Compile Include="GameObjects\Enemies\Enemy.cs" />
+    <Compile Include="GameObjects\OverWorldPlayer.cs" />
+    <Compile Include="Systems\Screens.cs" />
+    <Compile Include="Systems\StateCheck.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -164,6 +165,12 @@
     <None Include="Content\Audio\Sound Effects\PlayerAttack.wav" />
     <None Include="Content\Audio\Sound Effects\PlayerHurt.wav" />
     <None Include="Content\Sprites\enemy.png" />
+    <None Include="Content\Maps\Level_GameOver.tmx" />
+    <None Include="Content\Maps\Level_Load.tmx" />
+    <None Include="Content\Audio\Sound Effects\playerDeath.mp3" />
+    <None Include="Content\Audio\Music\Level_GameOver.wav" />
+    <None Include="Content\Audio\Music\Level_Load.wav" />
+    <None Include="Content\Audio\Music\Level_StartScreen.wav" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Utilities\" />

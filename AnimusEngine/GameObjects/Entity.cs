@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 
 
@@ -228,8 +229,8 @@ namespace AnimusEngine
             Rectangle futureBoundingBox = BoundingBox;
 
           
-            int maxX = (int)maxSpeed;
-            int maxY = (int)maxSpeed;
+            int maxX = (int)maxSpeed * knockbackMult;
+            int maxY = (int)maxSpeed * knockbackMult;
 
             if (applyGravity) { maxY = (int)jumpSpeed; }
 
@@ -308,7 +309,7 @@ namespace AnimusEngine
 
                     if ((applyGravity &&
                         (futureBoundingBox.Bottom >= _objects[i].BoundingBox.Top - maxSpeed) &&
-                        (futureBoundingBox.Bottom <= _objects[i].BoundingBox.Top + 4) &&
+                         (futureBoundingBox.Bottom <= _objects[i].BoundingBox.Top + 8) &&
                          velocity.Y > 0) ||
                         Player.isOnPlatform)
                     {

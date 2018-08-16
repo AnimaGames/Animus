@@ -30,7 +30,7 @@ namespace AnimusEngine
         {
             randomNum = new Random();
             previousX = position.X;
-            walkSpeed = (walkSpeed * randomNum.Next(1, 5))/3;
+            walkSpeed = (walkSpeed * randomNum.Next(2, 5))/3;
             base.Initialize();
         }
 

@@ -76,6 +76,7 @@ namespace AnimusEngine
             animationFactory.Add("attack", new SpriteSheetAnimationData(new[] { 6, 7, 8, 9 }, frameDuration: 0.1f, isLooping: true));
             animationFactory.Add("attackDown", new SpriteSheetAnimationData(new[] { 6, 7, 8, 9 }, frameDuration: 0.1f, isLooping: true));
             animationFactory.Add("hurt", new SpriteSheetAnimationData(new[] { 3 }));
+            animationFactory.Add("duck", new SpriteSheetAnimationData(new[] { 10 }, frameDuration: 0.1f, isLooping: true));
 
             objectAnimated = new AnimatedSprite(animationFactory, "idle");
             objectSprite = objectAnimated;
@@ -90,8 +91,8 @@ namespace AnimusEngine
 
             base.Load(content);
             boundingBoxWidth = 14;
-            boundingBoxHeight = 24;
-            boundingBoxOffset = new Vector2(17, 7);
+            boundingBoxHeight = 22;
+            boundingBoxOffset = new Vector2(17, 9);
         }
 
         public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
@@ -109,7 +110,8 @@ namespace AnimusEngine
             } 
             else if (knockbackTimer > 0)
             {
-                velocity = NormalizeVector(knockback) * 2 * maxSpeed;
+                knockbackMult = 2;
+                velocity = NormalizeVector(knockback) * knockbackMult * maxSpeed;
             }
 
             if (attackTimer < 3 && attackTimer > 0)
@@ -196,13 +198,14 @@ namespace AnimusEngine
                 if (keyboardState.WasKeyJustUp(Keys.Down))
                 {
                     PlayerState = State.Ducking;
-                    objectAnimated.Effect = SpriteEffects.FlipVertically;
-
+                    boundingBoxHeight = 16;
+                    boundingBoxOffset = new Vector2(17, 15);
                 }
                 if (keyboardState.WasKeyJustDown(Keys.Down))
                 {
                     PlayerState = State.Idle;
-                    objectAnimated.Effect = SpriteEffects.None;
+                    boundingBoxHeight = 22;
+                    boundingBoxOffset = new Vector2(17, 9);
                 }
 
                 //move left right
@@ -266,11 +269,11 @@ namespace AnimusEngine
             {
                 if ((int)velocity.X != 0)
                 { PlayerState = State.Walking; }
-                else
+                else if (PlayerState != State.Ducking)
                 { PlayerState = State.Idle; }
                
                 if (isOnPlatform && !keyboardState.IsKeyDown(Keys.Left) && 
-                     !keyboardState.IsKeyDown(Keys.Right))
+                    !keyboardState.IsKeyDown(Keys.Right) && !keyboardState.IsKeyDown(Keys.Down))
                 { PlayerState = State.Idle; }
 
                 if (isJumping)

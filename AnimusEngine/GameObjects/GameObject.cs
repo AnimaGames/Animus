@@ -35,6 +35,7 @@ namespace AnimusEngine
         public bool isHurt;
 
         public Vector2 knockback;
+        public int knockbackMult = 1;
         public int knockbackTimer;
         public int knockbackTimerMax = 10;
         public bool kinematic = true;

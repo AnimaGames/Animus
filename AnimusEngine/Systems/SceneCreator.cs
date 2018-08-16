@@ -36,7 +36,7 @@ namespace AnimusEngine
 
         public void LevelLoader(ContentManager content, 
                                 GraphicsDevice graphics, 
-                                List<GameObject> _objects,  
+                                List<GameObject> _objects,
                                 string levelNumber, 
                                 string roomNumber, 
                                 bool restartMusic)
@@ -104,9 +104,17 @@ namespace AnimusEngine
                     //create player if none exists
                     if (_objectLayer.Objects[i].Name == "playerStart")
                     {
-                        _objects.Add(new Player(_objectLayer.Objects[i].Position));
+                        _objects.Add(new Player(new Vector2(_objectLayer.Objects[i].Position.X, 
+                                                            _objectLayer.Objects[i].Position.Y - 7)));
                         _objects[0].Initialize();
                         _objects[0].Load(content);
+                    }
+                    if (_objectLayer.Objects[i].Name == "overWorldPlayer" + Game1.currentLevel)
+                    {
+                        _objects.Add(new OverWorldPlayer(_objectLayer.Objects[i].Position));
+                        _objects[0].Initialize();
+                        _objects[0].Load(content);
+                        Console.WriteLine("poop");
                     }
                 }
                 //create doors

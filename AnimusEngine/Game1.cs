@@ -62,11 +62,11 @@ namespace AnimusEngine
         {
             if (Door.doorEnter) {
                 sceneCreator.UnloadObjects(false, _objects);
-                screens.ScreenTransition(_objects, 
-                                         sceneCreator, 
+                screens.ScreenTransition(_objects,
                                          graphics, 
-                                         Content, 
-                                         Map.screenDir, 
+                                         Content,
+                                         sceneCreator,
+                                         Map.screenDir,   
                                          checkPoint);
                 
             }
@@ -156,7 +156,7 @@ namespace AnimusEngine
             {
                 if (levelNumber == "StartScreen")
                 {
-                    levelNumber = "1";
+                    levelNumber = "0";
                     sceneCreator.UnloadObjects(true, _objects);
                     inMenu = false;
                     sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, checkPoint, true);
