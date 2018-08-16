@@ -35,7 +35,10 @@ namespace AnimusEngine
         {
             Right,
             Up,
-            Down
+            Down,
+            RightWalk,
+            UpWalk,
+            DownWalk
         }
 
         public PlayerOverworld(Vector2 initPosition)
@@ -61,9 +64,14 @@ namespace AnimusEngine
 
             //create animations from sprite sheet
             animationFactory = new SpriteSheetAnimationFactory(objectAtlas);
-            animationFactory.Add("down", new SpriteSheetAnimationData(new[] { 0 }, frameDuration: 0.1f, isLooping: true));
-            animationFactory.Add("up", new SpriteSheetAnimationData(new[] { 1 }, frameDuration: 0.1f, isLooping: true));
-            animationFactory.Add("right", new SpriteSheetAnimationData(new[] { 2 }));
+            animationFactory.Add("down", new SpriteSheetAnimationData(new[] { 0 }));
+            animationFactory.Add("downwalk", new SpriteSheetAnimationData(new[] { 1, 2 }, frameDuration: 0.2f, isLooping: true));
+
+            animationFactory.Add("up", new SpriteSheetAnimationData(new[] { 4 }));
+            animationFactory.Add("upwalk", new SpriteSheetAnimationData(new[] { 5, 6 }, frameDuration: 0.2f, isLooping: true));
+
+            animationFactory.Add("right", new SpriteSheetAnimationData(new[] { 8 }));
+            animationFactory.Add("rightwalk", new SpriteSheetAnimationData(new[] { 8, 9 }, frameDuration: 0.2f, isLooping: true));
 
             objectAnimated = new AnimatedSprite(animationFactory, "idle");
             objectSprite = objectAnimated;
@@ -82,7 +90,7 @@ namespace AnimusEngine
 
             if (!Door.doorEnter && !StateCheck.playerDead && canMove && knockbackTimer <= 0)
             {
-                CheckInput(map);
+                CheckInput();
                 objectAnimated.Update(gameTime);
             }
 
@@ -97,6 +105,16 @@ namespace AnimusEngine
                 case State.Up:
                     objectAnimated.Play("up");
                     break;
+
+                case State.RightWalk:
+                    objectAnimated.Play("rightwalk");
+                    break;
+                case State.DownWalk:
+                    objectAnimated.Play("downwalk");
+                    break;
+                case State.UpWalk:
+                    objectAnimated.Play("upwalk");
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -109,7 +127,7 @@ namespace AnimusEngine
             base.Draw(spriteBatch);
         }
 
-        private void CheckInput(Map map)
+        private void CheckInput()
         {
             var keyboardState = KeyboardExtended.GetState();
 
@@ -128,32 +146,43 @@ namespace AnimusEngine
             if (keyboardState.IsKeyDown(Keys.Left))
             {
                 MoveLeft();
-                PlayerState = State.Right;
+                PlayerState = State.RightWalk;
                 objectAnimated.Effect = SpriteEffects.FlipHorizontally;
             }
             else if (keyboardState.IsKeyDown(Keys.Right))
             {
                 MoveRight();
-                PlayerState = State.Right;
+                PlayerState = State.RightWalk;
                 objectAnimated.Effect = SpriteEffects.None;
             }
             else if (keyboardState.IsKeyDown(Keys.Up))
             {
-                PlayerState = State.Up;
+                PlayerState = State.UpWalk;
                 MoveUp();
             } 
             else if (keyboardState.IsKeyDown(Keys.Down))
             {
-                PlayerState = State.Down;
+                PlayerState = State.DownWalk;
                 MoveDown();
             } 
 
-            if (isOnPlatform && !keyboardState.IsKeyDown(Keys.Left) &&
-                                !keyboardState.IsKeyDown(Keys.Right) &&
-                                !keyboardState.IsKeyDown(Keys.Down) &&
-                                !keyboardState.IsKeyDown(Keys.Up))
+            if (!keyboardState.IsKeyDown(Keys.Left) &&
+                !keyboardState.IsKeyDown(Keys.Right) &&
+                !keyboardState.IsKeyDown(Keys.Down) &&
+                !keyboardState.IsKeyDown(Keys.Up))
             {
-                //stand still
+                if (PlayerState == State.DownWalk)
+                {
+                    PlayerState = State.Down;
+                }
+                if (PlayerState == State.UpWalk)
+                {
+                    PlayerState = State.Up;
+                }
+                if (PlayerState == State.RightWalk)
+                {
+                    PlayerState = State.Right;
+                }
             }
 
         }

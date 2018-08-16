@@ -171,6 +171,7 @@
     <None Include="Content\Audio\Music\Level_GameOver.wav" />
     <None Include="Content\Audio\Music\Level_Load.wav" />
     <None Include="Content\Audio\Music\Level_StartScreen.wav" />
+    <None Include="Content\Sprites\playerOverworld.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Utilities\" />
