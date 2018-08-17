@@ -150,6 +150,8 @@ namespace AnimusEngine
                     objectAnimated.Play("duck");
                     break;
                 case State.Dead:
+                    boundingBoxHeight = 16;
+                    boundingBoxOffset = new Vector2(17, 0);
                     objectAnimated.Effect = SpriteEffects.FlipVertically;
                     break;
                 case State.Hurt:

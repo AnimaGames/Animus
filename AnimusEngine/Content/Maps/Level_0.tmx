@@ -53,6 +53,5 @@
   <object id="45" name="tinyCaro" type="npc" x="240" y="192" width="16" height="32"/>
   <object id="47" name="Overworld" type="door" x="592" y="0" width="16" height="224"/>
   <object id="50" name="rupee" type="object" x="368" y="208" width="16" height="16"/>
-  <object id="51" x="192" y="-96"/>
  </objectgroup>
 </map>

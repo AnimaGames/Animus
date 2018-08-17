@@ -36,6 +36,7 @@ namespace AnimusEngine
                     SceneCreator.soundEffectInstance.Stop(true);
                     SceneCreator.soundEffectInstance.Dispose();
                 }
+
                 deathTimer--;
 
                 if (deathTimer <= 0)
@@ -43,22 +44,35 @@ namespace AnimusEngine
                     HUD.playerHealth = HUD.playerMaxHealth;
                     _objects[0].invincible = false;
 
+                    sceneCreator.UnloadObjects(true, _objects);
+
                     if (HUD.playerLives > 0)
                     {
                         HUD.playerLives--;
-                        sceneCreator.UnloadObjects(true, _objects);
                         Game1.inMenu = false;
-                        sceneCreator.LevelLoader(content, graphics.GraphicsDevice, _objects, Game1.levelNumber, roomNumber, true);
+
+                        sceneCreator.LevelLoader(content,
+                                                 graphics.GraphicsDevice,
+                                                 _objects,
+                                                 Game1.levelNumber,
+                                                 roomNumber,
+                                                 true);
+                        
                         Camera.LookAt(_objects[0].position);
                     }
 
                     if (HUD.playerLives == 0)
                     {
                         HUD.playerLives = 3;
-                        sceneCreator.UnloadObjects(true, _objects);
                         Game1.levelNumber = "GameOver";
+                        Game1.checkPoint = roomNumber = "1";
                         Game1.inMenu = true;
-                        sceneCreator.LevelLoader(content, graphics.GraphicsDevice, _objects, Game1.levelNumber, roomNumber, true);
+                        sceneCreator.LevelLoader(content, 
+                                                 graphics.GraphicsDevice, 
+                                                 _objects, 
+                                                 Game1.levelNumber, 
+                                                 roomNumber, 
+                                                 true);
                     }
                     PauseMenu.active = false;
                     deathTimer = deathTimerMax;

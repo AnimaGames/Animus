@@ -85,6 +85,29 @@ namespace AnimusEngine
 
             for (int i = 0; i < _objectLayer.Objects.Length; i++)
             {
+                if (_objectLayer.Objects[i].Type == "player" && _objects.Count == 0)
+                {
+                    //create player if none exists
+                    if (_objectLayer.Objects[i].Name == "playerStart")
+                    {
+                        _objects.Add(new Player(new Vector2(_objectLayer.Objects[i].Position.X,
+                                                            _objectLayer.Objects[i].Position.Y - 7)));
+                        _objects[0].Initialize();
+                        _objects[0].Load(content);
+                    }
+                    if (_objectLayer.Objects[i].Name == "playerOverworld" + Game1.previousLevel)
+                    {
+                        _objects.Add(new PlayerOverworld(_objectLayer.Objects[i].Position));
+                        _objects[0].Initialize();
+                        _objects[0].Load(content);
+                    }
+                }
+
+            }
+
+            for (int i = 0; i < _objectLayer.Objects.Length; i++)
+            {
+                
                 if (_objectLayer.Objects[i].Type == "camera")
                 {
                     //set camera max and min per room
@@ -95,23 +118,6 @@ namespace AnimusEngine
                     if (_objectLayer.Objects[i].Name == "cMax" + roomNumber)
                     {
                         Camera.cameraMax = _objectLayer.Objects[i].Position - Camera.cameraOffset;
-                    }
-                }
-                if (_objectLayer.Objects[i].Type == "player" && _objects.Count == 0)
-                {
-                    //create player if none exists
-                    if (_objectLayer.Objects[i].Name == "playerStart")
-                    {
-                        _objects.Add(new Player(new Vector2(_objectLayer.Objects[i].Position.X, 
-                                                            _objectLayer.Objects[i].Position.Y - 7)));
-                        _objects[0].Initialize();
-                        _objects[0].Load(content);
-                    }
-                    if (_objectLayer.Objects[i].Name == "playerOverworld" + Game1.previousLevel)
-                    {
-                        _objects.Add(new PlayerOverworld(_objectLayer.Objects[i].Position));
-                        _objects[0].Initialize();
-                        _objects[0].Load(content);
                     }
                 }
                 //create doors
@@ -198,7 +204,7 @@ namespace AnimusEngine
         public void LoadObjects(ContentManager content, List<GameObject> _objects)
         {
             PauseMenu.Load(content);
-            for (int i = 0; i < _objects.Count; i++)
+            for (int i = 1; i < _objects.Count; i++)
             {
                 _objects[i].Initialize();
                 _objects[i].Load(content);

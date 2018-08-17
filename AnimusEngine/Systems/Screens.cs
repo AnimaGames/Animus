@@ -13,8 +13,8 @@ namespace AnimusEngine
         Texture2D fadeTexture;
         Rectangle fadeScreenRec;
 
-        private bool fadeIn = true;
-        private bool fadeComplete;
+        public bool fadeIn = true;
+        public bool fadeComplete;
         private bool fadeOut;
         private bool fading;
         private int fadeAlpha = 0;
@@ -96,33 +96,7 @@ namespace AnimusEngine
 
             if ((roomPlaceHolder == "Overworld" || Game1.levelNumber == "Overworld") || fading)
             {
-                fading = true;
-                // fade screen
-                screenTimer-=2;
-                if (fadeIn)
-                {
-                    fadeAlpha += 10;
-
-                    if (fadeAlpha >= 255)
-                    {
-                        fadeIn = false;
-                        fadeComplete = true;
-                    }
-                }
-                if (fadeOut)
-                {
-                    
-                    fadeAlpha -= 10;
-                    
-                    if (fadeAlpha <= 0)
-                    {
-                        Door.doorEnter = false;
-                        fadeOut = false;
-                        fadeIn = true;
-                        fading = false;
-                        screenTimer = 50;
-                    }
-                }
+                FadeInOut();
 
                 if (fadeComplete && screenTimer <= 0 && roomPlaceHolder == "Overworld")
                 {
@@ -142,6 +116,37 @@ namespace AnimusEngine
                 {
                     fadeComplete = false;
                     fadeOut = true;
+                    screenTimer = 50;
+                }
+            }
+        }
+
+        public void FadeInOut()
+        {
+            fading = true;
+            // fade screen
+            screenTimer -= 2;
+            if (fadeIn)
+            {
+                fadeAlpha += 10;
+
+                if (fadeAlpha >= 255)
+                {
+                    fadeIn = false;
+                    fadeComplete = true;
+                }
+            }
+            if (fadeOut)
+            {
+
+                fadeAlpha -= 10;
+
+                if (fadeAlpha <= 0)
+                {
+                    Door.doorEnter = false;
+                    fadeOut = false;
+                    fadeIn = true;
+                    fading = false;
                     screenTimer = 50;
                 }
             }
