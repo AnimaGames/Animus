@@ -40,8 +40,13 @@ namespace AnimusEngine
                 case "VertPlatformLarge":
                     mapObj = new MovingPlatform(inputName, initPosition);
                     break;
+                case "rupee":
+                    mapObj = new DestructibleObject(inputName, new Vector2(initPosition.X, initPosition.Y));
+                    break;
                 default:
+#if DEBUG
                     Console.WriteLine("got nuthin, stupid");
+#endif
                     break;
             }
             return mapObj;

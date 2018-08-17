@@ -25,7 +25,9 @@ namespace AnimusEngine
                     break;
                 
                 default:
+#if DEBUG
                     Console.WriteLine("got nuthin, stupid");
+#endif                    
                     break;
             }
             return npcObj;

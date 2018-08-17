@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.6" orientation="orthogonal" renderorder="right-down" width="38" height="15" tilewidth="16" tileheight="16" infinite="0" nextobjectid="50">
+<map version="1.0" tiledversion="1.1.6" orientation="orthogonal" renderorder="right-down" width="38" height="15" tilewidth="16" tileheight="16" infinite="0" nextobjectid="52">
  <tileset firstgid="1" name="ForestTiles" tilewidth="16" tileheight="16" tilecount="16" columns="4">
   <image source="TileSets/ForestTiles.png" width="64" height="64"/>
  </tileset>
@@ -41,7 +41,6 @@
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
 </data>
  </layer>
- <objectgroup name="Room2"/>
  <objectgroup name="Room1">
   <object id="2" name="cMin1" type="camera" x="16" y="0">
    <point/>
@@ -49,9 +48,11 @@
   <object id="4" name="cMax1" type="camera" x="592" y="240">
    <point/>
   </object>
-  <object id="9" name="playerStart" type="player" x="80" y="192" width="16" height="32"/>
-  <object id="40" name="OverWorld" type="door" x="0" y="0" width="16" height="224"/>
+  <object id="9" name="playerStart" type="player" x="304" y="192" width="16" height="32"/>
+  <object id="40" name="Overworld" type="door" x="0" y="0" width="16" height="224"/>
   <object id="45" name="tinyCaro" type="npc" x="240" y="192" width="16" height="32"/>
-  <object id="47" name="OverWorld" type="door" x="592" y="0" width="16" height="224"/>
+  <object id="47" name="Overworld" type="door" x="592" y="0" width="16" height="224"/>
+  <object id="50" name="rupee" type="object" x="368" y="208" width="16" height="16"/>
+  <object id="51" x="192" y="-96"/>
  </objectgroup>
 </map>

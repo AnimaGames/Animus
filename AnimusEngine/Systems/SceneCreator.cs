@@ -42,7 +42,6 @@ namespace AnimusEngine
         {
             
             bgMusic = content.Load<SoundEffect>("Audio/Music/Level_" + levelNumber);
-            Console.WriteLine(bgMusic.Name);
 
             if (soundEffectInstance != null && levelNumber != levelNumberHolder)
             {
@@ -108,12 +107,11 @@ namespace AnimusEngine
                         _objects[0].Initialize();
                         _objects[0].Load(content);
                     }
-                    if (_objectLayer.Objects[i].Name == "playerOverworld" + Game1.currentLevel)
+                    if (_objectLayer.Objects[i].Name == "playerOverworld" + Game1.previousLevel)
                     {
                         _objects.Add(new PlayerOverworld(_objectLayer.Objects[i].Position));
                         _objects[0].Initialize();
                         _objects[0].Load(content);
-                        Console.WriteLine("poop");
                     }
                 }
                 //create doors
@@ -146,7 +144,6 @@ namespace AnimusEngine
                                                                          (int)_objectLayer.Objects[i].Position.Y,
                                                                          (int)_objectLayer.Objects[i].Size.Width,
                                                                          (int)_objectLayer.Objects[i].Size.Height)));
-
                 }
             }
             if (_objects.Count > 0)
@@ -154,12 +151,13 @@ namespace AnimusEngine
                 playerHUD = new HUD();
             }
             playerHUD.Load(content);
+
             LoadObjects(content, _objects);
         }
 
         public void UnloadObjects(bool killPlayer, List<GameObject> _objects)
         {
-            Game1.currentLevel = Game1.levelNumber;
+            Game1.previousLevel = Game1.levelNumber;
 
             if (killPlayer == true)
             {
@@ -200,7 +198,7 @@ namespace AnimusEngine
         public void LoadObjects(ContentManager content, List<GameObject> _objects)
         {
             PauseMenu.Load(content);
-            for (int i = 1; i < _objects.Count; i++)
+            for (int i = 0; i < _objects.Count; i++)
             {
                 _objects[i].Initialize();
                 _objects[i].Load(content);

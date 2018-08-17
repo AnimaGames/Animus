@@ -106,6 +106,7 @@ namespace AnimusEngine
                 { 
                     PlayerState = State.Hurt; 
                 }
+                knockbackMult = 1;
                 objectAnimated.Update(gameTime);
             } 
             else if (knockbackTimer > 0)

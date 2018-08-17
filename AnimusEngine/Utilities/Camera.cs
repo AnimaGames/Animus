@@ -21,10 +21,6 @@ namespace AnimusEngine
         static private float zoom;
         static private Rectangle screenRect;
         static public Vector2 cameraMax, cameraMin, cameraOffset;
-        static public Vector2 cameraNoBoundsMin = new Vector2(-15000, -15000);
-        static public Vector2 cameraNoBoundsMax = new Vector2(15000, 15000);
-
-
 
         static public bool updateYAxis = true; //Should the camera move along on the y axis?
         static public bool updateXAxis = true; //Should the camera move along on the x axis?

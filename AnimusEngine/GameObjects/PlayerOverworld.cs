@@ -34,9 +34,11 @@ namespace AnimusEngine
         public enum State
         {
             Right,
+            Left,
             Up,
             Down,
             RightWalk,
+            LeftWalk,
             UpWalk,
             DownWalk
         }
@@ -49,6 +51,7 @@ namespace AnimusEngine
         public override void Initialize()
         {
             objectType = "player";
+            PlayerState = State.Down;
             health = 3;
             maxSpeed = 1;
             base.Initialize();
@@ -67,13 +70,16 @@ namespace AnimusEngine
             animationFactory.Add("down", new SpriteSheetAnimationData(new[] { 0 }));
             animationFactory.Add("downwalk", new SpriteSheetAnimationData(new[] { 1, 2 }, frameDuration: 0.2f, isLooping: true));
 
-            animationFactory.Add("up", new SpriteSheetAnimationData(new[] { 4 }));
-            animationFactory.Add("upwalk", new SpriteSheetAnimationData(new[] { 5, 6 }, frameDuration: 0.2f, isLooping: true));
+            animationFactory.Add("up", new SpriteSheetAnimationData(new[] { 3 }));
+            animationFactory.Add("upwalk", new SpriteSheetAnimationData(new[] { 4, 5 }, frameDuration: 0.2f, isLooping: true));
 
-            animationFactory.Add("right", new SpriteSheetAnimationData(new[] { 8 }));
-            animationFactory.Add("rightwalk", new SpriteSheetAnimationData(new[] { 8, 9 }, frameDuration: 0.2f, isLooping: true));
+            animationFactory.Add("right", new SpriteSheetAnimationData(new[] { 6 }));
+            animationFactory.Add("rightwalk", new SpriteSheetAnimationData(new[] { 7, 8 }, frameDuration: 0.2f, isLooping: true));
 
-            objectAnimated = new AnimatedSprite(animationFactory, "idle");
+            animationFactory.Add("left", new SpriteSheetAnimationData(new[] { 9 }));
+            animationFactory.Add("leftwalk", new SpriteSheetAnimationData(new[] { 10, 11 }, frameDuration: 0.2f, isLooping: true));
+
+            objectAnimated = new AnimatedSprite(animationFactory, "down");
             objectSprite = objectAnimated;
 
             objectSprite.Depth = 0.1f;
@@ -88,16 +94,17 @@ namespace AnimusEngine
         {
             HUD.playerHealth = health;
 
-            if (!Door.doorEnter && !StateCheck.playerDead && canMove && knockbackTimer <= 0)
-            {
-                CheckInput();
-                objectAnimated.Update(gameTime);
-            }
+            CheckInput();
+            objectAnimated.Update(gameTime);
+            
 
             switch (PlayerState)
             {
                 case State.Right:
                     objectAnimated.Play("right");
+                    break;
+                case State.Left:
+                    objectAnimated.Play("left");
                     break;
                 case State.Down:
                     objectAnimated.Play("down");
@@ -108,6 +115,9 @@ namespace AnimusEngine
 
                 case State.RightWalk:
                     objectAnimated.Play("rightwalk");
+                    break;
+                case State.LeftWalk:
+                    objectAnimated.Play("leftwalk");
                     break;
                 case State.DownWalk:
                     objectAnimated.Play("downwalk");
@@ -143,48 +153,48 @@ namespace AnimusEngine
                 }
             }
             // move top down in overworld
-            if (keyboardState.IsKeyDown(Keys.Left))
-            {
-                MoveLeft();
-                PlayerState = State.RightWalk;
-                objectAnimated.Effect = SpriteEffects.FlipHorizontally;
-            }
-            else if (keyboardState.IsKeyDown(Keys.Right))
+            if (keyboardState.IsKeyDown(Keys.Right))
             {
                 MoveRight();
-                PlayerState = State.RightWalk;
                 objectAnimated.Effect = SpriteEffects.None;
+                PlayerState = State.RightWalk;
             }
             else if (keyboardState.IsKeyDown(Keys.Up))
             {
-                PlayerState = State.UpWalk;
                 MoveUp();
+                objectAnimated.Effect = SpriteEffects.None;
+                PlayerState = State.UpWalk;
             } 
             else if (keyboardState.IsKeyDown(Keys.Down))
             {
-                PlayerState = State.DownWalk;
                 MoveDown();
+                objectAnimated.Effect = SpriteEffects.None;
+                PlayerState = State.DownWalk;
             } 
-
-            if (!keyboardState.IsKeyDown(Keys.Left) &&
-                !keyboardState.IsKeyDown(Keys.Right) &&
-                !keyboardState.IsKeyDown(Keys.Down) &&
-                !keyboardState.IsKeyDown(Keys.Up))
+            else if (keyboardState.IsKeyDown(Keys.Left))
             {
-                if (PlayerState == State.DownWalk)
-                {
-                    PlayerState = State.Down;
-                }
-                if (PlayerState == State.UpWalk)
-                {
-                    PlayerState = State.Up;
-                }
-                if (PlayerState == State.RightWalk)
-                {
-                    PlayerState = State.Right;
-                }
+                MoveLeft();
+                PlayerState = State.LeftWalk;
             }
 
+            if (velocity == Vector2.Zero)
+            {
+                switch (PlayerState)
+                {
+                    case State.DownWalk:
+                        PlayerState = State.Down;
+                        break;
+                    case State.RightWalk:
+                        PlayerState = State.Right;
+                        break;
+                    case State.LeftWalk:
+                        PlayerState = State.Left;
+                        break;
+                    case State.UpWalk:
+                        PlayerState = State.Up;
+                        break;
+                }
+            }
         }
     }
 }

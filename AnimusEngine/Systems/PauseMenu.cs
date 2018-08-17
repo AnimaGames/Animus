@@ -27,6 +27,14 @@ namespace AnimusEngine
         {
             if (active)
             {
+                _spriteBatch.Begin(SpriteSortMode.BackToFront,
+                              BlendState.AlphaBlend,
+                              SamplerState.PointClamp,
+                              null,
+                              null,
+                              null,
+                              Camera.GetTransformMatrix());
+                
                 _spriteBatch.Draw(pauseTexture,
                                   new Vector2(Camera.position.X - (Resolution.VirtualWidth / 2) - 20, 
                                               Camera.position.Y - (Resolution.VirtualHeight / 2) - 20),
@@ -42,6 +50,7 @@ namespace AnimusEngine
                                         new Vector2((Camera.position.X - (font.MeasureString("Pause").X)/2),
                                                     Camera.position.Y), 
                                         Color.White);
+                _spriteBatch.End();
             }
         }
     }

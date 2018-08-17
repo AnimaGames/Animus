@@ -50,9 +50,9 @@ namespace AnimusEngine
                 {
                     spriteBatch.Draw(healthFullTexture, new Vector2(12 + (i * 16),12), Color.White);
                 }
-
                 spriteBatch.Draw(livesTexture, new Vector2(12, 32), Color.White);
                 spriteBatch.DrawString(font, "X " + playerLives, new Vector2(32,32), Color.White);
+
                 spriteBatch.End();
             }
         }

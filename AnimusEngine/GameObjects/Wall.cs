@@ -67,18 +67,19 @@ namespace AnimusEngine
                 if (walls[i] != null && walls[i].active)
                 {
                     //_spriteBatch.Draw(wallTexture, 
-                                      //new Vector2(walls[i].wall.X, walls[i].wall.Y), 
-                                      //walls[i].wall, 
-                                      //Color.Black, 
-                                      //0f, 
-                                      //Vector2.Zero, 
-                                      //1f, 
-                                      //SpriteEffects.None, 
-                                      //0.5f);
+                    //new Vector2(walls[i].wall.X, walls[i].wall.Y), 
+                    //walls[i].wall, 
+                    //Color.Black, 
+                    //0f, 
+                    //Vector2.Zero, 
+                    //1f, 
+                    //SpriteEffects.None, 
+                    //0.5f);
                 }
             }
             for (int i = 0; i < doors.Count; i++)
             {
+#if DEBUG
                 if (doors[i] != null && doors[i].active)
                 {
                     _spriteBatch.Draw(doorTexture, 
@@ -91,11 +92,11 @@ namespace AnimusEngine
                                       SpriteEffects.None, 
                                       0.5f);
                 }
+#endif
             }
-            
         }
 
-        public Rectangle CheckCollision(Rectangle init)
+        public Rectangle CheckCollision(Rectangle init, Entity objectType)
         {
             for (int i = 0; i < walls.Count; i++)
             {
@@ -104,22 +105,36 @@ namespace AnimusEngine
                     return walls[i].wall;
                 }
             }
-            for (int i = 0; i < doors.Count; i++)
+
+            if (objectType.objectType == "player")
             {
-                if (doors[i] != null && doors[i].door.Intersects(init))
+                for (int i = 0; i < doors.Count; i++)
                 {
-                    Door.doorEnter = true;
-                    Entity.applyGravity = false;
-                    if (init.Left < doors[i].door.Left)
+                    if (doors[i] != null && doors[i].door.Intersects(init))
                     {
-                        screenDir = "right";
+                        Door.doorEnter = true;
+                        Entity.applyGravity = false;
+                        if (init.Left < doors[i].door.Left)
+                        {
+                            screenDir = "right";
+                        }
+                        else if (init.Left > doors[i].door.Left)
+                        {
+                            screenDir = "left";
+                        }
+                        Screens.roomPlaceHolder = doors[i].nextRoomNumber;
+                        return doors[i].door;
                     }
-                    else if (init.Left > doors[i].door.Left)
+                }
+            } 
+            else 
+            {
+                for (int i = 0; i < doors.Count; i++)
+                {
+                    if (doors[i] != null && doors[i].door.Intersects(init))
                     {
-                        screenDir = "left";
+                        return doors[i].door;
                     }
-                    Screens.roomPlaceHolder = doors[i].nextRoomNumber;
-                    return doors[i].door;
                 }
             }
             return Rectangle.Empty;

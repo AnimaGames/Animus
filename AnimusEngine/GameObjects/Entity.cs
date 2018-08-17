@@ -264,7 +264,7 @@ namespace AnimusEngine
                 }
             }
 
-            Rectangle wallCollision = map.CheckCollision(futureBoundingBox);
+            Rectangle wallCollision = map.CheckCollision(futureBoundingBox, this);
 
             if (wallCollision != Rectangle.Empty)
             {
@@ -305,7 +305,11 @@ namespace AnimusEngine
                     _objects[i].CheckCollision(futureBoundingBox))
                 {
                     parentPosition = _objects[i].position - _objects[i].previousPosition;
-                    position += parentPosition * (-direction);
+
+                    if (!Player.isOnPlatform)
+                    {
+                        position.X += -Math.Abs(parentPosition.X) * direction.X;
+                    }
 
                     if ((applyGravity &&
                         (futureBoundingBox.Bottom >= _objects[i].BoundingBox.Top - maxSpeed) &&
@@ -313,7 +317,7 @@ namespace AnimusEngine
                          velocity.Y > 0) ||
                         Player.isOnPlatform)
                     {
-                        position += 2 * parentPosition * (direction);
+                        position += parentPosition;
                         LandOnPlatform(_objects[i].BoundingBox);
                         return true;
                     }
@@ -346,7 +350,7 @@ namespace AnimusEngine
                                                         boundingBoxWidth, 
                                                         boundingBoxHeight);
             
-            return map.CheckCollision(futureBoundingBox);
+            return map.CheckCollision(futureBoundingBox, this);
         }
 
         protected float TendToZero(float val, float amount)

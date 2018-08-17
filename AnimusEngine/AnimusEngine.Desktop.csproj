@@ -65,6 +65,7 @@
     <Compile Include="Systems\Screens.cs" />
     <Compile Include="Systems\StateCheck.cs" />
     <Compile Include="GameObjects\PlayerOverworld.cs" />
+    <Compile Include="GameObjects\DestructibleObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -172,6 +173,8 @@
     <None Include="Content\Audio\Music\Level_Load.wav" />
     <None Include="Content\Audio\Music\Level_StartScreen.wav" />
     <None Include="Content\Sprites\playerOverworld.png" />
+    <None Include="Content\Sprites\Destructibles\rupee.png" />
+    <None Include="Content\Fonts\DebugFont.spritefont" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Utilities\" />

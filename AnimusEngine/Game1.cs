@@ -12,8 +12,8 @@ namespace AnimusEngine
         // graphics
         GraphicsDeviceManager graphics;
         SpriteBatch _spriteBatch;
-        List<GameObject> _objects = new List<GameObject>();
-        SceneCreator sceneCreator = new SceneCreator();
+        readonly List<GameObject> _objects = new List<GameObject>();
+        readonly SceneCreator sceneCreator = new SceneCreator();
 
         static public SpriteFont font;
         Screens screens = new Screens();
@@ -21,11 +21,15 @@ namespace AnimusEngine
 
         //level items
         static public string levelNumber;
-        static public string currentLevel;
-        public string checkPoint;
+        static public string previousLevel;
+        static public string checkPoint;
       
         //menu items
         static public bool inMenu = true;
+
+        //debug
+        SpriteFont debugFont;
+        float frameRate;
 
         public Game1()
         {
@@ -54,25 +58,27 @@ namespace AnimusEngine
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            debugFont = Content.Load<SpriteFont>("Fonts/DebugFont");
             font = Content.Load<SpriteFont>("Fonts/megaman");
+            screens.Load(Content);
             sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, checkPoint, true);
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (Door.doorEnter) {
-                sceneCreator.UnloadObjects(false, _objects);
+            if (Door.doorEnter) 
+            {
                 screens.ScreenTransition(_objects,
-                                         graphics, 
-                                         Content,
-                                         sceneCreator,
-                                         Map.screenDir,   
-                                         checkPoint);
+                             graphics, 
+                             Content,
+                             sceneCreator,
+                             Map.screenDir,   
+                             checkPoint);
                 
             }
             stateCheck.CheckForDeath(_objects, sceneCreator, graphics, Content, checkPoint);
             CheckForMenu(gameTime);
-
+            frameRate = 1 / (float)gameTime.ElapsedGameTime.TotalSeconds;
             base.Update(gameTime);
         }
 
@@ -89,6 +95,17 @@ namespace AnimusEngine
                                null, 
                                null, 
                                Camera.GetTransformMatrix());
+            
+#if DEBUG
+            Vector2 cameraPos = Camera.position;
+            int xpos = 80;
+            int ypos = -115;
+            _spriteBatch.DrawString(debugFont, "framerate: " + frameRate, cameraPos + new Vector2(xpos, ypos), Color.White);
+            _spriteBatch.DrawString(debugFont, "level number: " + levelNumber, cameraPos +  new Vector2(xpos, ypos + 10), Color.White);
+            _spriteBatch.DrawString(debugFont, "room number: " + checkPoint, cameraPos +  new Vector2(xpos, ypos + 20), Color.White);
+            _spriteBatch.DrawString(debugFont, "previous level: " + previousLevel, cameraPos +  new Vector2(xpos, ypos + 30), Color.White);
+            _spriteBatch.DrawString(debugFont, "object count: " + _objects.Count, cameraPos +  new Vector2(xpos, ypos + 40), Color.White);
+#endif
 
             if (_objects.Count == 0)
             {
@@ -99,12 +116,17 @@ namespace AnimusEngine
 
             sceneCreator.map.DrawWalls(_spriteBatch);
             DrawObjects();
-            _spriteBatch.End();
 
+            _spriteBatch.End();
+            //draw HUD
             if (_objects.Count > 0)
             {
                 sceneCreator.playerHUD.Draw(_spriteBatch);
             }
+            //draw fade transition
+            PauseMenu.Draw(_spriteBatch);
+            screens.Draw(_spriteBatch);
+
             base.Draw(gameTime);
         }
 
@@ -118,7 +140,6 @@ namespace AnimusEngine
 
         public void DrawObjects()
         {
-            PauseMenu.Draw(_spriteBatch);
             for (int i = 0; i < _objects.Count; i++)
             {
                 _objects[i].Draw(_spriteBatch);
@@ -171,7 +192,7 @@ namespace AnimusEngine
                 //}
                 else if (levelNumber == "GameOver")
                 {
-                    levelNumber = currentLevel;
+                    levelNumber = previousLevel;
                     sceneCreator.UnloadObjects(true, _objects);
                     inMenu = false;
                     sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, checkPoint, true);

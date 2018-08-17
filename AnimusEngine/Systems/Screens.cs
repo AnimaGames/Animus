@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace AnimusEngine
 {
@@ -9,8 +10,46 @@ namespace AnimusEngine
         public int screenTimer = 50;
         static public string roomPlaceHolder;
 
+        Texture2D fadeTexture;
+        Rectangle fadeScreenRec;
+
+        private bool fadeIn = true;
+        private bool fadeComplete;
+        private bool fadeOut;
+        private bool fading;
+        private int fadeAlpha = 0;
+
         public Screens()
         {
+        }
+
+        public void Load(ContentManager content)
+        {
+            fadeTexture = content.Load<Texture2D>("Sprites/pixel");
+            fadeScreenRec = new Rectangle(-20, -20, Resolution.VirtualWidth + 40, Resolution.VirtualHeight + 40);
+        }
+
+        public void Draw(SpriteBatch _spriteBatch)
+        { 
+            _spriteBatch.Begin(SpriteSortMode.BackToFront,
+                               BlendState.AlphaBlend,
+                               SamplerState.PointClamp,
+                               null,
+                               null,
+                               null,
+                               Camera.GetTransformMatrix());
+            
+            _spriteBatch.Draw(fadeTexture,
+                                  new Vector2(Camera.position.X - (Resolution.VirtualWidth / 2) - 20,
+                                              Camera.position.Y - (Resolution.VirtualHeight / 2) - 20),
+                                  fadeScreenRec,
+                                  new Color(0, 0, 0, fadeAlpha),
+                                  0f,
+                                  Vector2.Zero,
+                                  1f,
+                                  SpriteEffects.None,
+                                  0f);
+            _spriteBatch.End();
         }
 
         public void ScreenTransition(List<GameObject> _objects,
@@ -20,18 +59,8 @@ namespace AnimusEngine
                                      string direction,
                                      string roomNumber)
         {
-
-            if (roomPlaceHolder == "OverWorld"){
-                sceneCreator.UnloadObjects(true, _objects);
-                Game1.levelNumber = roomPlaceHolder;
-                Entity.applyGravity = false;
-                Door.doorEnter = false;
-                sceneCreator.LevelLoader(content, graphics.GraphicsDevice, _objects, Game1.levelNumber, "1", true);
-                return;
-            }
-
-            //sliding screens
-            if (Game1.levelNumber != "OverWorld")
+           //sliding screens
+            if (roomPlaceHolder != "Overworld" && Game1.levelNumber != "Overworld" && !fading)
             {
                 if (direction == "right")
                 {
@@ -53,18 +82,68 @@ namespace AnimusEngine
 
                 if (screenTimer < 0)
                 {
+                    sceneCreator.UnloadObjects(false, _objects);
                     roomNumber = roomPlaceHolder;
+                    Game1.checkPoint = roomNumber;
                     Door.doorEnter = false;
                     screenTimer = 50;
                     sceneCreator.LevelLoader(content, graphics.GraphicsDevice, _objects, Game1.levelNumber, roomNumber, false);
                     Entity.applyGravity = true;
                 }
-            } else {
-                sceneCreator.UnloadObjects(true, _objects);
-                Game1.levelNumber = roomPlaceHolder;
-                Entity.applyGravity = true;
-                Door.doorEnter = false;
-                sceneCreator.LevelLoader(content, graphics.GraphicsDevice, _objects, Game1.levelNumber, "1", true);
+
+
+            } 
+
+            if ((roomPlaceHolder == "Overworld" || Game1.levelNumber == "Overworld") || fading)
+            {
+                fading = true;
+                // fade screen
+                screenTimer-=2;
+                if (fadeIn)
+                {
+                    fadeAlpha += 10;
+
+                    if (fadeAlpha >= 255)
+                    {
+                        fadeIn = false;
+                        fadeComplete = true;
+                    }
+                }
+                if (fadeOut)
+                {
+                    
+                    fadeAlpha -= 10;
+                    
+                    if (fadeAlpha <= 0)
+                    {
+                        Door.doorEnter = false;
+                        fadeOut = false;
+                        fadeIn = true;
+                        fading = false;
+                        screenTimer = 50;
+                    }
+                }
+
+                if (fadeComplete && screenTimer <= 0 && roomPlaceHolder == "Overworld")
+                {
+                    sceneCreator.UnloadObjects(true, _objects);
+                    Game1.levelNumber = roomPlaceHolder;
+                    Entity.applyGravity = false;
+                    sceneCreator.LevelLoader(content, graphics.GraphicsDevice, _objects, Game1.levelNumber, "1", true);
+                }
+                else if (fadeComplete && screenTimer <= 0 && Game1.levelNumber == "Overworld")
+                {
+                    sceneCreator.UnloadObjects(true, _objects);
+                    Game1.levelNumber = roomPlaceHolder;
+                    Entity.applyGravity = true;
+                    sceneCreator.LevelLoader(content, graphics.GraphicsDevice, _objects, Game1.levelNumber, "1", true);
+                }
+                if (fadeComplete)
+                {
+                    fadeComplete = false;
+                    fadeOut = true;
+                    screenTimer = 50;
+                }
             }
         }
     }

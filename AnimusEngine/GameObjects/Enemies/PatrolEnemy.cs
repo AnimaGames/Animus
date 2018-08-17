@@ -48,7 +48,7 @@ namespace AnimusEngine
             animationFactory.Add("idle", new SpriteSheetAnimationData(new[] { 0 }));
             animationFactory.Add("walk", new SpriteSheetAnimationData(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, frameDuration: 0.1f, isLooping: true));
 
-            objectAnimated = new AnimatedSprite(animationFactory, "idle");
+             objectAnimated = new AnimatedSprite(animationFactory, "walk");
 
             objectSprite = objectAnimated;
             objectSprite.Depth = 0.2F;
