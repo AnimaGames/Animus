@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using MonoGame.Extended.Animations.SpriteSheets;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Animations;
-
+using System;
 
 namespace AnimusEngine
 {
@@ -14,9 +14,10 @@ namespace AnimusEngine
         public Enemy()
         { }
 
-        public Enemy(Vector2 initPosition)
+        public Enemy(Vector2 initPosition, int id)
         {
             position = initPosition;
+            objectId = id;
         }
 
         public override void Initialize()
@@ -54,6 +55,7 @@ namespace AnimusEngine
         {
             if (health <= 0 && knockbackTimer <= 0)
             {
+                Game1._destroyedObjects.Add(objectType + objectId + Game1.levelNumber + Game1.checkPoint);
                 _objects.Remove(this);
             }
 

@@ -40,8 +40,18 @@ namespace AnimusEngine
                 case "VertPlatformLarge":
                     mapObj = new MovingPlatform(inputName, initPosition);
                     break;
+                    //rupee drops
                 case "rupee":
-                    mapObj = new DestructibleObject(inputName, new Vector2(initPosition.X, initPosition.Y));
+                    mapObj = new Rupee(inputName, new Vector2(initPosition.X, initPosition.Y));
+                    break;
+                case "rupeefive":
+                    mapObj = new RupeeFive(inputName, new Vector2(initPosition.X, initPosition.Y));
+                    break;
+                case "rupeeten":
+                    mapObj = new RupeeTen(inputName, new Vector2(initPosition.X, initPosition.Y));
+                    break;
+                case "Sign":
+                    mapObj = new Sign(inputName, initPosition);
                     break;
                 default:
 #if DEBUG

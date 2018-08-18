@@ -19,10 +19,11 @@ namespace AnimusEngine
         {
         }
 
-        public PatrolEnemy(Vector2 initPosition)
+        public PatrolEnemy(Vector2 initPosition, int id)
         {
             position = initPosition;
             maxSpeed = 1;
+            objectId = id;
             walkSpeed = 0.3f;
         }
 

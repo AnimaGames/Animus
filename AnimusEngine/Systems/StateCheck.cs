@@ -17,6 +17,7 @@ namespace AnimusEngine
         int deathTimerMax = 150;
         public int deathTimer = 150;
         static public bool playerDead;
+        private List<string> clearList = new List<string>();
 
         public StateCheck()
         {
@@ -67,6 +68,18 @@ namespace AnimusEngine
                         Game1.levelNumber = "GameOver";
                         Game1.checkPoint = roomNumber = "1";
                         Game1.inMenu = true;
+                        HUD.rupeeCount = 0;
+
+                        //clear respawn list 
+                        foreach (var obj in Game1._destroyedObjects)
+                        {
+                            clearList.Add(obj);
+                        }
+                        foreach(string o in clearList)
+                        {
+                            Game1._destroyedObjects.Remove(o);
+                        }
+
                         sceneCreator.LevelLoader(content, 
                                                  graphics.GraphicsDevice, 
                                                  _objects, 

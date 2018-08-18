@@ -12,7 +12,13 @@ namespace AnimusEngine
         // graphics
         GraphicsDeviceManager graphics;
         SpriteBatch _spriteBatch;
+        //list of all gameobjects
         readonly List<GameObject> _objects = new List<GameObject>();
+
+        //lists for destoryed objects
+        public static List<string> _destroyedObjects = new List<string>();
+        public static List<string> _destroyedPermanent = new List<string>();
+
         readonly SceneCreator sceneCreator = new SceneCreator();
 
         static public SpriteFont font;
@@ -98,13 +104,14 @@ namespace AnimusEngine
             
 #if DEBUG
             Vector2 cameraPos = Camera.position;
-            int xpos = 80;
+            int xpos = 50;
             int ypos = -115;
             _spriteBatch.DrawString(debugFont, "framerate: " + frameRate, cameraPos + new Vector2(xpos, ypos), Color.White);
             _spriteBatch.DrawString(debugFont, "level number: " + levelNumber, cameraPos +  new Vector2(xpos, ypos + 10), Color.White);
             _spriteBatch.DrawString(debugFont, "room number: " + checkPoint, cameraPos +  new Vector2(xpos, ypos + 20), Color.White);
             _spriteBatch.DrawString(debugFont, "previous level: " + previousLevel, cameraPos +  new Vector2(xpos, ypos + 30), Color.White);
             _spriteBatch.DrawString(debugFont, "object count: " + _objects.Count, cameraPos +  new Vector2(xpos, ypos + 40), Color.White);
+            _spriteBatch.DrawString(debugFont, "dead count: " + _destroyedObjects.Count, cameraPos + new Vector2(xpos, ypos + 50), Color.White);
 #endif
 
             if (_objects.Count == 0)
@@ -118,10 +125,11 @@ namespace AnimusEngine
             DrawObjects();
 
             _spriteBatch.End();
+
             //draw HUD
             if (_objects.Count > 0)
             {
-                sceneCreator.playerHUD.Draw(_spriteBatch);
+                _objects[_objects.Count - 1].Draw(_spriteBatch);
             }
             //draw fade transition
             PauseMenu.Draw(_spriteBatch);
@@ -140,7 +148,7 @@ namespace AnimusEngine
 
         public void DrawObjects()
         {
-            for (int i = 0; i < _objects.Count; i++)
+            for (int i = 0; i < _objects.Count-1; i++)
             {
                 _objects[i].Draw(_spriteBatch);
             }

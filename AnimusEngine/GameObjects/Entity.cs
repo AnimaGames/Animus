@@ -11,6 +11,8 @@ namespace AnimusEngine
     {
         public Vector2 velocity;
         public Vector2 parentPosition;
+        public bool doNotSpawn;
+
         //customize movement
         protected float friction = .8f;
         protected float accel = 0.75f;

@@ -23,11 +23,9 @@ namespace AnimusEngine
         public List<Wall> _killWalls = new List<Wall>();
         int willKillPlayer;
 
-        public HUD playerHUD = new HUD();
         public static SoundEffect bgMusic;
         public string levelNumberHolder;
         public static SoundEffectInstance soundEffectInstance;
-
 
         public SceneCreator()
         {
@@ -56,6 +54,8 @@ namespace AnimusEngine
             }
 
             soundEffectInstance.IsLooped |= levelNumber != "GameOver";
+
+            HUD.rupeeDisplay = HUD.rupeeCount;
 
             levelNumberHolder = levelNumber;
 
@@ -102,7 +102,6 @@ namespace AnimusEngine
                         _objects[0].Load(content);
                     }
                 }
-
             }
 
             for (int i = 0; i < _objectLayer.Objects.Length; i++)
@@ -133,13 +132,16 @@ namespace AnimusEngine
                 //create enemies
                 if (_objectLayer.Objects[i].Type == "enemy")
                 {
-                    _objects.Add(EnemyLookUp.EnemyLUT(_objectLayer.Objects[i].Name, _objectLayer.Objects[i].Position));
+                    _objects.Add(EnemyLookUp.EnemyLUT(_objectLayer.Objects[i].Name, 
+                                                      _objectLayer.Objects[i].Position, 
+                                                      _objectLayer.Objects[i].Identifier));
                 }
 
                 //create npcs
                 if (_objectLayer.Objects[i].Type == "npc")
                 {
-                    _objects.Add(NPCLookUp.NpcLUT(_objectLayer.Objects[i].Name, _objectLayer.Objects[i].Position));
+                    _objects.Add(NPCLookUp.NpcLUT(_objectLayer.Objects[i].Name, 
+                                                  _objectLayer.Objects[i].Position));
                 }
 
                 //create map objects
@@ -152,13 +154,43 @@ namespace AnimusEngine
                                                                          (int)_objectLayer.Objects[i].Size.Height)));
                 }
             }
+
             if (_objects.Count > 0)
             {
-                playerHUD = new HUD();
+                if (_objects[0].objectType == "player")
+                {
+                    _objects.Add(new HUD());
+                }
             }
-            playerHUD.Load(content);
 
             LoadObjects(content, _objects);
+
+            //despawn enemies
+            for (int i = 0; i < _objects.Count; i++)
+            {
+                for (int j = 0; j < Game1._destroyedObjects.Count; j++)
+                {
+                    if (_objects[i].objectType + _objects[i].objectId + Game1.levelNumber + Game1.checkPoint == Game1._destroyedObjects[j])
+                    {
+                        _killObjects.Add(_objects[i]);
+                    }
+                }
+            }
+            //despawn permanent destroyed items/enemies
+            for (int i = 0; i < _objects.Count; i++)
+            {
+                for (int j = 0; j < Game1._destroyedPermanent.Count; j++)
+                {
+                    if (_objects[i].objectType + _objects[i].objectId + Game1.levelNumber + Game1.checkPoint == Game1._destroyedPermanent[j])
+                    {
+                        _killObjects.Add(_objects[i]);
+                    }
+                }
+            }
+            foreach (GameObject o in _killObjects)
+            {
+                _objects.Remove(o);
+            }
         }
 
         public void UnloadObjects(bool killPlayer, List<GameObject> _objects)

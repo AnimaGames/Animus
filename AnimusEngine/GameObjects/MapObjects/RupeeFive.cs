@@ -4,22 +4,23 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 
+
 namespace AnimusEngine
 {
-    public class DestructibleObject : GameObject
+    public class RupeeFive : DestructibleObject
     {
-        private string destructibleName;
-
-        public DestructibleObject()
+        public RupeeFive()
         {
         }
 
-        public DestructibleObject(string inputName, Vector2 initPosition)
+        public RupeeFive(string inputName, Vector2 initPosition)
         {
             position = initPosition;
             destructibleName = inputName;
             active = true;
             solid = true;
+            objectType = "destructible";
+            drawColor = Color.CornflowerBlue;
 #if DEBUG
             drawBoundingBoxes = true;   //change for visible bounding boxes
 #endif
@@ -27,20 +28,20 @@ namespace AnimusEngine
 
         public override void Load(ContentManager content)
         {
-            objectTexture = content.Load<Texture2D>("Sprites/Destructibles/rupee");
             base.Load(content);
+            objectTexture = content.Load<Texture2D>("Sprites/Destructibles/rupee");
             boundingBoxWidth = 16;
             boundingBoxHeight = 16;
         }
 
         public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
         {
+            if (health <= 0 && knockbackTimer <= 0)
+            {
+                HUD.rupeeCount += 5;
+                _objects.Remove(this);
+            }
             base.Update(_objects, map, gameTime);
-        }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            base.Draw(spriteBatch);
         }
     }
 }

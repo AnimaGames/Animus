@@ -28,7 +28,9 @@ namespace AnimusEngine
         public float layerDepth = 0.5f;
         public bool active = true;
         public Vector2 center;
+
         public string objectType;
+        public int objectId;
 
         public bool solid = true;
         public int health = 500;
@@ -43,13 +45,15 @@ namespace AnimusEngine
         public bool invincible;
         protected int invincibleTimer;
         protected int invincibleTimerMax = 100;
-        protected bool canMove = true;
+        public bool canMove = true;
         public static int damageAmount = 1;
 
         protected int boundingBoxWidth, boundingBoxHeight;
         protected Vector2 boundingBoxOffset;
         public Texture2D boundingBoxTexture;
         public bool drawBoundingBoxes = false;
+
+        public List<string> textList = new List<string>();
 
         protected Vector2 direction = new Vector2(1, 0);
 

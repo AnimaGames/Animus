@@ -76,12 +76,22 @@ namespace AnimusEngine
                 {
                     _objects[i].knockback = new Vector2(-(owner.position.X - _objects[i].position.X),
                                                         (_objects[i].position.Y - owner.position.Y));
-                    if (owner.objectType != _objects[i].objectType)
+                    if (_objects[i].objectType == "destructible")
+                    {
+                        _objects[i].health--;
+                    }
+                    else if (owner.objectType != _objects[i].objectType)
                     {
                         _objects[i].invincible = true;
-                        Destroy(_objects);
                     }
                     // TODO bouce off enemy
+                }
+                if ((_objects[i].objectType == "sign" || 
+                    _objects[i].objectType == "npc") &&
+                    _objects[i].CheckCollision(BoundingBox))
+                {
+                    TextBox.isInTextBox = true;
+                    TextBox.textBoxText = _objects[i].textList;
                 }
             }
         }

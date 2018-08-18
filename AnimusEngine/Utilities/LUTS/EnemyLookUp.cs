@@ -8,15 +8,18 @@ namespace AnimusEngine
     {
         static private GameObject enemyObj;
 
-        public static GameObject EnemyLUT(string inputName, Vector2 initPosition)
+        public static GameObject EnemyLUT(string inputName, Vector2 initPosition, int id)
         {
             switch (inputName)
             {
                 case "Enemy":
-                    enemyObj = new Enemy(initPosition);
+                    enemyObj = new Enemy(initPosition, id);
                     break;
                 case "PatrolEnemy":
-                    enemyObj = new PatrolEnemy(initPosition);
+                    enemyObj = new PatrolEnemy(initPosition, id);
+                    break;
+                case "Boss":
+                    enemyObj = new BossParent(initPosition, id);
                     break;
 
                 default:

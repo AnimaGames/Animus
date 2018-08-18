@@ -53,7 +53,6 @@
     <Compile Include="GameObjects\NPC.cs" />
     <Compile Include="GameObjects\Enemies\PatrolEnemy.cs" />
     <Compile Include="GameObjects\MapObjects\MovingPlatform.cs" />
-    <Compile Include="Utilities\TextManager.cs" />
     <Compile Include="Systems\PauseMenu.cs" />
     <Compile Include="Utilities\LUTS\EnemyLookUp.cs" />
     <Compile Include="Utilities\LUTS\MapObjectLookUp.cs" />
@@ -65,7 +64,13 @@
     <Compile Include="Systems\Screens.cs" />
     <Compile Include="Systems\StateCheck.cs" />
     <Compile Include="GameObjects\PlayerOverworld.cs" />
-    <Compile Include="GameObjects\DestructibleObject.cs" />
+    <Compile Include="GameObjects\MapObjects\DestructibleObject.cs" />
+    <Compile Include="GameObjects\MapObjects\Rupee.cs" />
+    <Compile Include="GameObjects\MapObjects\RupeeFive.cs" />
+    <Compile Include="GameObjects\MapObjects\RupeeTen.cs" />
+    <Compile Include="GameObjects\Enemies\BossParent.cs" />
+    <Compile Include="Utilities\TextBox.cs" />
+    <Compile Include="GameObjects\MapObjects\Sign.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
