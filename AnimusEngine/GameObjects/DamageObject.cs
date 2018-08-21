@@ -26,9 +26,8 @@ namespace AnimusEngine
         public override void Load(ContentManager content)
         {
             base.Load(content);
-            boundingBoxWidth = 16;
+            boundingBoxWidth = 24;
             boundingBoxHeight = 16;
-            boundingBoxOffset = new Vector2(9, 6);
         }
 
         public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
@@ -88,6 +87,7 @@ namespace AnimusEngine
                 }
                 if ((_objects[i].objectType == "sign" || 
                     _objects[i].objectType == "npc") &&
+                    _objects[0].isBySign &&
                     _objects[i].CheckCollision(BoundingBox))
                 {
                     TextBox.isInTextBox = true;

@@ -71,6 +71,9 @@
     <Compile Include="GameObjects\Enemies\BossParent.cs" />
     <Compile Include="Utilities\TextBox.cs" />
     <Compile Include="GameObjects\MapObjects\Sign.cs" />
+    <Compile Include="Utilities\SaveLoad.cs" />
+    <Compile Include="Systems\LoadScreen.cs" />
+    <Compile Include="GameObjects\MapObjects\HeartUpgrade.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -180,6 +183,9 @@
     <None Include="Content\Sprites\playerOverworld.png" />
     <None Include="Content\Sprites\Destructibles\rupee.png" />
     <None Include="Content\Fonts\DebugFont.spritefont" />
+    <None Include="Content\SaveFiles\SaveFile01.txt" />
+    <None Include="Content\Maps\Level_Overworld.tmx" />
+    <None Include="Content\Sprites\Destructibles\heartUpgrade.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Utilities\" />
@@ -192,6 +198,7 @@
     <Folder Include="Systems\" />
     <Folder Include="Utilities\LUTS\" />
     <Folder Include="Content\Maps\MapObjects\" />
+    <Folder Include="Content\SaveFiles\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

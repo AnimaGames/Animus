@@ -53,6 +53,9 @@ namespace AnimusEngine
                 case "Sign":
                     mapObj = new Sign(inputName, initPosition);
                     break;
+                case "heartupgrade":
+                    mapObj = new HeartUpgrade(inputName, new Vector2(initPosition.X, initPosition.Y));
+                    break;
                 default:
 #if DEBUG
                     Console.WriteLine("got nuthin, stupid");

@@ -52,7 +52,7 @@ namespace AnimusEngine
         {
             objectType = "player";
             PlayerState = State.Down;
-            health = 3;
+            health = HUD.playerMaxHealth;
             maxSpeed = 1;
             base.Initialize();
         }

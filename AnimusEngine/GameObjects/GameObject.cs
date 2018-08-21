@@ -41,6 +41,7 @@ namespace AnimusEngine
         public int knockbackTimer;
         public int knockbackTimerMax = 10;
         public bool kinematic = true;
+        public bool isBySign;
 
         public bool invincible;
         protected int invincibleTimer;

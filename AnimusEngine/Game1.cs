@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input;
 using System;
+using static AnimusEngine.SaveLoad;
 
 namespace AnimusEngine
 {
@@ -18,12 +19,13 @@ namespace AnimusEngine
         //lists for destoryed objects
         public static List<string> _destroyedObjects = new List<string>();
         public static List<string> _destroyedPermanent = new List<string>();
-
+        private List<string> emptyList = new List<string>();
         readonly SceneCreator sceneCreator = new SceneCreator();
 
         static public SpriteFont font;
         Screens screens = new Screens();
         StateCheck stateCheck = new StateCheck();
+        readonly LoadScreen loadScreen = new LoadScreen();
 
         //level items
         static public string levelNumber;
@@ -32,6 +34,7 @@ namespace AnimusEngine
       
         //menu items
         static public bool inMenu = true;
+        static public int saveSlot;
 
         //debug
         SpriteFont debugFont;
@@ -67,6 +70,7 @@ namespace AnimusEngine
             debugFont = Content.Load<SpriteFont>("Fonts/DebugFont");
             font = Content.Load<SpriteFont>("Fonts/megaman");
             screens.Load(Content);
+            loadScreen.Load(Content);
             sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, checkPoint, true);
         }
 
@@ -82,6 +86,11 @@ namespace AnimusEngine
                              checkPoint);
                 
             }
+            if (inMenu && levelNumber == "Load")
+            {
+                loadScreen.Update(null, null, gameTime);
+            }
+
             stateCheck.CheckForDeath(_objects, sceneCreator, graphics, Content, checkPoint);
             CheckForMenu(gameTime);
             frameRate = 1 / (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -111,7 +120,7 @@ namespace AnimusEngine
             _spriteBatch.DrawString(debugFont, "room number: " + checkPoint, cameraPos +  new Vector2(xpos, ypos + 20), Color.White);
             _spriteBatch.DrawString(debugFont, "previous level: " + previousLevel, cameraPos +  new Vector2(xpos, ypos + 30), Color.White);
             _spriteBatch.DrawString(debugFont, "object count: " + _objects.Count, cameraPos +  new Vector2(xpos, ypos + 40), Color.White);
-            _spriteBatch.DrawString(debugFont, "dead count: " + _destroyedObjects.Count, cameraPos + new Vector2(xpos, ypos + 50), Color.White);
+            _spriteBatch.DrawString(debugFont, "dead count: " + _destroyedPermanent.Count, cameraPos + new Vector2(xpos, ypos + 50), Color.White);
 #endif
 
             if (_objects.Count == 0)
@@ -122,6 +131,7 @@ namespace AnimusEngine
             }
 
             sceneCreator.map.DrawWalls(_spriteBatch);
+
             DrawObjects();
 
             _spriteBatch.End();
@@ -134,7 +144,7 @@ namespace AnimusEngine
             //draw fade transition
             PauseMenu.Draw(_spriteBatch);
             screens.Draw(_spriteBatch);
-
+            loadScreen.Draw(_spriteBatch);
             base.Draw(gameTime);
         }
 
@@ -158,7 +168,6 @@ namespace AnimusEngine
         {
             Camera.LookAt(new Vector2(0, 0));
             if (_objects.Count == 0) { return; }
-
             Camera.Update(_objects[0].position + new Vector2(16, 0));
         }
 
@@ -180,35 +189,79 @@ namespace AnimusEngine
         {
             var keyboardState = KeyboardExtended.GetState();
 
+            if (keyboardState.WasKeyJustUp(Keys.Up))
+            {
+                loadScreen.menuIndex--;
+            }
+            else if (keyboardState.WasKeyJustUp(Keys.Down))
+            {
+                loadScreen.menuIndex++;
+            }
+
             if (keyboardState.WasKeyJustUp(Keys.Enter))
                 
             {
-                if (levelNumber == "StartScreen")
+                switch (levelNumber)
                 {
-                    levelNumber = "0";
-                    sceneCreator.UnloadObjects(true, _objects);
-                    inMenu = false;
-                    sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, checkPoint, true);
-                }
-                //else if (levelNumber == "Load")
-                //{
-                //    levelNumber = "1";
-                //    sceneCreator.UnloadObjects(true, _objects);
-                //    inMenu = false;
+                    case "StartScreen":
+                        levelNumber = "Load";
+                        loadScreen.menuIndex = 1;
+                        sceneCreator.UnloadObjects(true, _objects);
+                        sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, checkPoint, false);
+                        break;
 
-                //    sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, roomNumber);
-                //}
-                else if (levelNumber == "GameOver")
-                {
-                    levelNumber = previousLevel;
-                    sceneCreator.UnloadObjects(true, _objects);
-                    inMenu = false;
-                    sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, checkPoint, true);
+                    case "Load":
+                        
+                        if (loadScreen.menuIndex != 4)
+                        {
+                            saveSlot = loadScreen.menuIndex;
+                            if (loadScreen.deleteMode)
+                            {
+                                XmlSerialization.WriteToXmlFile("SaveFile0" + saveSlot + ".txt", emptyList);
+                                XmlSerialization.WriteToXmlFile("HealthFile0" + saveSlot + ".txt", 3);
+                                loadScreen.menuIndex = 1;
+                                loadScreen.deleteMode = false;
+                                Console.WriteLine("file deleted");
+                            }
+                            else
+                            {
+                                inMenu = false;
+                                levelNumber = "0";
+                                _destroyedPermanent = XmlSerialization.ReadFromXmlFile<List<string>>("SaveFile0" + saveSlot + ".txt");
+                                HUD.playerMaxHealth = XmlSerialization.ReadFromXmlFile<int>("HealthFile0" + saveSlot + ".txt");
+                                sceneCreator.UnloadObjects(true, _objects);
+                                sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, checkPoint, true);
+                            }
+                        }else {
+                            if (loadScreen.deleteMode)
+                            {
+                                loadScreen.deleteMode = false;
+                            } else {
+                                loadScreen.deleteMode = true;
+                                loadScreen.menuIndex = 1;
+                            }
+                        }
+                        break;
+
+                    case "GameOver":
+                        levelNumber = previousLevel;
+                        sceneCreator.UnloadObjects(true, _objects);
+                        inMenu = false;
+                        sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, checkPoint, true);
+                        break;
+
+                    default:
+                        inMenu = false;
+                        PauseMenu.active = false;
+                        break;
                 }
-                else
+                if (keyboardState.IsKeyDown(Keys.RightShift))
                 {
-                    inMenu = false;
-                    PauseMenu.active = false;
+                    levelNumber = "StartScreen";
+                    checkPoint = "1";
+                    inMenu = true;
+                    sceneCreator.UnloadObjects(true, _objects);
+                    sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, checkPoint, false); 
                 }
             }
         }

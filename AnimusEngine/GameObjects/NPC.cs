@@ -27,7 +27,7 @@ namespace AnimusEngine
         public override void Initialize()
         {
             objectType = "npc";
-            textList.Add("i want you butt butt");
+            textList.Add("hello there young man! Blah blah blah blah blah blah");
             base.Initialize();
         }
 

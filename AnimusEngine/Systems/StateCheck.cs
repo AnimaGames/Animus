@@ -1,14 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Audio;
-using MonoGame.Extended;
-using MonoGame.Extended.Tiled;
-using MonoGame.Extended.Input;
-using MonoGame.Extended.Tiled.Renderers;
-using System;
 using Microsoft.Xna.Framework.Content;
+using static AnimusEngine.SaveLoad;
 
 namespace AnimusEngine
 {
@@ -86,6 +79,9 @@ namespace AnimusEngine
                                                  Game1.levelNumber, 
                                                  roomNumber, 
                                                  true);
+
+                        XmlSerialization.WriteToXmlFile("SaveFile0" + Game1.saveSlot + ".txt", Game1._destroyedPermanent);
+                        XmlSerialization.WriteToXmlFile("HealthFile0" + Game1.saveSlot + ".txt", HUD.playerMaxHealth);
                     }
                     PauseMenu.active = false;
                     deathTimer = deathTimerMax;

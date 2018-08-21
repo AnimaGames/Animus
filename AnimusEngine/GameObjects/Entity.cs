@@ -289,7 +289,7 @@ namespace AnimusEngine
                     (_objects[i].objectType == "player" || _objects[i].objectType == "enemy") &&
                     _objects[i].active &&
                     _objects[i].CheckCollision(futureBoundingBox))
-                     
+
                 {
                     if (objectType == "player")
                     {
@@ -297,7 +297,19 @@ namespace AnimusEngine
                     }
                     else if (objectType == "enemy")
                     {
-                        Damage(this); 
+                        Damage(this);
+                    }
+                }
+                //check for text box
+                if (_objects[i] != this &&
+                    (_objects[i].objectType == "npc" || _objects[i].objectType == "sign"))
+                {
+                    if(_objects[i].CheckCollision(futureBoundingBox))
+                    {
+                        isBySign = true;
+                        return false;
+                    } else {
+                        isBySign = false;
                     }
                 }
                 // moving platform
@@ -316,8 +328,8 @@ namespace AnimusEngine
                     if ((applyGravity &&
                         (futureBoundingBox.Bottom >= _objects[i].BoundingBox.Top - maxSpeed) &&
                          (futureBoundingBox.Bottom <= _objects[i].BoundingBox.Top + 8) &&
-                         velocity.Y > 0) ||
-                        Player.isOnPlatform)
+                         velocity.Y > 0))// ||
+                        //Player.isOnPlatform)
                     {
                         position += parentPosition;
                         LandOnPlatform(_objects[i].BoundingBox);

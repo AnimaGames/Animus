@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using static AnimusEngine.SaveLoad;
 
 namespace AnimusEngine
 {
@@ -117,6 +118,10 @@ namespace AnimusEngine
                     fadeComplete = false;
                     fadeOut = true;
                     screenTimer = 50;
+
+                    // save the game
+                    XmlSerialization.WriteToXmlFile("SaveFile0" + Game1.saveSlot + ".txt", Game1._destroyedPermanent);
+                    XmlSerialization.WriteToXmlFile("HealthFile0" + Game1.saveSlot + ".txt", HUD.playerMaxHealth);
                 }
             }
         }

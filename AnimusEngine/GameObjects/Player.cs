@@ -19,8 +19,8 @@ namespace AnimusEngine
         public static bool isOnPlatform;
         public State PlayerState { get; set; }
 
-        private Vector2 attackOffset = new Vector2(16, 0);
-        private Vector2 positionOffset = new Vector2(7, 6);
+        private Vector2 attackOffset = new Vector2(8, 0);
+        private Vector2 positionOffset = new Vector2(12, 9);
         const float jumpSpeed = 8.0f;
 
         private int attackTimer;
@@ -56,7 +56,7 @@ namespace AnimusEngine
         public override void Initialize()
         {
             objectType = "player";
-            health = 3;
+            health = HUD.playerMaxHealth;
             base.Initialize();
         }
 
@@ -117,7 +117,7 @@ namespace AnimusEngine
 
             if (attackTimer < 3 && attackTimer > 0)
             {
-                Damage((attackOffset * direction + positionOffset));
+                Damage((attackOffset * direction + positionOffset + velocity));
                 attackTimer--;
             } else if (attackTimer > 0) {
                 attackTimer--;
@@ -253,16 +253,22 @@ namespace AnimusEngine
                     //    PlayerState = State.AttackingDown;
                     //}  else
 
-                    if (!keyboardState.IsKeyDown(Keys.Down) && isJumping) 
-                    {
+                    if (isJumping) 
+                    { 
+                        //attack in air
                         PlayerState = State.JumpAttack;
                         attackTimer = attackTimerMax;
+                        attackSFX.Play();
                     } else {
-                        PlayerState = State.Attacking;
+                        // attack on ground
+                        if (!isBySign)
+                        {
+                            PlayerState = State.Attacking;
+                            attackSFX.Play();
+                        }
                         attackTimer = attackTimerMax;
                     }
                     if (!isJumping) { velocity.X = 0; }
-                    attackSFX.Play();
                 }
             }
 

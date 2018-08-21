@@ -64,7 +64,7 @@ namespace AnimusEngine
             objectAnimated.Play("walk");
             objectAnimated.Update(gameTime);
 
-            if (knockbackTimer <= 0)
+            if (knockbackTimer <= 0 && canMove)
             {
                 velocity.X = walkSpeed;
 
