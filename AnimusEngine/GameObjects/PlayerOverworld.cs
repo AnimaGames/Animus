@@ -93,7 +93,6 @@ namespace AnimusEngine
         public override void Update(List<GameObject> _objects, Map map, GameTime gameTime)
         {
             HUD.playerHealth = health;
-
             CheckInput();
             objectAnimated.Update(gameTime);
             

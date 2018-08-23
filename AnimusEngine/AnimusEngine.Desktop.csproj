@@ -74,6 +74,7 @@
     <Compile Include="Utilities\SaveLoad.cs" />
     <Compile Include="Systems\LoadScreen.cs" />
     <Compile Include="GameObjects\MapObjects\HeartUpgrade.cs" />
+    <Compile Include="Systems\LoadMenu.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using static AnimusEngine.SaveLoad;
 using System.Collections.Generic;
 
 namespace AnimusEngine
@@ -33,9 +34,13 @@ namespace AnimusEngine
             if (health <= 0 && knockbackTimer <= 0)
             {
                 HUD.playerMaxHealth++;
-                HUD.playerHealth = HUD.playerMaxHealth;
                 Game1._destroyedPermanent.Add(objectType + objectId + Game1.levelNumber + Game1.checkPoint);
                 _objects.Remove(this);
+                _objects[0].health = HUD.playerMaxHealth;
+
+                // save the game
+                XmlSerialization.WriteToXmlFile("SaveFile0" + Game1.saveSlot + ".txt", Game1._destroyedPermanent);
+                XmlSerialization.WriteToXmlFile("HealthFile0" + Game1.saveSlot + ".txt", HUD.playerMaxHealth);
             }
             base.Update(_objects, map, gameTime);
         }

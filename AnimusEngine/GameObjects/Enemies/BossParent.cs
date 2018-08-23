@@ -58,8 +58,10 @@ namespace AnimusEngine
             if (health <= 0 && knockbackTimer <= 0)
             {
                 Game1._destroyedPermanent.Add(objectType + objectId + Game1.levelNumber + Game1.checkPoint);
-                XmlSerialization.WriteToXmlFile("SaveFile0" + Game1.saveSlot + ".txt", Game1._destroyedPermanent);
                 _objects.Remove(this);
+
+                // save the game
+                XmlSerialization.WriteToXmlFile("SaveFile0" + Game1.saveSlot + ".txt", Game1._destroyedPermanent);
             }
 
             if (knockbackTimer > 0)

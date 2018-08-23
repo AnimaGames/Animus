@@ -19,13 +19,14 @@ namespace AnimusEngine
         //lists for destoryed objects
         public static List<string> _destroyedObjects = new List<string>();
         public static List<string> _destroyedPermanent = new List<string>();
-        private List<string> emptyList = new List<string>();
+        readonly List<string> emptyList = new List<string>();
         readonly SceneCreator sceneCreator = new SceneCreator();
 
         static public SpriteFont font;
         Screens screens = new Screens();
         StateCheck stateCheck = new StateCheck();
         readonly LoadScreen loadScreen = new LoadScreen();
+        readonly LoadMenu loadMenu = new LoadMenu(); 
 
         //level items
         static public string levelNumber;
@@ -90,7 +91,7 @@ namespace AnimusEngine
             {
                 loadScreen.Update(null, null, gameTime);
             }
-
+            Console.WriteLine(saveSlot);
             stateCheck.CheckForDeath(_objects, sceneCreator, graphics, Content, checkPoint);
             CheckForMenu(gameTime);
             frameRate = 1 / (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -211,36 +212,8 @@ namespace AnimusEngine
                         break;
 
                     case "Load":
-                        
-                        if (loadScreen.menuIndex != 4)
-                        {
-                            saveSlot = loadScreen.menuIndex;
-                            if (loadScreen.deleteMode)
-                            {
-                                XmlSerialization.WriteToXmlFile("SaveFile0" + saveSlot + ".txt", emptyList);
-                                XmlSerialization.WriteToXmlFile("HealthFile0" + saveSlot + ".txt", 3);
-                                loadScreen.menuIndex = 1;
-                                loadScreen.deleteMode = false;
-                                Console.WriteLine("file deleted");
-                            }
-                            else
-                            {
-                                inMenu = false;
-                                levelNumber = "0";
-                                _destroyedPermanent = XmlSerialization.ReadFromXmlFile<List<string>>("SaveFile0" + saveSlot + ".txt");
-                                HUD.playerMaxHealth = XmlSerialization.ReadFromXmlFile<int>("HealthFile0" + saveSlot + ".txt");
-                                sceneCreator.UnloadObjects(true, _objects);
-                                sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, checkPoint, true);
-                            }
-                        }else {
-                            if (loadScreen.deleteMode)
-                            {
-                                loadScreen.deleteMode = false;
-                            } else {
-                                loadScreen.deleteMode = true;
-                                loadScreen.menuIndex = 1;
-                            }
-                        }
+                        loadMenu.ChooseSaveFIle(_objects, sceneCreator, Content, GraphicsDevice, loadScreen);
+
                         break;
 
                     case "GameOver":
@@ -255,11 +228,14 @@ namespace AnimusEngine
                         PauseMenu.active = false;
                         break;
                 }
-                if (keyboardState.IsKeyDown(Keys.RightShift))
+                if (keyboardState.IsKeyDown(Keys.RightShift) && 
+                    keyboardState.IsKeyDown(Keys.V) &&
+                    keyboardState.IsKeyDown(Keys.Space))
                 {
                     levelNumber = "StartScreen";
                     checkPoint = "1";
                     inMenu = true;
+                    Entity.applyGravity = true;
                     sceneCreator.UnloadObjects(true, _objects);
                     sceneCreator.LevelLoader(Content, graphics.GraphicsDevice, _objects, levelNumber, checkPoint, false); 
                 }
