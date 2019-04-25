@@ -194,13 +194,14 @@ namespace AnimusEngine
             return true;
         }
 
+
         public void Damage(GameObject owner)
         {
             for (int i = 0; i < numOfDamageObjects; i++)
             {
                 if (!damageObjects[i].active)
                 {
-                    damageObjects[i].Damage(owner, position);
+                    damageObjects[i].Damage(owner, new Vector2(BoundingBox.Left, BoundingBox.Top));
                 }
             }
         }
@@ -291,13 +292,13 @@ namespace AnimusEngine
                     _objects[i].CheckCollision(futureBoundingBox))
 
                 {
-                    if (objectType == "player")
+                    if (objectType == "enemy")
                     {
-                        Damage(_objects[i]);
-                    }
-                    else if (objectType == "enemy")
+                        Damage(this);   
+                    } 
+                    else if(objectType == "player")
                     {
-                        Damage(this);
+                        Damage(_objects[i]); 
                     }
                 }
                 //check for text box

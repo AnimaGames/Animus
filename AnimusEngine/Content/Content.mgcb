@@ -75,6 +75,12 @@
 /processorParam:Quality=Best
 /build:Audio/Sound Effects/PlayerHurt.wav
 
+#begin Audio/Sound Effects/TextBlip.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Sound Effects/TextBlip.wav
+
 #begin Fonts/DebugFont.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

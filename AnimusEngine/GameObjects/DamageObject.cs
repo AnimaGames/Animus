@@ -26,7 +26,7 @@ namespace AnimusEngine
         public override void Load(ContentManager content)
         {
             base.Load(content);
-            boundingBoxWidth = 24;
+            boundingBoxWidth = 16;
             boundingBoxHeight = 16;
         }
 

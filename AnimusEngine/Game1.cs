@@ -91,7 +91,6 @@ namespace AnimusEngine
             {
                 loadScreen.Update(null, null, gameTime);
             }
-            Console.WriteLine(saveSlot);
             stateCheck.CheckForDeath(_objects, sceneCreator, graphics, Content, checkPoint);
             CheckForMenu(gameTime);
             frameRate = 1 / (float)gameTime.ElapsedGameTime.TotalSeconds;

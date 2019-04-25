@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Audio;
 
 namespace AnimusEngine
 {
@@ -27,6 +28,8 @@ namespace AnimusEngine
         private int textTimer;
         private int textTimerMax = 50;
 
+        private SoundEffect textBlip;
+
         public TextBox()
         {
         }
@@ -37,6 +40,7 @@ namespace AnimusEngine
             textboxTexture = content.Load<Texture2D>("Sprites/pixel");
             textboxRect = new Rectangle(30, 40, 340, 80);
             textBoxText.Add("temp");
+            textBlip = content.Load<SoundEffect>("Audio/Sound Effects/TextBlip");
             base.Load(content);
         }
 
@@ -76,6 +80,10 @@ namespace AnimusEngine
 
                     displayText += textArray[textIterator].ToString();
 
+                    if (textArray[textIterator].ToString() != " ")
+                    {
+                        textBlip.Play();
+                    }
                     if (textCounter > 15 && textArray[textIterator].ToString() == " " )
                     {
                         displayText += "\n";

@@ -29,7 +29,7 @@ namespace AnimusEngine
                     XmlSerialization.WriteToXmlFile("HealthFile0" + Game1.saveSlot + ".txt", 3);
                     loadScreen.menuIndex = 1;
                     loadScreen.deleteMode = false;
-                    Console.WriteLine("file deleted");
+                    //Console.WriteLine("file deleted");
                 }
                 else
                 {

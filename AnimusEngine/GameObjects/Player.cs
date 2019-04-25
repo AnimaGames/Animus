@@ -19,17 +19,17 @@ namespace AnimusEngine
         public static bool isOnPlatform;
         public State PlayerState { get; set; }
 
-        private Vector2 attackOffset = new Vector2(8, 0);
-        private Vector2 positionOffset = new Vector2(12, 9);
+        private Vector2 attackOffset = new Vector2(13, 0);
+        private Vector2 positionOffset = new Vector2(17, 9);
         const float jumpSpeed = 8.0f;
 
         private int attackTimer;
         private int attackTimerMax = 6;
 
-        public SoundEffect jumpSFX;
-        public SoundEffect attackSFX;
-        public SoundEffect hurtSFX;
-        public SoundEffect deadSFX;
+        private SoundEffect jumpSFX;
+        private SoundEffect attackSFX;
+        private SoundEffect hurtSFX;
+        private SoundEffect deadSFX;
 
         public Player()
         { }
@@ -118,6 +118,7 @@ namespace AnimusEngine
             if (attackTimer < 3 && attackTimer > 0)
             {
                 Damage((attackOffset * direction + positionOffset + velocity));
+                Damage((this));
                 attackTimer--;
             } else if (attackTimer > 0) {
                 attackTimer--;
